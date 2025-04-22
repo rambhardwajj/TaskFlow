@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "CommonJS",
+    "strict": true,
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    // "rootDir": ".",
+    "outDir": "dist",
+    "removeComments": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmitOnError": true
+  },
+  // "exclude" ka priority zyada hota hai — agar file include me hai but exclude me bhi hai, toh exclude jeetega.
+  // "include": ["src/**/*", "test.js"],
+  "exclude": ["node_modules", "dist"]
+}
