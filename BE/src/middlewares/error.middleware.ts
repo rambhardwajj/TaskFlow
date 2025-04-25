@@ -9,7 +9,7 @@ const errorHandler = ( error : any, req: Request, res: Response , next : NextFun
         customError = error 
     }else{
         // custom error banado
-        customError = new CustomError( error.message, ResponseStatus.InternalServerError )
+        customError = new CustomError( ResponseStatus.InternalServerError, error.message,  )
     }
     res.status(customError.statusCode).json({
         success: false, 

@@ -11,15 +11,15 @@ interface Avatar {
   localPath: string;
 }
 
-export interface IUser extends Document {
+export interface IUser extends Document { 
   // feilds related to the user
   // these are stored in DB
   userName: string;
   email: string;
   password: string;
   fullName?: string;
-  avatar: Avatar;
-  isEmailVerified: boolean;
+  avatar?: Avatar;
+  isEmailVerified?: boolean;
 
   // feilds related to email and password verification and reset
   // these are also stord in DB
@@ -116,13 +116,14 @@ userSchema.methods.generateRefreshToken = async function(){
       expiresIn: envConfig.REFRESH_TOKEN_EXPIRY as ms.StringValue
     }
   )
+  return refreshToken
 }
 userSchema.methods.generateToken = function(){
-    const unhashedToken = crypto.randomBytes(32).toString("hex")
-    const hashedToken = crypto.createHash('sha1').update('message').digest('hex');
+    const unHashedToken = crypto.randomBytes(32).toString("hex")
+    const hashedToken = crypto.createHash('sha256').update(unHashedToken).digest('hex');
     const tokenExpiry = new Date(Date.now() + 20*60*1000)
 
-    return {unhashedToken, hashedToken, tokenExpiry}
+    return {unHashedToken, hashedToken, tokenExpiry}
 }
 
 const User = mongoose.model('User', userSchema)

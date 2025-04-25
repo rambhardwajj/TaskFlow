@@ -1,7 +1,7 @@
 class CustomError extends Error {
     data:any
 
-    constructor(  message: string,public statusCode: number){
+    constructor(  public statusCode: number, message: string,){
         super(message);
         this.data = null;
         Error.captureStackTrace(this, this.constructor)

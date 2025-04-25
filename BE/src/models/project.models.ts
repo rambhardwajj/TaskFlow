@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { Document } from "mongoose";
 
 interface IProject extends Document {
   name: string;

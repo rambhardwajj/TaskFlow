@@ -1,7 +1,8 @@
 import app from "./app";
-import { dbConnect } from "./src/configs/db";
+import { dbConnect } from "./configs/db";
+import { envConfig } from "./configs/env";
 
-const PORT = 8200
+const PORT = envConfig.PORT ||  8200
 
 dbConnect()
 
