@@ -12,6 +12,8 @@ import { handleZodError } from "../utils/handleZodErrors";
 import { uploadOnCloudinary } from "../configs/cloudinary";
 import { sendResetPasswordMail, sendVerificationMail } from "../utils/sendMail";
 import crypto from "crypto";
+import { envConfig } from "../configs/env";
+import jwt from "jsonwebtoken"
 
 const registerUser = asyncHandler(async (req: Request, res: Response) => {
   // const userNamme = req.body.userName;
@@ -234,4 +236,75 @@ const forgotPassword = asyncHandler(async (req: Request, res: Response) =>{
 
 })
 
-export { registerUser, verifyUser, resendVerificationEmail, loginUser, logOutUser, forgotPassword };
+const resetPassword = asyncHandler(async (req: Request, res: Response) =>{
+  const { password } = req.body;
+  const {resetToken} = req.params;
+
+  const user = await User.findOne({
+    resetPasswordToken : resetToken,
+    resetPasswordExpiry : { gt: new Date() }
+  })
+
+  if(!user){
+    throw new CustomError(
+      ResponseStatus.Unauthorized, " Token is invalid or expired "
+    )
+  }
+
+  user.password = password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpiry = undefined;
+  await user.save();
+
+  res.status(ResponseStatus.Success).json( new ApiResponse(ResponseStatus.Success, {}, "Password reset successfully") );
+
+})
+
+const refreshAccessToken = asyncHandler(async (req , res ) =>{
+  const incomingRefreshToken = req.cookies.refreshAccessToken;
+
+  if(!incomingRefreshToken){
+    throw new CustomError(ResponseStatus.Unauthorized, "Unauthorized request")
+  }
+
+  let decodedToken : any;
+  try {
+    decodedToken = jwt.verify(incomingRefreshToken, envConfig.REFRESH_TOKEN_SECRET)
+  } catch (error) {
+    throw new CustomError( ResponseStatus.BadRequest, "Invalid jwt token ")
+  }
+
+  const user = await User.findOne({ email: decodedToken.email });
+
+  if( !user ){
+    throw new CustomError(ResponseStatus.Unauthorized, "Invalid token")
+  }
+
+  if (user.refreshToken !== incomingRefreshToken) {
+    throw new CustomError(
+      ResponseStatus.Forbidden,
+      "Refresh token has been used or is invalid"
+    );
+  }
+
+  let accessToken ; 
+  let refreshToken; 
+
+  user.refreshToken = refreshToken;
+  await user.save();
+
+  const cookieOptions = {
+    httpOnly: true,
+    samesite: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  }
+
+  res
+    .status(200)
+    .cookie("accessToken", accessToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, cookieOptions)
+    .json(new ApiResponse(200, {}, "Access token refreshed successfully"));
+
+})
+
+export { registerUser, verifyUser, resendVerificationEmail, loginUser, logOutUser, forgotPassword, resetPassword,refreshAccessToken };
