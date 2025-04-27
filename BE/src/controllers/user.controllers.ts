@@ -10,7 +10,7 @@ import { CustomError } from "../utils/CustomError";
 import { ApiResponse } from "../utils/ApiResponse";
 import { handleZodError } from "../utils/handleZodErrors";
 import { uploadOnCloudinary } from "../configs/cloudinary";
-import { sendVerificationMail } from "../utils/sendMail";
+import { sendResetPasswordMail, sendVerificationMail } from "../utils/sendMail";
 import crypto from "crypto";
 
 const registerUser = asyncHandler(async (req: Request, res: Response) => {
@@ -171,8 +171,11 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   }
 
   // generating access n refresh token
-  const accessToken = user.generateAccessToken();
-  const refreshToken = user.generateRefreshToken();
+  const accessToken = await user.generateAccessToken();
+  const refreshToken = await user.generateRefreshToken();
+
+  console.log("at ", accessToken)
+  console.log("rt ", refreshToken)
 
   user.refreshToken = refreshToken;
   
@@ -191,4 +194,44 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
     .json(new ApiResponse(ResponseStatus.Success, {}, "Login successful"));
 });
 
-export { registerUser, verifyUser, resendVerificationEmail, loginUser };
+const logOutUser = asyncHandler(async ( req: Request, res: Response) =>{
+    const { _id } = req.body.user;
+
+    await User.findByIdAndUpdate(
+      {_id}, 
+      {
+        refreshToken: undefined
+      }
+    )
+
+    res.status(ResponseStatus.Success).clearCookie("accessToken").clearCookie("refreshToken").json(new ApiResponse(ResponseStatus.Success, {}, "logged out successfully"))
+
+})
+
+const forgotPassword = asyncHandler(async (req: Request, res: Response) =>{
+  const {email} = req.body;
+  if( !email ){
+    throw new CustomError(ResponseStatus.BadRequest, "Missing required fields")
+  }
+
+  const user = await User.findOne({email})
+
+  if( !user ) {
+    throw new CustomError(ResponseStatus.NotFound, "User does not exits")
+  }
+
+  const {hashedToken, unHashedToken, tokenExpiry} = user.generateToken();
+  user.resetPasswordToken = hashedToken;
+  user.resetPasswordExpiry = tokenExpiry;
+
+  await user.save();
+
+  await sendResetPasswordMail(user.userName, user.email,unHashedToken );
+
+  res.status(ResponseStatus.Success).json(new ApiResponse(
+    ResponseStatus.Success, {}, "Rest link is sent to the provided email"
+  ))
+
+})
+
+export { registerUser, verifyUser, resendVerificationEmail, loginUser, logOutUser, forgotPassword };
