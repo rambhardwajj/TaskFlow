@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 import { Schema } from "mongoose"
 import { UserRoles, UserRoleType } from "../utils/permissions"
 
-export interface IProjectMember{
+export interface IProjectMember extends Document {
     user : Schema.Types.ObjectId,
     project: Schema.Types.ObjectId,
     role:  UserRoleType

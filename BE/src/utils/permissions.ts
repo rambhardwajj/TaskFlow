@@ -8,11 +8,11 @@ export const UserRoles = {
     "create:project",
     "view:project",
     "delete:project",
-    "update:project",
+    "edit:project",
     "assign:project",
     "unassign:project",
-    
-    "create:task",
+    "add:member",
+
     "view:task",
     "edit:task",
     "delete:task",
