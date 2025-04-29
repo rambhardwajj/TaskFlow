@@ -7,7 +7,7 @@ const checkUserPermission = (permission: PermissionType) =>{
     return async (req: Request, res: Response, next: NextFunction)=>{
         try {
             const userId  = req.user._id as string
-            const projectId = req.params.projectId 
+            const projectId = req.params.projectId
 
             if( !userId || !projectId ){
                 throw new CustomError(ResponseStatus.BadRequest, "Missing user on project Id")

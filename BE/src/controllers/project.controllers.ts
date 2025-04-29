@@ -58,13 +58,21 @@ const getProjects = asyncHandler(async (req: Request, res: Response) =>{
 })
 
 const getProjectById = asyncHandler(async (req : Request, res: Response)=>{
+    const projectId = req.params.projectId;
+    const projectMemberships = await ProjectMember.findOne({user: req.user._id, project : projectId})
+
+    if( !projectMemberships){
+        throw new CustomError(ResponseStatus.Unauthorized, "Access Denied");
+    }
+    const project = await Project.findOne({_id : projectId})
+    res.status(200).json(
+        new ApiResponse( ResponseStatus.Success, project, "Project sent")
+    )
+})
+
+const updateProject = asyncHandler(async (req: Request, res:Response ) =>{
     
 })
 
 
-const updateProject = asyncHandler(async (req: Request, res:Response ) =>{
-
-})
-
-
-export {createProject, getProjects}
+export {createProject, getProjects, getProjectById}
