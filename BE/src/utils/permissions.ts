@@ -12,6 +12,7 @@ export const UserRoles = {
     "assign:project",
     "unassign:project",
     "add:member",
+    "delete:member",
 
     "view:task",
     "edit:task",
@@ -61,7 +62,6 @@ export const hasPermission = async (  userId :string , projectId: string , permi
   }
 
   return (UserRoles[userRole] as readonly PermissionType[] ).includes(permission)
-
 }
 
 export const AvailableUserRoles = Object.values(UserRoles);

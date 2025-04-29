@@ -71,6 +71,10 @@ const userSchema = new mongoose.Schema<IUser>(
         url: String,
         localPath: String,
       },
+      default: { 
+        url: "https://placehold.co/200x200",
+        localPath: ""
+      }
     },
     emailVerificationToken: String,
     emailVerificationExpiry: Date,

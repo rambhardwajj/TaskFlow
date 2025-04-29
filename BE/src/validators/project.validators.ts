@@ -19,14 +19,14 @@ const UpdateProjectSchema = z.object({
     desc : z.string()
     .max(100, { message: "Project Desc must be atleast 100"})
 })
-const AddMemberSchema = z.object({
+const MemberSchema = z.object({
     email: z.string().email({ message: "Invalid email address" }),
     role: RoleEnum
 })
 
 type CreateProject = z.infer<typeof CreateProjectSchema>
 type UpdateProject = z.infer<typeof UpdateProjectSchema>
-type AddMember = z.infer<typeof AddMemberSchema>
+type AddMember = z.infer<typeof MemberSchema>
 
 const validateCreateProjectData = (data: CreateProject ) =>{
     return CreateProjectSchema.safeParse(data)
@@ -34,8 +34,8 @@ const validateCreateProjectData = (data: CreateProject ) =>{
 const validateUpdateProjectData = (data: UpdateProject ) => {
     return UpdateProjectSchema.safeParse(data);
 }
-const validateAddMemberData = (data: AddMember )=>{
-    return AddMemberSchema.safeParse(data)
+const validateMemberData = (data: AddMember )=>{
+    return MemberSchema.safeParse(data)
 }
 
-export {validateCreateProjectData, validateUpdateProjectData ,validateAddMemberData}
+export {validateCreateProjectData, validateUpdateProjectData ,validateMemberData}

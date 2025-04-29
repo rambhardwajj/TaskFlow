@@ -1,6 +1,6 @@
 import Router from "express"
 import { isLoggedIn } from "../middlewares/auth.middleware";
-import { addMember, createProject, deleteProject, getProjectById, getProjects, updateProject } from "../controllers/project.controllers";
+import { addMember, createProject, deleteProject, getProjectById, getProjects, removeMember, updateProject } from "../controllers/project.controllers";
 import { checkUserPermission } from "../middlewares/hasPermission.middleware";
 
 
@@ -15,5 +15,8 @@ router.patch('/update/:projectId',checkUserPermission("edit:project"), updatePro
 router.delete('/delete/:projectId',checkUserPermission("delete:project"), deleteProject )
 
 router.post('/addMember/:projectId', checkUserPermission("add:member"), addMember)
+router.delete('/removeMember/:projectId', checkUserPermission('delete:member'), removeMember)
+
+
 
 export default router;

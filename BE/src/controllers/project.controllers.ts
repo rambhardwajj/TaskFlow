@@ -3,7 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 import {
   validateUpdateProjectData,
   validateCreateProjectData,
-  validateAddMemberData,
+  validateMemberData,
 } from "../validators/project.validators";
 import { handleZodError } from "../utils/handleZodErrors";
 import { Project } from "../models/project.models";
@@ -13,6 +13,7 @@ import { CustomError } from "../utils/CustomError";
 import { ProjectMember } from "../models/projectMember.models";
 import mongoose from "mongoose";
 import { User } from "../models/user.models";
+import { extractUserField } from "../utils/helper";
 
 const createProject = asyncHandler(async (req: Request, res: Response) => {
   const { name, desc } = handleZodError(validateCreateProjectData(req.body));
@@ -59,38 +60,166 @@ const getProjects = asyncHandler(async (req: Request, res: Response) => {
     throw new CustomError(ResponseStatus.NotFound, " User not found");
   }
 
-  // { { id, proj }, { id, proj:  }, }
-  // .populate will populate the object of project in the membership object
-  const allProjectMemberships = await ProjectMember.find({
-    user: userId,
-  }).populate("project");
-
-  const projects = allProjectMemberships.map(
-    (membership) => membership.project
-  );
-
-  if (!projects || projects.length == 0) {
-    throw new CustomError(ResponseStatus.NotFound, "Projects not found");
-  }
+  const projects = await ProjectMember.aggregate([
+    {
+      $match: {
+        user: new mongoose.Types.ObjectId(userId as string),
+      },
+    },
+    // returns all the projectMembership related to the user
+    {
+      $lookup: {
+        from: "projects",
+        localField: "project",
+        foreignField: "_id",
+        as: "ProjectPopulatedData",
+      },
+    },
+    // returns all the data with populated project fields
+    { $unwind: "$ProjectPopulatedData" },
+    // will flatten array
+    // i.e. if there are multiple values of array, this will create a seperate Object for each array element.
+    {
+      $lookup: {
+        from: "users",
+        localField: "ProjectPopulatedData.createdBy",
+        foreignField: "_id",
+        as: "createdByUser",
+      },
+    },
+    // will populate the createdBy field of the projectPopulatedData object
+    { $unwind: "$createdByUser" },
+    {
+      $lookup: {
+        from: "projectmembers",
+        localField: "project",
+        foreignField: "project",
+        as: "currProjectMemberships",
+      },
+    },
+    // will populate the project feild with the project data
+    // all the membership that the project has in projectMembership table will be populated
+    {
+      $project: {
+        _id: 0,
+        projectId: "$projectData._id",
+        name: "$projectData.name",
+        description: "$projectData.description",
+        createdAt: "$projectData.createdAt",
+        createdBy: {
+          username: "$createdByUser.userName",
+          email: "$createdByUser.email",
+        },
+        role: 1,
+        memberCount: { $size: "$currProjectMemberships" },
+      },
+      // dry run the above properly
+    },
+  ]);
 
   res
     .status(200)
-    .json(
-      new ApiResponse(ResponseStatus.Success, projects, "Projects populated")
-    );
+    .json(new ApiResponse(ResponseStatus.Success, projects, "fsd"));
+
+  // { { id, proj }, { id, proj:  }, }
+  // .populate will populate the object of project in the membership object
+  // const allProjectMemberships = await ProjectMember.find({
+  //   user: userId,
+  // }).populate("project");
+
+  // const projects = allProjectMemberships.map(
+  //   (membership) => membership.project
+  // );
+
+  // if (!projects || projects.length == 0) {
+  //   throw new CustomError(ResponseStatus.NotFound, "Projects not found");
+  // }
+
+  // res
+  //   .status(200)
+  //   .json(
+  //     new ApiResponse(ResponseStatus.Success, projects, "Projects populated")
+  //   );
 });
 
 const getProjectById = asyncHandler(async (req: Request, res: Response) => {
   const projectId = req.params.projectId;
-  const projectMemberships = await ProjectMember.findOne({
-    user: req.user._id,
-    project: projectId,
-  });
+  const userId = req.user._id;
+  // projectName, projectDesc, updatedAt, createdBy, members count
+  const project = await ProjectMember.aggregate([
+    {
+      $match: {
+        $and: [
+          { user: new mongoose.Types.ObjectId(userId as string) },
+          { project: new mongoose.Types.ObjectId(projectId as string) },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "projects",
+        localField: "project",
+        foreignField: "_id",
+        as: "projectData",
+      },
+    },
+    { $unwind: "$projectData" },
+    {
+      $lookup: {
+        from: "users",
+        localField: "projectData.createdBy",
+        foreignField: "_id",
+        as: "userData",
+      },
+    },
+    { $unwind: "$userData" },
 
-  if (!projectMemberships) {
-    throw new CustomError(ResponseStatus.Unauthorized, "Access Denied");
-  }
-  const project = await Project.findOne({ _id: projectId });
+    {
+      $lookup: {
+        from: "projectmembers",
+        localField: "project",
+        foreignField: "project",
+        as: "members"
+      }
+    },
+
+    {
+      $lookup:{
+        from : "users",
+        localField: "members.user",
+        foreignField: "_id",
+        as: "memberUsers"
+      }
+    },
+    
+    {
+      $project:{
+        projectName: "$projectData.name",
+        projectDesc: "$projectData.desc", 
+        projectOwner: "$projectData.createdBy",
+        projectModified: "$projectData.updatedAt",
+
+        userName: "$userData.userName",
+
+        totalMembers : { $size: "$members"},
+
+        members: {
+          $map:{
+            input: "$members",
+            as: "member",
+            in : { 
+              role: "$$member.role",
+              userName: extractUserField("userName")
+            }
+          }
+        }
+
+      }
+    }
+
+  ]);
+  console.log(project);
+
   res
     .status(200)
     .json(new ApiResponse(ResponseStatus.Success, project, "Project sent"));
@@ -103,9 +232,7 @@ const updateProject = asyncHandler(async (req: Request, res: Response) => {
     project: projectId,
   });
 
-  const { name, desc } = handleZodError(
-    validateUpdateProjectData(req.body)
-  );
+  const { name, desc } = handleZodError(validateUpdateProjectData(req.body));
 
   if (!projectMemberships) {
     throw new CustomError(ResponseStatus.Unauthorized, "Access Denied");
@@ -148,7 +275,7 @@ const deleteProject = asyncHandler(async (req: Request, res: Response) => {
   }
 
   await Project.findOneAndDelete({ _id: projectId });
-  await ProjectMember.deleteMany({ project: projectId})
+  await ProjectMember.deleteMany({ project: projectId });
 
   res
     .status(200)
@@ -162,28 +289,149 @@ const deleteProject = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const addMember = asyncHandler(async (req: Request, res: Response) => {
-  const { email, role } = handleZodError(validateAddMemberData(req.body));
+  const { email, role } = handleZodError(validateMemberData(req.body));
   const projectId = req.params.projectId;
 
-  const user = await User.findOne({email :email})
-  if( !user){
-    throw new CustomError(ResponseStatus.NotFound, "Cannot add user as user doesnt exists")
+  const user = await User.findOne({ email: email });
+  if (!user) {
+    throw new CustomError(
+      ResponseStatus.NotFound,
+      "Cannot add user as user doesnt exists"
+    );
   }
   const userAlreadyInProject = await ProjectMember.findOne({
     user: user._id,
     project: projectId,
-  })
+  });
 
-  if( userAlreadyInProject) {
-    throw new CustomError(ResponseStatus.Forbidden, "User is already in this project");
+  if (userAlreadyInProject) {
+    throw new CustomError(
+      ResponseStatus.Forbidden,
+      "User is already in this project"
+    );
   }
 
-  await ProjectMember.create({user: user._id, project: projectId, role: role })
+  await ProjectMember.create({
+    user: user._id,
+    project: projectId,
+    role: role,
+  });
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        ResponseStatus.Success,
+        { user: user._id, project: projectId, role: role },
+        "Added member successfully"
+      )
+    );
+});
+
+const removeMember = asyncHandler(async (req: Request, res: Response) => {
+  const { email, role } = handleZodError(validateMemberData(req.body));
+  const projectId = req.params.projectId;
+
+  const user = await User.findOne({ email: email });
+  if (!user) {
+    throw new CustomError(
+      ResponseStatus.NotFound,
+      "Cannot add user as user doesnt exists"
+    );
+  }
+
+  const userInProject = await ProjectMember.findOne({
+    user: user._id,
+    project: projectId,
+  });
+
+  if (!userInProject) {
+    throw new CustomError(
+      ResponseStatus.Forbidden,
+      "User is not present in this project"
+    );
+  }
+
+  await ProjectMember.deleteOne({
+    user: user._id,
+    project: projectId,
+    role: role,
+  });
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        ResponseStatus.Success,
+        { user: user._id, project: projectId, role: role },
+        "Deleted member successfully"
+      )
+    );
+});
+
+const updateMemberRole = asyncHandler(async (req, res) => {
+  // update member role
+  const {email, role} = handleZodError(validateMemberData(req.body));
+
+  const projectId = req.params.projectId;
+
+  const user = await User.findOne({ email: email });
+  if (!user) {
+    throw new CustomError(
+      ResponseStatus.NotFound,
+      "Cannot update user details as user doesnt exists"
+    );
+  }
+  const userAlreadyInProject = await ProjectMember.findOne({
+    user: user._id,
+    project: projectId,
+  });
+
+  if (!userAlreadyInProject) {
+    throw new CustomError(
+      ResponseStatus.Forbidden,
+      "User is not in this project"
+    );
+  }
+
+  await ProjectMember.updateOne({
+    user: user._id,
+    project: projectId,
+    role: role,
+  });
 
   res.status(200).json(
-    new ApiResponse(ResponseStatus.Success, {"user": user._id, "project": projectId, "role":role}, "Added member successfully")
+    new ApiResponse(ResponseStatus.Success, {}, "User role updation successfull")
   )
+
+
 });
+const getProjectMembers = asyncHandler(async (req, res) => {
+  const { projectId } = req.params;
+
+  const projectExists = await Project.findById(projectId);
+
+  if (!projectExists) {
+    throw new CustomError(ResponseStatus.BadRequest, "Project does not exists");
+  }
+
+  const projectMembers = await ProjectMember.find({
+    project: projectId,
+  }).populate("user", "username email fullName avatar");
+
+  const cleanData = projectMembers.map((member) => member.user);
+
+  res
+    .status(ResponseStatus.Success)
+    .json(
+      new ApiResponse(
+        ResponseStatus.Success,
+        cleanData,
+        "project memebers fetched successfully"
+      )
+    );
+});
+
 
 export {
   createProject,
@@ -191,5 +439,9 @@ export {
   getProjectById,
   updateProject,
   deleteProject,
-  addMember
+  addMember,
+  removeMember,
+  updateMemberRole,
+  getProjectMembers
 };
+
