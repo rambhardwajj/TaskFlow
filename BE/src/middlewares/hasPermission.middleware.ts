@@ -1,10 +1,11 @@
+import { asyncHandler } from "../utils/asyncHandler";
 import { ResponseStatus } from "../utils/constants";
 import { CustomError } from "../utils/CustomError";
 import { hasPermission, PermissionType } from "../utils/permissions";
 import { Request, Response ,  NextFunction } from "express";
 
 const checkUserPermission = (permission: PermissionType) =>{
-    return async (req: Request, res: Response, next: NextFunction)=>{
+    return asyncHandler(async (req: Request, res: Response, next: NextFunction)=>{
         try {
             const userId  = req.user._id as string
             const projectId = req.params.projectId
@@ -22,7 +23,7 @@ const checkUserPermission = (permission: PermissionType) =>{
             throw new CustomError( ResponseStatus.Forbidden, "Permission not granted")
         }
         next()
-    }
+    })
 }
 
 export {checkUserPermission}
