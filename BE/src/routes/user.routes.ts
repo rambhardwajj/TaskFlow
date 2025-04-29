@@ -1,5 +1,5 @@
 import {Router} from "express"
-import {forgotPassword, loginUser, logOutUser, registerUser, resendVerificationEmail, resetPassword, verifyUser} from "../controllers/user.controllers"
+import {forgotPassword, loginUser, logOutUser, refreshAccessToken, registerUser, resendVerificationEmail, resetPassword, verifyUser} from "../controllers/user.controllers"
 import {upload} from "../middlewares/multer.middleware"
 import { isLoggedIn } from "../middlewares/auth.middleware"
 
@@ -13,5 +13,6 @@ router.get('/login', loginUser)
 router.get('/logout', isLoggedIn,  logOutUser)
 router.get('/forgotpassword', forgotPassword)
 router.get('/resetpassword', isLoggedIn, resetPassword)
+router.get('/refreshAccessToken', refreshAccessToken)
 
 export default router 

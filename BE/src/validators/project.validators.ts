@@ -6,12 +6,8 @@ const CreateProjectSchema = z.object({
     .max(20, { message: "Project Name must be at most 20 characters long" }),
 
     desc : z.string()
-    .max(100, { message: "Project Desc must be atleast 100"}),
-
-    createdBy:z
-        .string()
-        .min(3, { message: "Username must be at least 3 characters long" })
-        .max(20, { message: "Username must be at most 20 characters long" }),
+    .max(100, { message: "Project Desc must be atleast 100"})
+        
 })
 
 type CreateProject = z.infer<typeof CreateProjectSchema>

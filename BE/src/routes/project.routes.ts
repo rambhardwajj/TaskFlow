@@ -1,10 +1,13 @@
 import Router from "express"
 import { isLoggedIn } from "../middlewares/auth.middleware";
-import { createProject } from "../controllers/project.controllers";
+import { createProject, getProjects } from "../controllers/project.controllers";
 
 
 const router =  Router();
 
-router.post('/create', isLoggedIn, createProject  )
+router.use(isLoggedIn)
+
+router.post('/create', createProject)
+router.get('/getprojects', getProjects)
 
 export default router;
