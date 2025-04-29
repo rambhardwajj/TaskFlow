@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 import { Schema } from "mongoose"
 import { UserRoles, UserRoleType } from "../utils/permissions"
 
-interface IProjectMember{
+export interface IProjectMember{
     user : Schema.Types.ObjectId,
     project: Schema.Types.ObjectId,
     role:  UserRoleType
@@ -22,7 +22,7 @@ const ProjectMemberSchmea = new mongoose.Schema<IProjectMember> (
         },
         role:{
             type: String,
-            enum: Object.values(UserRoles.admin),
+            enum: Object.keys(UserRoles),
             required: true
         }
     },
