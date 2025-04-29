@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
 import {
-  validateAddMemberSchema,
+  validateUpdateProjectData,
   validateCreateProjectData,
-  validateUpdateProjectSchemaData,
+  validateAddMemberData,
 } from "../validators/project.validators";
 import { handleZodError } from "../utils/handleZodErrors";
 import { Project } from "../models/project.models";
@@ -12,6 +12,7 @@ import { ResponseStatus } from "../utils/constants";
 import { CustomError } from "../utils/CustomError";
 import { ProjectMember } from "../models/projectMember.models";
 import mongoose from "mongoose";
+import { User } from "../models/user.models";
 
 const createProject = asyncHandler(async (req: Request, res: Response) => {
   const { name, desc } = handleZodError(validateCreateProjectData(req.body));
@@ -103,7 +104,7 @@ const updateProject = asyncHandler(async (req: Request, res: Response) => {
   });
 
   const { name, desc } = handleZodError(
-    validateUpdateProjectSchemaData(req.body)
+    validateUpdateProjectData(req.body)
   );
 
   if (!projectMemberships) {
@@ -147,6 +148,7 @@ const deleteProject = asyncHandler(async (req: Request, res: Response) => {
   }
 
   await Project.findOneAndDelete({ _id: projectId });
+  await ProjectMember.deleteMany({ project: projectId})
 
   res
     .status(200)
@@ -160,10 +162,27 @@ const deleteProject = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const addMember = asyncHandler(async (req: Request, res: Response) => {
-  const { email, role } = handleZodError(validateAddMemberSchema(req.body));
+  const { email, role } = handleZodError(validateAddMemberData(req.body));
+  const projectId = req.params.projectId;
 
-  
+  const user = await User.findOne({email :email})
+  if( !user){
+    throw new CustomError(ResponseStatus.NotFound, "Cannot add user as user doesnt exists")
+  }
+  const userAlreadyInProject = await ProjectMember.findOne({
+    user: user._id,
+    project: projectId,
+  })
 
+  if( userAlreadyInProject) {
+    throw new CustomError(ResponseStatus.Forbidden, "User is already in this project");
+  }
+
+  await ProjectMember.create({user: user._id, project: projectId, role: role })
+
+  res.status(200).json(
+    new ApiResponse(ResponseStatus.Success, {"user": user._id, "project": projectId, "role":role}, "Added member successfully")
+  )
 });
 
 export {
@@ -172,4 +191,5 @@ export {
   getProjectById,
   updateProject,
   deleteProject,
+  addMember
 };

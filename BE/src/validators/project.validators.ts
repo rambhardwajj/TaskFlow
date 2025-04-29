@@ -31,11 +31,11 @@ type AddMember = z.infer<typeof AddMemberSchema>
 const validateCreateProjectData = (data: CreateProject ) =>{
     return CreateProjectSchema.safeParse(data)
 }
-const validateUpdateProjectSchemaData = (data: UpdateProject ) => {
+const validateUpdateProjectData = (data: UpdateProject ) => {
     return UpdateProjectSchema.safeParse(data);
 }
-const validateAddMemberSchema = (data: AddMember )=>{
+const validateAddMemberData = (data: AddMember )=>{
     return AddMemberSchema.safeParse(data)
 }
 
-export {validateCreateProjectData, validateAddMemberSchema ,validateUpdateProjectSchemaData}
+export {validateCreateProjectData, validateUpdateProjectData ,validateAddMemberData}
