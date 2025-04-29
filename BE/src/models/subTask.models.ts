@@ -23,6 +23,9 @@ const subTaskSchema = new mongoose.Schema<IsubTask>(
         isCompleted: {
             type: Boolean
         }
+    },
+    {
+      timestamps: true,
     }
 )
 

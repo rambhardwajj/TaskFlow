@@ -23,6 +23,9 @@ const ProjectNoteSchema = new mongoose.Schema<IProjectNote>(
         content: {
             type: String, 
         }
+    },
+    {
+      timestamps: true,
     }
 )
 

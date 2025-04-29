@@ -24,3 +24,4 @@ const TaskSchema = new mongoose.Schema<ITask>({
 });
 
 const Task = mongoose.model('Task', TaskSchema)
+export {Task}

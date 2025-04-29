@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { Document } from "mongoose";
 
-interface IProject extends Document {
+export interface IProject extends Document {
   name: string;
   desc: string;
   createdBy: Schema.Types.ObjectId;
@@ -24,7 +24,7 @@ const ProjectSchema = new mongoose.Schema<IProject>(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
-    },
+    }
   },
   {
     timestamps: true,
