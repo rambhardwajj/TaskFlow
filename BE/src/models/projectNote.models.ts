@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 interface IProjectNote extends Document{
     createdBy: Schema.Types.ObjectId,
+    title: string,
     project: Schema.Types.ObjectId,
     content : string
 }
@@ -13,6 +14,10 @@ const ProjectNoteSchema = new mongoose.Schema<IProjectNote>(
             ref: "User",
             required: true, 
             unique: true,
+        },
+        title: {
+            type: String,
+            required: true
         },
         project: {
             type: Schema.Types.ObjectId,

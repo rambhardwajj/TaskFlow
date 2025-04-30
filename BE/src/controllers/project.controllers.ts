@@ -407,6 +407,7 @@ const updateMemberRole = asyncHandler(async (req, res) => {
       )
     );
 });
+
 const getProjectMembers = asyncHandler(async (req, res) => {
   const { projectId } = req.params;
 
