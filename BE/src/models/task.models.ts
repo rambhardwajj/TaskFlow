@@ -1,15 +1,22 @@
 import mongoose, { Schema } from "mongoose";
 import { TaskStatusType, AvailableTaskStatuses, TaskStatus } from "../utils/constants";
 
-interface ITask {
+export interface IAttachments{
+  url:  String ,
+  mimetype:  String ,
+  size: Number ,
+}
+
+export interface ITask {
   title: string;
   desc: string;
   project: Schema.Types.ObjectId;
   assignedTo: Schema.Types.ObjectId;
   assignedBy: Schema.Types.ObjectId;
   status: TaskStatusType;
-  attachments: string[];
+  attachments: IAttachments[];
 }
+
 
 const TaskSchema = new mongoose.Schema<ITask>({
   title:{
