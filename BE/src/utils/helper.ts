@@ -5,11 +5,11 @@ export const extractUserField = (field: string) => {
         $map: {
           input: {
             $filter: {
-              input: "$memberUsers",
+              input:  "$memberUsers",
               as: "memberUser",
               cond: { $eq: ["$$memberUser._id", "$$member.user"] },
             },
-          },
+        },
           as: "user",
           in: `$$user.${field}`,
         },

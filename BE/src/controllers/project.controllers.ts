@@ -206,13 +206,27 @@ const getProjectById = asyncHandler(async (req: Request, res: Response) => {
         members: {
           $map:{
             input: "$members",
-            as: "member",
-            in : { 
-              role: "$$member.role",
-              userName: extractUserField("userName")
+            as : "member",
+            in : {
+              role: "$$member.role", 
+              userName: extractUserField("userName"), 
+              email: extractUserField("email"),
+              avatar: extractUserField("avatar")
             }
           }
         }
+        
+
+        // members: {
+        //   $map:{
+        //     input: "$members",
+        //     as: "member",
+        //     in : { 
+        //       role: "$$member.role",
+        //       userName: extractUserField("userName")
+        //     }
+        //   }
+        // }
 
       }
     }
