@@ -92,4 +92,8 @@ const deleteNote = asyncHandler(async(req: Request, res: Response) => {
     )
 })
 
+const updateNote = asyncHandler(async(req: Request, res: Response) => {
+    const {title, content} = (req.body)
+})
+
 export { createNote, getNoteById, getAll, deleteNote };
