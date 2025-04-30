@@ -1,6 +1,6 @@
 import Router from "express"
 import { isLoggedIn } from "../middlewares/auth.middleware";
-import { addMember, createProject, deleteProject, getProjectById, getProjects, removeMember, updateProject } from "../controllers/project.controllers";
+import { addMember, createProject, deleteProject, getProjectById, getProjectMembers, getProjects, removeMember, updateProject } from "../controllers/project.controllers";
 import { checkUserPermission } from "../middlewares/hasPermission.middleware";
 
 
@@ -16,7 +16,9 @@ router.delete('/delete/:projectId',checkUserPermission("delete:project"), delete
 
 router.post('/addMember/:projectId', checkUserPermission("add:member"), addMember)
 router.delete('/removeMember/:projectId', checkUserPermission('delete:member'), removeMember)
+router.delete('/updateMember/:projectId', checkUserPermission('delete:member'), removeMember)
 
+router.get('/getMembers/:projectId', checkUserPermission("view:project"), getProjectMembers)
 
 
 export default router;

@@ -173,64 +173,47 @@ const getProjectById = asyncHandler(async (req: Request, res: Response) => {
       },
     },
     { $unwind: "$userData" },
-
     {
       $lookup: {
         from: "projectmembers",
         localField: "project",
         foreignField: "project",
-        as: "members"
-      }
+        as: "members",
+      },
     },
-
     {
-      $lookup:{
-        from : "users",
+      $lookup: {
+        from: "users",
         localField: "members.user",
         foreignField: "_id",
-        as: "memberUsers"
-      }
+        as: "memberUsers",
+      },
     },
-    
     {
-      $project:{
+      $project: {
         projectName: "$projectData.name",
-        projectDesc: "$projectData.desc", 
+        projectDesc: "$projectData.desc",
         projectOwner: "$projectData.createdBy",
         projectModified: "$projectData.updatedAt",
 
         userName: "$userData.userName",
 
-        totalMembers : { $size: "$members"},
+        totalMembers: { $size: "$members" },
 
         members: {
-          $map:{
+          $map: {
             input: "$members",
-            as : "member",
-            in : {
-              role: "$$member.role", 
-              userName: extractUserField("userName"), 
+            as: "member",
+            in: {
+              role: "$$member.role",
+              userName: extractUserField("userName"),
               email: extractUserField("email"),
-              avatar: extractUserField("avatar")
-            }
-          }
-        }
-        
-
-        // members: {
-        //   $map:{
-        //     input: "$members",
-        //     as: "member",
-        //     in : { 
-        //       role: "$$member.role",
-        //       userName: extractUserField("userName")
-        //     }
-        //   }
-        // }
-
-      }
-    }
-
+              avatar: extractUserField("avatar"),
+            },
+          },
+        },
+      },
+    },
   ]);
   console.log(project);
 
@@ -385,7 +368,7 @@ const removeMember = asyncHandler(async (req: Request, res: Response) => {
 
 const updateMemberRole = asyncHandler(async (req, res) => {
   // update member role
-  const {email, role} = handleZodError(validateMemberData(req.body));
+  const { email, role } = handleZodError(validateMemberData(req.body));
 
   const projectId = req.params.projectId;
 
@@ -414,11 +397,15 @@ const updateMemberRole = asyncHandler(async (req, res) => {
     role: role,
   });
 
-  res.status(200).json(
-    new ApiResponse(ResponseStatus.Success, {}, "User role updation successfull")
-  )
-
-
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        ResponseStatus.Success,
+        {},
+        "User role updation successfull"
+      )
+    );
 });
 const getProjectMembers = asyncHandler(async (req, res) => {
   const { projectId } = req.params;
@@ -429,23 +416,54 @@ const getProjectMembers = asyncHandler(async (req, res) => {
     throw new CustomError(ResponseStatus.BadRequest, "Project does not exists");
   }
 
-  const projectMembers = await ProjectMember.find({
-    project: projectId,
-  }).populate("user", "username email fullName avatar");
+  const projectMembers = await ProjectMember.aggregate([
+    {
+      $match: {
+        project: new mongoose.Types.ObjectId(projectId as string),
+      },
+    },
+    {
+      $lookup:{
+        from : "users", 
+        localField: "user",
+        foreignField: "_id",
+        as : "userInfo"
+      }
+    },
+    { $unwind: "$userInfo" },
+    {
+      $lookup:{
+        from : "projects", 
+        localField: "project",
+        foreignField: "_id",
+        as : "projectInfo"
+      }
+    },
+    { $unwind: "$projectInfo" },
 
-  const cleanData = projectMembers.map((member) => member.user);
+    {
+      $project: {
+        role: "$role",
+        userInfo: {
+          userName: "$userInfo.userName", 
+          email: "$userInfo.email",
+          avatar: "$userInfo.avatar"
+        },
+        projectName: "$projectInfo.name",
+      }
+    }
+  ]);
 
   res
     .status(ResponseStatus.Success)
     .json(
       new ApiResponse(
         ResponseStatus.Success,
-        cleanData,
+        projectMembers,
         "project memebers fetched successfully"
       )
     );
 });
-
 
 export {
   createProject,
@@ -456,6 +474,5 @@ export {
   addMember,
   removeMember,
   updateMemberRole,
-  getProjectMembers
+  getProjectMembers,
 };
-
