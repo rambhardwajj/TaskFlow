@@ -24,12 +24,12 @@ const ProjectSchema = new mongoose.Schema<IProject>(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
-    }
+    },
   },
   {
     timestamps: true,
   }
 );
 
-const Project = mongoose.model('Project', ProjectSchema );
-export {Project}
+const Project = mongoose.model("Project", ProjectSchema);
+export { Project };

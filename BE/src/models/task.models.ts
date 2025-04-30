@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { TaskStatusType, AvailableTaskStatuses } from "../utils/constants";
+import { TaskStatusType, AvailableTaskStatuses, TaskStatus } from "../utils/constants";
 
 interface ITask {
   title: string;
@@ -12,16 +12,51 @@ interface ITask {
 }
 
 const TaskSchema = new mongoose.Schema<ITask>({
-  title: {
+  title:{
     type: String,
-    desc: String,
-    project: Schema.Types.ObjectId,
-    assignedTo: Schema.Types.ObjectId,
-    assignedBy: Schema.Types.ObjectId,
-    status: AvailableTaskStatuses,
-    attachments: [],
+    required : true,
+    unique: true, 
+    trim: true
   },
-});
+  desc:{
+    type: String,
+    trim: true,
+  },
+  project: {
+    type: Schema.Types.ObjectId,
+    ref: "Project",
+    required: true,
+  },
+  assignedTo: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  assignedBy: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 
-const Task = mongoose.model('Task', TaskSchema)
-export {Task}
+  status: {
+      type: String,
+      enum:  TaskStatus,
+      default: TaskStatus.TODO
+  },
+  attachments: {
+    type: [
+      {
+        url: { type: String },
+        mimetype: { type: String },
+        size: { type: Number },
+      },
+    ],
+    default: [],
+  },
+
+},
+{timestamps: true}
+);
+
+const Task = mongoose.model("Task", TaskSchema);
+export { Task };

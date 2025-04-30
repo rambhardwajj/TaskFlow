@@ -16,6 +16,17 @@ export const TaskStatus = {
   DONE: "done",
 } as const ;
 
+export const allowedMimeTypes = [
+  "application/pdf",
+  "image/png",
+  "image/jpeg",
+  "text/plain",
+  // docx - word doc
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  // xlsx -  excel sheet
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+];
+
 export type TaskStatusType = typeof TaskStatus[keyof typeof TaskStatus]
 export const AvailableTaskStatuses = Object.values(TaskStatus);
  

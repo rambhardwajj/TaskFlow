@@ -5,7 +5,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { ProjectNote } from "../models/projectNote.models";
 import { ApiResponse } from "../utils/ApiResponse";
 import { handleZodError } from "../utils/handleZodErrors";
-import { validateCreateNoteData } from "../validators/note.validators";
+import { validateCreateNoteData, validateUpdateNote } from "../validators/note.validators";
 import mongoose from "mongoose";
 
 const createNote = asyncHandler(async (req: Request, res: Response) => {
@@ -93,7 +93,20 @@ const deleteNote = asyncHandler(async(req: Request, res: Response) => {
 })
 
 const updateNote = asyncHandler(async(req: Request, res: Response) => {
-    const {title, content} = (req.body)
+    const {noteId} = req.params
+    const {title, content} = handleZodError(validateUpdateNote(req.body))
+
+    const note = await ProjectNote.findOne({_id: noteId}) ;
+    if( !note ){
+        throw new CustomError(ResponseStatus.InternalServerError, "note not find")
+    }
+    const updatedNote = await note.updateOne({
+        title,
+        content
+    })
+    res.status(200).json(
+        new ApiResponse(ResponseStatus.Success, updatedNote, "note updated")
+    )
 })
 
 export { createNote, getNoteById, getAll, deleteNote };
