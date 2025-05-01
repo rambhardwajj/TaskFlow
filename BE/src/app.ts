@@ -4,6 +4,7 @@ import cors from 'cors'
 import userRouter from "./routes/user.routes"
 import projectRouter from "./routes/project.routes"
 import taskRouter from "./routes/task.routes"
+import noteRouter from "./routes/note.routes"
 import { errorHandler } from "./middlewares/error.middleware"
  
 const app : Application  =  express()
@@ -17,6 +18,7 @@ app.use(cors())
 app.use("/api/v1/user", userRouter )
 app.use("/api/v1/project", projectRouter)
 app.use("/api/v1/task", taskRouter )
+app.use("/api/v1/note", noteRouter)
 
 app.use(errorHandler)
 

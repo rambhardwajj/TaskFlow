@@ -58,7 +58,7 @@ const createTask = asyncHandler(async(req: Request, res: Response) => {
 })
 
 
-const updateTask = asyncHandler(async(req: Request: res: Response)=>{
+const updateTask = asyncHandler(async(req: Request, res: Response)=>{
     const {title , email, desc, status} = handleZodError(validateUpdateTask(req.body))
 
     const {projectId, taskId} = req.params

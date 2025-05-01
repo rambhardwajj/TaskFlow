@@ -23,7 +23,12 @@ export const UserRoles = {
     "view:subtask",
     "create:subtask",
     "delete:subtask",
-    "edit:subtask"
+    "edit:subtask",
+
+    "view:note",
+    "create:note",
+    "delete:note",
+    "edit:note"
   ],
   projectAdmin:[
     "create:task",
@@ -36,13 +41,23 @@ export const UserRoles = {
     "view:subtask",
     "create:subtask",
     "delete:subtask",
-    "edit:subtask"
+    "edit:subtask",
+
+    "view:note",
+    "create:note",
+    "delete:note",
+    "edit:note"
   ],
   member:[
     "view:subtask",
     "create:subtask",
     "delete:subtask",
-    "edit:subtask"
+    "edit:subtask",
+
+    "view:note",
+    "create:note",
+    "delete:note",
+    "edit:note"
   ]
 } as const;
 
@@ -54,13 +69,10 @@ export type PermissionType = typeof UserRoles[UserRoleType][number]
 
 export const hasPermission = async (  userId :string , projectId: string , permission: PermissionType)=>{
   const userProjectMember = await ProjectMember.findOne({user:userId, project:projectId })
-
   const userRole = userProjectMember?.role
-
   if( !userRole ){
     throw new CustomError(ResponseStatus.NotFound , "User role doesn't exists")
   }
-
   return (UserRoles[userRole] as readonly PermissionType[] ).includes(permission)
 }
 
