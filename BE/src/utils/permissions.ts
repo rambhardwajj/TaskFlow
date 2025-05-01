@@ -71,6 +71,7 @@ export const hasPermission = async (  userId :string , projectId: string , permi
   const userProjectMember = await ProjectMember.findOne({user:userId, project:projectId })
   const userRole = userProjectMember?.role
   if( !userRole ){
+    console.log("role mai dikkat")
     throw new CustomError(ResponseStatus.NotFound , "User role doesn't exists")
   }
   return (UserRoles[userRole] as readonly PermissionType[] ).includes(permission)

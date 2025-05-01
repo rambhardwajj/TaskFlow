@@ -5,108 +5,134 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { ProjectNote } from "../models/projectNote.models";
 import { ApiResponse } from "../utils/ApiResponse";
 import { handleZodError } from "../utils/handleZodErrors";
-import { validateCreateNoteData, validateUpdateNote } from "../validators/note.validators";
+import {
+  validateCreateNoteData,
+  validateUpdateNote,
+} from "../validators/note.validators";
 import mongoose from "mongoose";
 
 const createNote = asyncHandler(async (req: Request, res: Response) => {
-  const {projectId} = req.params;
+  const { projectId } = req.params;
   const { title, content } = handleZodError(validateCreateNoteData(req.body));
 
   const note = await ProjectNote.create({
     createdBy: req.user._id,
     title,
-    project:projectId,
+    project: projectId,
     content,
-  }) ;
+  });
 
-  if( !note) {
-    throw new CustomError(ResponseStatus.InternalServerError, "Note not created")
+  if (!note) {
+    throw new CustomError(
+      ResponseStatus.InternalServerError,
+      "Note not created"
+    );
   }
   res
     .status(200)
     .json(new ApiResponse(ResponseStatus.Success, note, "Note created"));
 });
 
-const getNoteById = asyncHandler(async(req: Request, res: Response) =>{
-    const {noteId} = req.params
+const getNoteById = asyncHandler(async (req: Request, res: Response) => {
+  const { noteId } = req.params;
 
-    const note = ProjectNote.findOne({_id : noteId}).populate({
-        path: "createdBy", 
-        select: "userName email avatar"
-    });
+  if (!mongoose.Types.ObjectId.isValid(noteId)) {
+    throw new CustomError(ResponseStatus.BadRequest, "Invalid note ID");
+  }
 
-    if( !note) {
-        throw new CustomError(ResponseStatus.InternalServerError, "Note doesnot exist")
-    }
+  const note = ProjectNote.findOne({ _id: noteId }).populate({
+    path: "createdBy",
+    select: "userName email avatar",
+  });
 
-    res.status(200).json(
-        new ApiResponse(ResponseStatus.Success, {note}, "Note returned")
-    )
-    
-})
+  if (!note) {
+    throw new CustomError(
+      ResponseStatus.InternalServerError,
+      "Note doesnot exist"
+    );
+  }
 
-const getAll = asyncHandler(async(req: Request, res: Response) =>{
-    const {projectId} = req.params
+  res
+    .status(200)
+    .json(new ApiResponse(ResponseStatus.Success, { note }, "Note returned"));
+});
 
-    const notes = await ProjectNote.aggregate([
-        {
-            $match: { project:  new mongoose.Types.ObjectId(projectId) }
-        },
-        {
-            $lookup:{
-                from: "users",
-                localField: "createdBy",
-                foreignField: "_id",
-                as: "userInfo"
-            }
-        },
-        { $unwind: "$userInfo" },
+const getAll = asyncHandler(async (req: Request, res: Response) => {
+  const { projectId } = req.params;
 
-        {
-            $project:{
-                title: "$title",
-                content: "$content",
-                userName: "userInfo.userName"
-            }
-        }
-    ])
-    console.log(notes);
+  const notes = await ProjectNote.aggregate([
+    {
+      $match: { project: new mongoose.Types.ObjectId(projectId) },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "createdBy",
+        foreignField: "_id",
+        as: "userInfo",
+      },
+    },
+    { $unwind: "$userInfo" },
 
-    if( !notes){
-        throw new CustomError(ResponseStatus.InternalServerError, "notes not created")
-    }
+    {
+      $project: {
+        title: "$title",
+        content: "$content",
+        userName: "$userInfo.userName",
+        email: "$userInfo.email",
+        avatar: "$userInfo.avatar"
+      },
+    },
+  ]);
+  console.log(notes);
 
-    res.status(200).json(
-        new ApiResponse(ResponseStatus.Success,notes, "Notes returned")
-    )
+  if (!notes) {
+    throw new CustomError(
+      ResponseStatus.InternalServerError,
+      "notes not created"
+    );
+  }
 
-})
+  res
+    .status(200)
+    .json(new ApiResponse(ResponseStatus.Success, notes, "Notes returned"));
+});
 
-const deleteNote = asyncHandler(async(req: Request, res: Response) => {
-    const {noteId} = req.params;
+const deleteNote = asyncHandler(async (req: Request, res: Response) => {
+  const { noteId } = req.params;
 
-    await ProjectNote.findByIdAndDelete({noteId});
+  if (!mongoose.Types.ObjectId.isValid(noteId)) {
+    throw new CustomError(ResponseStatus.BadRequest, "Invalid note ID");
+  }
+  await ProjectNote.findByIdAndDelete({ noteId });
 
-    res.status(200).json(
-        new ApiResponse(ResponseStatus.Success, {}, "Note deleted")
-    )
-})
+  res
+    .status(200)
+    .json(new ApiResponse(ResponseStatus.Success, {}, "Note deleted"));
+});
 
-const updateNote = asyncHandler(async(req: Request, res: Response) => {
-    const {noteId} = req.params
-    const {title, content} = handleZodError(validateUpdateNote(req.body))
+const updateNote = asyncHandler(async (req: Request, res: Response) => {
+  const { noteId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(noteId)) {
+    throw new CustomError(ResponseStatus.BadRequest, "Invalid note ID");
+  }
 
-    const note = await ProjectNote.findOne({_id: noteId}) ;
-    if( !note ){
-        throw new CustomError(ResponseStatus.InternalServerError, "note not find")
-    }
-    const updatedNote = await note.updateOne({
-        title,
-        content
-    })
-    res.status(200).json(
-        new ApiResponse(ResponseStatus.Success, updatedNote, "note updated")
-    )
-})
+  const { title, content } = handleZodError(validateUpdateNote(req.body));
 
-export { createNote, getNoteById, getAll, deleteNote , updateNote};
+  const updatePayload: Partial<{ title: string; content: string }> = {};
+
+  if (title !== undefined) updatePayload.title = title;
+  if (content !== undefined) updatePayload.content = content;
+
+  const updatedNote = await ProjectNote.findByIdAndUpdate(
+    {noteId},
+    updatePayload,
+    {new: true}
+  )
+
+  res
+    .status(200)
+    .json(new ApiResponse(ResponseStatus.Success, updatedNote, "note updated"));
+});
+
+export { createNote, getNoteById, getAll, deleteNote, updateNote };

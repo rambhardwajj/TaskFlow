@@ -31,8 +31,11 @@ const createProject = asyncHandler(async (req: Request, res: Response) => {
       { session: clientSession }
     );
     await clientSession.commitTransaction();
-  } catch (error) {
+  } catch (error: any) {
     await clientSession.endSession();
+    if( error.code === 11000){
+      throw new CustomError(ResponseStatus.Conflict, "Project owner cannot create two project of same name")
+    }
     throw new CustomError(
       ResponseStatus.InternalServerError,
       "Transaction Failed"
@@ -424,21 +427,21 @@ const getProjectMembers = asyncHandler(async (req, res) => {
       },
     },
     {
-      $lookup:{
-        from : "users", 
+      $lookup: {
+        from: "users",
         localField: "user",
         foreignField: "_id",
-        as : "userInfo"
-      }
+        as: "userInfo",
+      },
     },
     { $unwind: "$userInfo" },
     {
-      $lookup:{
-        from : "projects", 
+      $lookup: {
+        from: "projects",
         localField: "project",
         foreignField: "_id",
-        as : "projectInfo"
-      }
+        as: "projectInfo",
+      },
     },
     { $unwind: "$projectInfo" },
 
@@ -446,13 +449,13 @@ const getProjectMembers = asyncHandler(async (req, res) => {
       $project: {
         role: "$role",
         userInfo: {
-          userName: "$userInfo.userName", 
+          userName: "$userInfo.userName",
           email: "$userInfo.email",
-          avatar: "$userInfo.avatar"
+          avatar: "$userInfo.avatar",
         },
         projectName: "$projectInfo.name",
-      }
-    }
+      },
+    },
   ]);
 
   res

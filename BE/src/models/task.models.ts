@@ -13,7 +13,7 @@ export interface ITask {
   project: Schema.Types.ObjectId;
   assignedTo: Schema.Types.ObjectId;
   assignedBy: Schema.Types.ObjectId;
-  status: TaskStatusType;
+  status?: TaskStatusType;
   attachments: IAttachments[];
 }
 
