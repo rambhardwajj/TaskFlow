@@ -6,6 +6,15 @@ Whether you're building a productivity tool, a task manager, or an internal coll
 
 
 
+### Prerequisites
+
+- [Node.js](https://nodejs.org/en/) (v18+ recommended)
+- [MongoDB](https://www.mongodb.com/)
+- Cloudinary credentials (for image upload)
+- Email SMTP config (for mail services)
+
+
+
 /BE
 │── logs/                  # Winston log files (error.log, combined.log)
 │── public/
@@ -66,12 +75,6 @@ This project is open-source and available under the **ISC License**.
 
 ## Installation
 
-### Prerequisites
-
-- [Node.js](https://nodejs.org/en/) (v18+ recommended)
-- [MongoDB](https://www.mongodb.com/)
-- Cloudinary credentials (for image upload)
-- Email SMTP config (for mail services)
 
 ### Steps
 
