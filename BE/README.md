@@ -1,4 +1,4 @@
-/project-nest
+/BE
 │── logs/                  # Winston log files (error.log, combined.log)
 │── public/
 │   └── uploads/           # Temporary storage for uploaded files (via Multer)
