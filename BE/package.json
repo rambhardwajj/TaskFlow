@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev --respawn --transpile-only src/index.ts", 
-    "format":"prettier . --write"
+    "start": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "format": "prettier . --write"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +19,7 @@
     "crypto": "^1.0.1",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
     "jsonwebtoken": "^9.0.2",
     "mailgen": "^2.0.29",
     "mongoose": "^8.13.2",
