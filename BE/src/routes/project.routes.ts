@@ -1,6 +1,6 @@
 import Router from "express"
 import { isLoggedIn } from "../middlewares/auth.middleware";
-import { addMember, createProject, deleteProject, getProjectById, getProjectMembers, getProjects, removeMember, updateProject } from "../controllers/project.controllers";
+import { addMember, createProject, deleteProject, getProjectById, getProjectMembers, getProjects, removeMember, updateProject } from "../controllers/project.controller";
 import { checkUserPermission } from "../middlewares/hasPermission.middleware";
 
 

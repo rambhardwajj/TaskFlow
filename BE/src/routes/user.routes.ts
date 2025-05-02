@@ -1,5 +1,5 @@
 import {Router} from "express"
-import {forgotPassword, loginUser, logOutUser, refreshAccessToken, registerUser, resendVerificationEmail, resetPassword, verifyUser} from "../controllers/user.controllers"
+import {forgotPassword, loginUser, logOutUser, refreshAccessToken, registerUser, resendVerificationEmail, resetPassword, verifyUser} from "../controllers/user.controller"
 import {upload} from "../middlewares/multer.middleware"
 import { isLoggedIn } from "../middlewares/auth.middleware"
 
