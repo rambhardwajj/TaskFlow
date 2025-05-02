@@ -331,12 +331,8 @@ const addMember = asyncHandler(async (req: Request, res: Response) => {
 const removeMember = asyncHandler(async (req: Request, res: Response) => {
   // const { email, role } = handleZodError(validateMemberData(req.body));
   // const projectId = req.params.projectId;
-  
   const {memId} = req.params 
-
   validateObjectId(memId, "memberId")
-
-
   const userInProject = await ProjectMember.findByIdAndDelete(memId);
 
   if (!userInProject) {
@@ -345,8 +341,6 @@ const removeMember = asyncHandler(async (req: Request, res: Response) => {
       "User is not present in this project"
     );
   }
-
-
 
   res
     .status(200)
@@ -361,41 +355,24 @@ const removeMember = asyncHandler(async (req: Request, res: Response) => {
 
 const updateMemberRole = asyncHandler(async (req, res) => {
   // update member role
-  const { email, role } = handleZodError(validateMemberData(req.body));
+  const { role } = handleZodError(validateMemberData(req.body));
 
-  const projectId = req.params.projectId;
+  const { memId} = req.params;
 
-  const user = await User.findOne({ email: email });
-  if (!user) {
-    throw new CustomError(
-      ResponseStatus.NotFound,
-      "Cannot update user details as user doesnt exists"
-    );
-  }
-  const userAlreadyInProject = await ProjectMember.findOne({
-    user: user._id,
-    project: projectId,
-  });
-
-  if (!userAlreadyInProject) {
-    throw new CustomError(
-      ResponseStatus.Forbidden,
-      "User is not in this project"
-    );
+  const updateMember = await ProjectMember.findById(memId )
+  if( !updateMember){
+    throw new CustomError(ResponseStatus.NotFound, "member not found to update")
   }
 
-  await ProjectMember.updateOne({
-    user: user._id,
-    project: projectId,
-    role: role,
-  });
+  updateMember.role = role
 
+  await updateMember.save();
   res
     .status(200)
     .json(
       new ApiResponse(
         ResponseStatus.Success,
-        {},
+        null,
         "User role updation successfull"
       )
     );

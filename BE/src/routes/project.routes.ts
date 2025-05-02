@@ -8,16 +8,14 @@ const router = Router();
 
 router.use(isLoggedIn)
 
-router.post('/create/projects', createProject)
-router.get('/projects', getProjects)
+router.post('/create', createProject)
+router.get('/', getProjects)
 router.get('/:projectId', checkUserPermission("view:project") , getProjectById )
 router.patch('/update/:projectId',checkUserPermission("edit:project"), updateProject )
 router.delete('/delete/:projectId',checkUserPermission("delete:project"), deleteProject )
-router.post('/:projectId/addMember/:memId', checkUserPermission("add:member"), addMember)
-router.delete('/:projectId/removeMember', checkUserPermission('delete:member'), removeMember)
-router.patch('/:projectId/updateMember/', checkUserPermission('add:member'), updateMemberRole)
-
-router.get('/:projectId/getMembers/', checkUserPermission("view:project"), getProjectMembers)
-
+router.post('/:projectId/add/:memId', checkUserPermission("add:member"), addMember)
+router.patch('/:projectId/update/:memId', checkUserPermission('add:member'), updateMemberRole)
+router.delete('/:projectId/remove/:memId', checkUserPermission('delete:member'), removeMember)
+router.get('/:projectId/getMembers', checkUserPermission("view:project"), getProjectMembers)
 
 export default router;
