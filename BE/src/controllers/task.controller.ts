@@ -39,7 +39,6 @@ const createTask = asyncHandler(async (req: Request, res: Response) => {
     assignedBy: req.user._id,
     assignedTo: assignedTo._id,
     project: projectId,
-    status: status,
   });
 
   if (!task) {
@@ -112,13 +111,13 @@ const updateTask = asyncHandler(async (req: Request, res: Response) => {
 
   const updatePayload: Partial<{
     title: string;
-    description: string;
+    desc: string;
     assignedTo: string;
     status: string;
   }> = {};
 
   if (title !== undefined) updatePayload.title = title;
-  if (desc !== "") updatePayload.description = desc;
+  if (desc !== "") updatePayload.desc = desc;
   // unknown error kese chala gya as string krne se
   if (email !== undefined) updatePayload.assignedTo = assignedTo._id as string;
   if (status !== undefined) updatePayload.status = status;
@@ -141,7 +140,7 @@ const updateTask = asyncHandler(async (req: Request, res: Response) => {
 
   res
     .status(200)
-    .json(new ApiResponse(ResponseStatus.Success, {}, "task created"));
+    .json(new ApiResponse(ResponseStatus.Success, null, "task created"));
 });
 
 const createSubTask = asyncHandler(async (req: Request, res: Response) => {
@@ -188,8 +187,8 @@ const updateSubTask = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const updatePayload: Partial<{ title: string; isCompleted: boolean }> = {};
-  if (title === undefined) updatePayload.title = title;
-  if (subTaskId === undefined) updatePayload.isCompleted = isCompleted;
+  if (title !== undefined) updatePayload.title = title;
+  if (isCompleted !== undefined) updatePayload.isCompleted = isCompleted;
 
   if (Object.keys(updatePayload).length === 0) {
     throw new CustomError(
@@ -285,28 +284,16 @@ const deleteTask = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const getTaskById = asyncHandler(async (req: Request, res: Response) => {
-  const { taskId, projectId } = req.params;
+  const { taskId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(taskId)) {
     throw new CustomError(ResponseStatus.BadRequest, "taskId does not exists");
-  }
-  if (!mongoose.Types.ObjectId.isValid(projectId)) {
-    throw new CustomError(ResponseStatus.BadRequest, "taskId does not exists");
-  }
-
-  const existingTask = await Task.findById(taskId);
-
-  if (!existingTask) {
-    throw new CustomError(400, "task doesnot exist");
   }
 
   const task = await Task.aggregate([
     {
       $match: {
-        $and: [
-          { user: new mongoose.Types.ObjectId(taskId as string) },
-          { project: new mongoose.Types.ObjectId(projectId as string) },
-        ],
+          _id: new mongoose.Types.ObjectId(taskId) 
       },
     },
     {
@@ -314,7 +301,7 @@ const getTaskById = asyncHandler(async (req: Request, res: Response) => {
         from: "users",
         localField: "assignedBy",
         foreignField: "_id",
-        as: "$assignedByInfo",
+        as: "assignedByInfo",
       },
     },
     { $unwind: "$assignedByInfo" },
@@ -323,7 +310,7 @@ const getTaskById = asyncHandler(async (req: Request, res: Response) => {
         from: "users",
         localField: "assignedTo",
         foreignField: "_id",
-        as: "$assignedToInfo",
+        as: "assignedToInfo",
       },
     },
     { $unwind: "$assignedToInfo" },
@@ -345,6 +332,7 @@ const getTaskById = asyncHandler(async (req: Request, res: Response) => {
       },
     },
   ]);
+
   if (!task) {
     throw new CustomError(500, "task retrieval failed");
   }
@@ -357,14 +345,14 @@ const getTaskById = asyncHandler(async (req: Request, res: Response) => {
 const getTasks = asyncHandler(async (req: Request, res: Response) => {
   const { projectId } = req.params;
 
-  if (mongoose.Types.ObjectId.isValid(projectId)) {
+  if (!mongoose.Types.ObjectId.isValid(projectId)) {
     throw new CustomError(ResponseStatus.BadRequest, "invalid projectId");
   }
 
   const allTasks = await Task.aggregate([
     {
       $match: {
-        tasks: new mongoose.Types.ObjectId(projectId as string),
+        project: new mongoose.Types.ObjectId(projectId as string),
       },
     },
     {
@@ -435,7 +423,7 @@ const addAttachments = asyncHandler(async (req: Request, res:Response) =>{
 
   if ((existingAttachments + newAttachments) > 5) {
     throw new CustomError(
-        400,
+      400,
       "Attachment limit exceeded.",
     );
   }
@@ -466,17 +454,14 @@ const addAttachments = asyncHandler(async (req: Request, res:Response) =>{
 })
 
 const deleteAttachments = asyncHandler(async (req, res) => {
-  const { aid } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(aid)) {
+  const { attachmentId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(attachmentId)) {
     throw new CustomError(400,"Invalid attachment ID");
   }
-
   const result = await Task.updateOne(
-    { "attachments._id": aid },
-    { $pull: { attachments: { _id: aid } } },
+    { "attachments._id": attachmentId },
+    { $pull: { attachments: { _id: attachmentId } } },
   );
-
   if (result.modifiedCount === 0) {
     throw new  CustomError(400,"Invalid attachment ID");
   }

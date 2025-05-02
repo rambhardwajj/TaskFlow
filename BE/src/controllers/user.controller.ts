@@ -13,12 +13,14 @@ import { uploadOnCloudinary } from "../configs/cloudinary";
 import { sendResetPasswordMail, sendVerificationMail } from "../utils/sendMail";
 import crypto from "crypto";
 import { envConfig } from "../configs/env";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 import { logger } from "../utils/logger";
+import mongoose from "mongoose";
+import { validateObjectId } from "../utils/helper";
 
 const registerUser = asyncHandler(async (req: Request, res: Response) => {
   // const userNamme = req.body.userName;
-  const { userName, email, password, fullName, avatar } = handleZodError(
+  const { userName, email, password, fullName } = handleZodError(
     validateRegisterData(req.body)
   );
 
@@ -27,9 +29,9 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
     throw new CustomError(ResponseStatus.Conflict, "Email already registered");
   }
 
-  logger.info("existingUser", existingUser)
-  
-  let user = await User.create({ email, password, userName, avatar, fullName });
+  logger.info("existingUser", existingUser);
+
+  let user = await User.create({ email, password, userName, fullName });
 
   if (!user) {
     throw new CustomError(
@@ -40,7 +42,6 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
 
   // in our interface the user already have generateToken function which generates
   const { hashedToken, tokenExpiry, unHashedToken } = user.generateToken();
-
   // emailverification token and expiry have to be set on user's document as it is important
   user.emailVerificationToken = hashedToken;
   user.emailVerificationExpiry = tokenExpiry;
@@ -49,7 +50,6 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
   const avatarLocalPath = req.file?.path;
   let avatarUrl;
   if (avatarLocalPath) {
-    // upload the image assets on cloudinary
     avatarUrl = await uploadOnCloudinary(avatarLocalPath);
   }
 
@@ -71,7 +71,7 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
     .json(
       new ApiResponse(
         ResponseStatus.Success,
-        {},
+        null,
         "User registered successfully. Please verify your email"
       )
     );
@@ -87,7 +87,6 @@ const verifyUser = asyncHandler(async (req: Request, res: Response) => {
   }
 
   // email verification token nikalo
-
   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
   const user = await User.findOne({
@@ -154,7 +153,7 @@ const resendVerificationEmail = asyncHandler(
       .json(
         new ApiResponse(
           ResponseStatus.Success,
-          {},
+          null,
           "Verification mail sent successfully. Please check your inbox"
         )
       );
@@ -178,11 +177,11 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const accessToken = await user.generateAccessToken();
   const refreshToken = await user.generateRefreshToken();
 
-  console.log("at ", accessToken)
-  console.log("rt ", refreshToken)
+  console.log("at ", accessToken);
+  console.log("rt ", refreshToken);
 
   user.refreshToken = refreshToken;
-  
+
   await user.save();
 
   res
@@ -195,62 +194,75 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
       httpOnly: true,
       sameSite: "strict",
     })
-    .json(new ApiResponse(ResponseStatus.Success, {}, "Login successful"));
+    .json(new ApiResponse(ResponseStatus.Success, null, "Login successful"));
 });
 
-const logOutUser = asyncHandler(async ( req: Request, res: Response) =>{
-    const { _id } = req.body.user;
+const logOutUser = asyncHandler(async (req: Request, res: Response) => {
+  const { _id } = req.user;
+  
+  await User.findByIdAndUpdate(
+    { _id },
+    {
+      refreshToken: undefined,
+    }
+  );
 
-    await User.findByIdAndUpdate(
-      {_id}, 
-      {
-        refreshToken: undefined
-      }
-    )
+  res
+    .status(ResponseStatus.Success)
+    .clearCookie("accessToken")
+    .clearCookie("refreshToken")
+    .json(
+      new ApiResponse(ResponseStatus.Success, null, "logged out successfully")
+    );
+});
 
-    res.status(ResponseStatus.Success).clearCookie("accessToken").clearCookie("refreshToken").json(new ApiResponse(ResponseStatus.Success, {}, "logged out successfully"))
-
-})
-
-const forgotPassword = asyncHandler(async (req: Request, res: Response) =>{
-  const {email} = req.body;
-  if( !email ){
-    throw new CustomError(ResponseStatus.BadRequest, "Missing required fields")
+const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
+  const { email } = req.body;
+  if (!email) {
+    throw new CustomError(ResponseStatus.BadRequest, "Missing required fields");
   }
 
-  const user = await User.findOne({email})
+  const user = await User.findOne({ email });
 
-  if( !user ) {
-    throw new CustomError(ResponseStatus.NotFound, "User does not exits")
+  if (!user) {
+    throw new CustomError(ResponseStatus.NotFound, "User does not exits");
   }
 
-  const {hashedToken, unHashedToken, tokenExpiry} = user.generateToken();
+  const { hashedToken, unHashedToken, tokenExpiry } = user.generateToken();
   user.resetPasswordToken = hashedToken;
   user.resetPasswordExpiry = tokenExpiry;
 
   await user.save();
 
-  await sendResetPasswordMail(user.userName, user.email,unHashedToken );
+  await sendResetPasswordMail(user.userName, user.email, unHashedToken);
 
-  res.status(ResponseStatus.Success).json(new ApiResponse(
-    ResponseStatus.Success, {}, "Rest link is sent to the provided email"
-  ))
+  res
+    .status(ResponseStatus.Success)
+    .json(
+      new ApiResponse(
+        ResponseStatus.Success,
+        null,
+        "Rest link is sent to the provided email"
+      )
+    );
+});
 
-})
-
-const resetPassword = asyncHandler(async (req: Request, res: Response) =>{
+const resetPassword = asyncHandler(async (req: Request, res: Response) => {
   const { password } = req.body;
-  const {resetToken} = req.params;
+  const { resetToken } = req.params;
+
+  const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
 
   const user = await User.findOne({
-    resetPasswordToken : resetToken,
-    resetPasswordExpiry : { gt: new Date() }
-  })
+    resetPasswordToken: hashedToken,
+    resetPasswordExpiry: { $gt:  Date.now() },
+  });
 
-  if(!user){
+  if (!user) {
     throw new CustomError(
-      ResponseStatus.Unauthorized, " Token is invalid or expired "
-    )
+      ResponseStatus.Unauthorized,
+      " Token is invalid or expired "
+    );
   }
 
   user.password = password;
@@ -258,28 +270,34 @@ const resetPassword = asyncHandler(async (req: Request, res: Response) =>{
   user.resetPasswordExpiry = undefined;
   await user.save();
 
-  res.status(ResponseStatus.Success).json( new ApiResponse(ResponseStatus.Success, {}, "Password reset successfully") );
+  res
+    .status(ResponseStatus.Success)
+    .json(
+      new ApiResponse(ResponseStatus.Success, {}, "Password reset successfully")
+    );
+});
 
-})
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  const incomingRefreshToken = req.cookies.refreshToken;
 
-const refreshAccessToken = asyncHandler(async (req , res ) =>{
-  const incomingRefreshToken = req.cookies.refreshAccessToken;
-
-  if(!incomingRefreshToken){
-    throw new CustomError(ResponseStatus.Unauthorized, "Unauthorized request")
+  if (!incomingRefreshToken) {
+    throw new CustomError(ResponseStatus.Unauthorized, "Unauthorized request");
   }
 
-  let decodedToken : any;
+  let decodedToken: any;
   try {
-    decodedToken = jwt.verify(incomingRefreshToken, envConfig.REFRESH_TOKEN_SECRET)
+    decodedToken = jwt.verify(
+      incomingRefreshToken,
+      envConfig.REFRESH_TOKEN_SECRET
+    );
   } catch (error) {
-    throw new CustomError( ResponseStatus.BadRequest, "Invalid jwt token ")
+    throw new CustomError(ResponseStatus.BadRequest, "Invalid jwt token ");
   }
 
   const user = await User.findOne({ email: decodedToken.email });
 
-  if( !user ){
-    throw new CustomError(ResponseStatus.Unauthorized, "Invalid token")
+  if (!user) {
+    throw new CustomError(ResponseStatus.Unauthorized, "Invalid token");
   }
 
   if (user.refreshToken !== incomingRefreshToken) {
@@ -289,8 +307,8 @@ const refreshAccessToken = asyncHandler(async (req , res ) =>{
     );
   }
 
-  let accessToken ; 
-  let refreshToken; 
+  const accessToken = await user.generateAccessToken();
+  const refreshToken = await user.generateRefreshToken();
 
   user.refreshToken = refreshToken;
   await user.save();
@@ -299,15 +317,22 @@ const refreshAccessToken = asyncHandler(async (req , res ) =>{
     httpOnly: true,
     samesite: true,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  }
+  };
 
   res
     .status(200)
     .cookie("accessToken", accessToken, cookieOptions)
     .cookie("refreshToken", refreshToken, cookieOptions)
-    .json(new ApiResponse(200, {}, "Access token refreshed successfully"));
+    .json(new ApiResponse(200, null, "Access token refreshed successfully"));
+});
 
-})
-
-
-export { registerUser, verifyUser, resendVerificationEmail, loginUser, logOutUser, forgotPassword, resetPassword,refreshAccessToken };
+export {
+  registerUser,
+  verifyUser,
+  resendVerificationEmail,
+  loginUser,
+  logOutUser,
+  forgotPassword,
+  resetPassword,
+  refreshAccessToken,
+};

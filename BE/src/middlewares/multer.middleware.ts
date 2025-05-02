@@ -2,6 +2,7 @@ import multer from "multer";
 import path from "path";
 import { allowedMimeTypes, ResponseStatus } from "../utils/constants";
 import { CustomError } from "../utils/CustomError";
+import { logger } from "../utils/logger";
 
 const storage = multer.diskStorage({
   destination: function (req, res, cb) {
@@ -21,6 +22,7 @@ const fileFilter: multer.Options["fileFilter"] = (req, file, cb) => {
   if (allowedMimeTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
+    logger.error("MulterMiddleware: file filter issue")
     cb(new CustomError(ResponseStatus.BadRequest, "Unsupported file type"));
   }
 };

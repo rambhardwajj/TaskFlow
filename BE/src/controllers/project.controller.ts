@@ -105,10 +105,10 @@ const getProjects = asyncHandler(async (req: Request, res: Response) => {
     {
       $project: {
         _id: 0,
-        projectId: "$projectData._id",
-        name: "$projectData.name",
-        description: "$projectData.description",
-        createdAt: "$projectData.createdAt",
+        projectId: "$ProjectPopulatedData._id",
+        name: "$ProjectPopulatedData.name",
+        description: "$ProjectPopulatedData.description",
+        createdAt: "$ProjectPopulatedData.createdAt",
         createdBy: {
           username: "$createdByUser.userName",
           email: "$createdByUser.email",
@@ -122,7 +122,7 @@ const getProjects = asyncHandler(async (req: Request, res: Response) => {
 
   res
     .status(200)
-    .json(new ApiResponse(ResponseStatus.Success, projects, "fsd"));
+    .json(new ApiResponse(ResponseStatus.Success, projects, "Projects returned"));
 
   // { { id, proj }, { id, proj:  }, }
   // .populate will populate the object of project in the membership object
@@ -290,7 +290,7 @@ const deleteProject = asyncHandler(async (req: Request, res: Response) => {
 
 const addMember = asyncHandler(async (req: Request, res: Response) => {
   const { email, role } = handleZodError(validateMemberData(req.body));
-  const projectId = req.params.projectId;
+  const {projectId} = req.params;
 
   const user = await User.findOne({ email: email });
   if (!user) {
@@ -355,9 +355,13 @@ const removeMember = asyncHandler(async (req: Request, res: Response) => {
 
 const updateMemberRole = asyncHandler(async (req, res) => {
   // update member role
-  const { role } = handleZodError(validateMemberData(req.body));
-
+  const { role } = req.body;
+  if( role!=="member" && role!=="projectAdmin" ){
+    throw new CustomError(ResponseStatus.BadRequest, "role is invalid")
+  }
   const { memId} = req.params;
+
+  validateObjectId(memId, "member Id")
 
   const updateMember = await ProjectMember.findById(memId )
   if( !updateMember){
@@ -365,7 +369,6 @@ const updateMemberRole = asyncHandler(async (req, res) => {
   }
 
   updateMember.role = role
-
   await updateMember.save();
   res
     .status(200)

@@ -2,6 +2,7 @@
 import { ProjectMember } from "../models/projectMember.models";
 import { ResponseStatus } from "./constants";
 import { CustomError } from "./CustomError";
+import { logger } from "./logger";
 
 export const UserRoles = {
   owner: [
@@ -15,6 +16,7 @@ export const UserRoles = {
     "delete:member",
 
     "view:task",
+    "create:task",
     "edit:task",
     "delete:task",
     "assign:task",
@@ -71,7 +73,7 @@ export const hasPermission = async (  userId :string , projectId: string , permi
   const userProjectMember = await ProjectMember.findOne({user:userId, project:projectId })
   const userRole = userProjectMember?.role
   if( !userRole ){
-    console.log("role mai dikkat")
+    logger.error("Has permission Error ")
     throw new CustomError(ResponseStatus.NotFound , "User role doesn't exists")
   }
   return (UserRoles[userRole] as readonly PermissionType[] ).includes(permission)

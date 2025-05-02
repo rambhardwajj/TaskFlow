@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { CustomError } from "./CustomError";
 import { ResponseStatus } from "./constants";
+import { logger } from "./logger";
 
 export const extractUserField = (field: string) => {
   return {

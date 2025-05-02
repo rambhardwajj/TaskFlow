@@ -13,11 +13,7 @@ const UpdateTaskSchema = TaskSchema.extend({
 
 const subTaskSchema = z.object({
   title: z.string().trim().nonempty("Task needs to have some title"),
-  desc: z.string().trim().nonempty("Task needs to have some title"),
-  email: z.string().email(),
 });
-
-
 
 const updateSubTaskSchema = subTaskSchema.extend({
   isCompleted: z.boolean()

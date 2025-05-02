@@ -12,7 +12,7 @@ router.get('/auth/verify/:token', verifyUser)
 router.get('/auth/resend-verification', resendVerificationEmail)
 router.get('/auth/logout', isLoggedIn,  logOutUser)
 router.get('/auth/forgot-password', forgotPassword)
-router.get('/auth/reset-password', isLoggedIn, resetPassword)
+router.get('/auth/reset-password/:resetToken', resetPassword)
 router.get('/auth/refresh-token', refreshAccessToken)
 
 export default router 

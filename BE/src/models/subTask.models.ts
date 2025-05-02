@@ -30,7 +30,8 @@ const subTaskSchema = new mongoose.Schema<IsubTask>(
             ref: "User"
         },
         isCompleted: {
-            type: Boolean
+            type: Boolean,
+            default: false
         }
     },
     {

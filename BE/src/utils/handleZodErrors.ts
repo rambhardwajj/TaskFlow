@@ -1,6 +1,7 @@
 import { SafeParseReturnType } from "zod";
 import { CustomError } from "./CustomError";
 import { ResponseStatus } from "./constants";
+import { logger } from "./logger";
 
 const handleZodError = (result: SafeParseReturnType<any, any>) => {
 
@@ -10,12 +11,14 @@ const handleZodError = (result: SafeParseReturnType<any, any>) => {
     );
 
     if (missing) {
+      logger.error("missing fields")
       throw new CustomError(
         ResponseStatus.BadRequest,
         `Zod Missing required fields ${result.error.issues[0].path}`
       );
     }
 
+    logger.error("HandleZodError")
     throw new CustomError(
       ResponseStatus.BadRequest,
       result.error.issues[0].message

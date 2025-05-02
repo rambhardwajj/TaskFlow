@@ -21,12 +21,12 @@ const UpdateProjectSchema = z.object({
 })
 const MemberSchema = z.object({
     email: z.string().email({ message: "Invalid email address" }),
-    role: RoleEnum
+    role: z.enum(["projectAdmin", "member"])
 })
 
 type CreateProject = z.infer<typeof CreateProjectSchema>
 type UpdateProject = z.infer<typeof UpdateProjectSchema>
-type AddMember = z.infer<typeof MemberSchema>
+type AddMember     = z.infer<typeof MemberSchema> 
 
 const validateCreateProjectData = (data: CreateProject ) =>{
     return CreateProjectSchema.safeParse(data)

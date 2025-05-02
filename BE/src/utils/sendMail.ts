@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 import { envConfig } from "../configs/env";
 import { CustomError } from "./CustomError";
 import { ResponseStatus } from "./constants";
+import { logger } from "./logger";
 
 var mailGenerator = new Mailgen({
   theme: "default",
@@ -45,6 +46,7 @@ const sendMail = async (
     });
     // console.log(info)
   } catch (error) {
+    logger.error("senMail Error")
     throw new CustomError(
       ResponseStatus.InternalServerError,
       "Cannot send mail"
@@ -98,7 +100,7 @@ const sendVerificationMail = async (
 ) => {
 
   // email ke button pe ye link hogi 
-  const link = `${envConfig.APP_URL}/api/v1/user/verify/${token}`;
+  const link = `${envConfig.APP_URL}/api/v1/user/auth/verify/${token}`;
   const content = constructVerifcationEmailContent(userName, link)
 
   await sendMail( email, "Verify email", content );
@@ -109,7 +111,7 @@ const sendResetPasswordMail = async (
   email: string,
   token: string
 ) => {
-  const link = `${envConfig.APP_URL}/api/v1/user/reset-password/${token}`;
+  const link = `${envConfig.APP_URL}/api/v1/user/auth/reset-password/${token}`;
 
   await sendMail(
     email,

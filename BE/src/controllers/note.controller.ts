@@ -28,6 +28,8 @@ const createNote = asyncHandler(async (req: Request, res: Response) => {
       "Note not created"
     );
   }
+
+  
   res
     .status(200)
     .json(new ApiResponse(ResponseStatus.Success, note, "Note created"));
