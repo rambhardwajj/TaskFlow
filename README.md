@@ -1,3 +1,11 @@
+TS-MEGA is a TypeScript-powered backend built with Express.js and MongoDB, designed to handle robust project management workflows. It features JWT-based authentication, role-based access control, rate-limited API endpoints, and supports file uploads using Cloudinary.
+
+This backend serves as the core engine for managing users, projects, tasks, subtasks, and file attachments in a scalable and modular fashion. With clear separation of concerns, reusable middlewares, and Zod validation, TS-MEGA is ideal for enterprise-grade applications and modern full-stack projects.
+
+Whether you're building a productivity tool, a task manager, or an internal collaboration platform, TS-MEGA gives you the foundational backend structure to move fast and build with confidence.
+
+
+
 /BE
 │── logs/                  # Winston log files (error.log, combined.log)
 │── public/
@@ -19,6 +27,7 @@
 ├── package-lock.json      # Lockfile for dependency versions
 ├── tsconfig.json          # TypeScript configuration
 └── README.md              # Project overview and documentation
+
 ## Contributing
 
 Pull requests are welcome! Feel free to fork the repo and submit a PR.
