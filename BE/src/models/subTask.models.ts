@@ -38,6 +38,7 @@ const subTaskSchema = new mongoose.Schema<IsubTask>(
     }
 )
 
+// for preventing same title subTask in same task.
 subTaskSchema.index({title: 1, task: 1, project: 1}, {unique: true})
 
 const SubTask =  mongoose.model('SubTask', subTaskSchema)

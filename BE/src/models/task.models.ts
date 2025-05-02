@@ -1,13 +1,13 @@
 import mongoose, { Schema } from "mongoose";
 import { TaskStatusType, AvailableTaskStatuses, TaskStatus } from "../utils/constants";
 
-export interface IAttachments{
-  url:  String ,
-  mimetype:  String ,
-  size: Number ,
+export interface IAttachments extends Document{
+  url:  string ,
+  mimetype:  string ,
+  size: number ,
 }
 
-export interface ITask {
+export interface ITask extends Document {
   title: string;
   desc: string;
   project: Schema.Types.ObjectId;
@@ -64,6 +64,9 @@ const TaskSchema = new mongoose.Schema<ITask>({
 },
 {timestamps: true}
 );
+
+TaskSchema.index({title: 1, project: 1}, {unique: true})
+
 
 const Task = mongoose.model("Task", TaskSchema);
 export { Task };

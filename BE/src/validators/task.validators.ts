@@ -17,6 +17,8 @@ const subTaskSchema = z.object({
   email: z.string().email(),
 });
 
+
+
 const updateSubTaskSchema = subTaskSchema.extend({
   isCompleted: z.boolean()
 }).partial()

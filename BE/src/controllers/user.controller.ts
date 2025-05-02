@@ -14,6 +14,7 @@ import { sendResetPasswordMail, sendVerificationMail } from "../utils/sendMail";
 import crypto from "crypto";
 import { envConfig } from "../configs/env";
 import jwt from "jsonwebtoken"
+import { logger } from "../utils/logger";
 
 const registerUser = asyncHandler(async (req: Request, res: Response) => {
   // const userNamme = req.body.userName;
@@ -26,7 +27,8 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
     throw new CustomError(ResponseStatus.Conflict, "Email already registered");
   }
 
-  // console.log(req.file);
+  logger.info("existingUser", existingUser)
+  
   let user = await User.create({ email, password, userName, avatar, fullName });
 
   if (!user) {
@@ -306,5 +308,6 @@ const refreshAccessToken = asyncHandler(async (req , res ) =>{
     .json(new ApiResponse(200, {}, "Access token refreshed successfully"));
 
 })
+
 
 export { registerUser, verifyUser, resendVerificationEmail, loginUser, logOutUser, forgotPassword, resetPassword,refreshAccessToken };

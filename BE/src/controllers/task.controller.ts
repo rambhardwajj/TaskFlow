@@ -413,6 +413,78 @@ const getTasks = asyncHandler(async (req: Request, res: Response) => {
     );
 });
 
+const addAttachments = asyncHandler(async (req: Request, res:Response) =>{
+  const { taskId} = req.params
+  const attachments = req.files as Express.Multer.File[]
+
+  if( !mongoose.Types.ObjectId.isValid(taskId)){
+    throw new CustomError(400, "task id is invalid")
+  }
+
+  const task = await Task.findById(taskId);
+  if (!task) {
+    throw new CustomError(400, "Task not found");
+  }
+
+  if (!attachments || attachments.length === 0) {
+    throw new CustomError(400,"attachments missing");
+  }
+
+  const existingAttachments = task.attachments?.length || 0;
+  const newAttachments = attachments.length 
+
+  if ((existingAttachments + newAttachments) > 5) {
+    throw new CustomError(
+        400,
+      "Attachment limit exceeded.",
+    );
+  }
+  const addAttachments = await Promise.all(
+    attachments.map(async (file) => {
+      const result = await uploadOnCloudinary(file.path);
+      if(!result){
+        throw new CustomError(ResponseStatus.InternalServerError, "upload on cloudinary failed")
+      }
+      return {
+        url: result.secure_url,
+        mimetype: file.mimetype,
+        size: file.size,
+      };
+    }),
+  );
+
+  task.attachments.push(...(addAttachments as IAttachments[]));
+
+  await task.save();
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, task.attachments, "Attachments added successfully"),
+    );
+
+})
+
+const deleteAttachments = asyncHandler(async (req, res) => {
+  const { aid } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(aid)) {
+    throw new CustomError(400,"Invalid attachment ID");
+  }
+
+  const result = await Task.updateOne(
+    { "attachments._id": aid },
+    { $pull: { attachments: { _id: aid } } },
+  );
+
+  if (result.modifiedCount === 0) {
+    throw new  CustomError(400,"Invalid attachment ID");
+  }
+  res
+    .status(200)
+    .json(new ApiResponse(200, null, "Attachment Deleted Successfully"));
+});
+
 export {
   createTask,
   deleteTask,
@@ -422,4 +494,6 @@ export {
   createSubTask,
   deleteSubTask,
   updateSubTask,
+  addAttachments,
+  deleteAttachments
 };

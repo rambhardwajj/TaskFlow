@@ -7,10 +7,10 @@ const router =  Router()
 
 router.use(isLoggedIn)
 
-router.post('/createNote/:projectId', checkUserPermission('create:note'), createNote)
-router.get('/getNoteById/:noteId', checkUserPermission('view:note'), getNoteById)
-router.get('/getAll', checkUserPermission('view:note'), getAll) 
-router.delete('/:noteId', checkUserPermission('delete:note'), deleteNote )
-router.patch('/update/:noteId',checkUserPermission('edit:note'), updateNote)
+router.post('/project/:projectId/create/notes', checkUserPermission('create:note'), createNote)
+router.get('/project/:projectId/notes', checkUserPermission('view:note'), getAll) 
+router.get('/project/:projectId/notes/:noteId', checkUserPermission('view:note'), getNoteById)
+router.patch('/project/:projectId/update/notes/:noteId',checkUserPermission('edit:note'), updateNote)
+router.delete('/project/:projectId/delete/notes/:noteId', checkUserPermission('delete:note'), deleteNote )
 
 export default router 

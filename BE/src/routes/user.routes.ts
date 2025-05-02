@@ -6,13 +6,13 @@ import { isLoggedIn } from "../middlewares/auth.middleware"
 const router = Router()
 
 
-router.post('/register', upload.single("avatar") ,registerUser)
-router.get('/verify/:token', verifyUser)
-router.get('/resendverificationmail', resendVerificationEmail)
-router.get('/login', loginUser)
-router.get('/logout', isLoggedIn,  logOutUser)
-router.get('/forgotpassword', forgotPassword)
-router.get('/resetpassword', isLoggedIn, resetPassword)
-router.get('/refreshAccessToken', refreshAccessToken)
+router.post('/auth/register', upload.single("avatar") ,registerUser)
+router.get('/auth/verify/:token', verifyUser)
+router.get('/auth/resend-verification', resendVerificationEmail)
+router.get('/auth/login', loginUser)
+router.get('/auth/logout', isLoggedIn,  logOutUser)
+router.get('/auth/forgot-password', forgotPassword)
+router.get('/auth/reset-password', isLoggedIn, resetPassword)
+router.get('/auth/refresh-token', refreshAccessToken)
 
 export default router 

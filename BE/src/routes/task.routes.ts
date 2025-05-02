@@ -10,9 +10,11 @@ import {
   createSubTask,
   updateSubTask,
   deleteSubTask,
+  addAttachments,
+  deleteAttachments,
 } from "../controllers/task.controller";
 import { checkUserPermission } from "../middlewares/hasPermission.middleware";
-import { uploadAttachments } from "../middlewares/multer.middleware";
+import { upload, uploadAttachments } from "../middlewares/multer.middleware";
 
 const router = Router();
 
@@ -20,48 +22,52 @@ router.use(isLoggedIn);
 
 //task
 router.post(
-  "/create/project/:projectId",
+  "/project/:projectId/create/tasks",
   checkUserPermission("create:task"),
   uploadAttachments,
   createTask
 );
+router.get(
+  "/project/:projectId/tasks",
+  checkUserPermission("view:task"),
+  getTasks
+);
+router.get(
+  "/project/:projectId/tasks/:taskId",
+  checkUserPermission("view:task"),
+  getTaskById
+);
 router.patch(
-  "/update/:taskId/project/:projectId",
+  "/project/:projectId/update/tasks/:taskId",
   checkUserPermission("edit:task"),
   uploadAttachments,
   updateTask
 );
 router.delete(
-  "/delete/:taskId/project/:project",
+  "/project/:projectId/delete/tasks/:taskId",
   checkUserPermission("delete:task"),
   deleteTask
-);
-router.get(
-  "/:taskId/project/:projectId",
-  checkUserPermission("view:task"),
-  getTaskById
-);
-router.get(
-  "/getTasks/project/:projectId",
-  checkUserPermission("view:task"),
-  getTasks
 );
 
 //subtask
 router.post(
-  "/:taskId/project/:projectId/subTask",
+  "/project/:projectId/tasks/:taskId/subTasks",
   checkUserPermission("create:subtask"),
   createSubTask
 );
-router.delete(
-  "/:taskId/project/:projectId/subTask/:subTaskId",
-  checkUserPermission("delete:subtask"),
-  deleteSubTask
-);
 router.patch(
-  "/:taskId/project/:projectId/subTask/:subTask",
+  "/project/:projectId/tasks/:taskId/update/subTasks/:subTaskId",
   checkUserPermission("edit:subtask"),
   updateSubTask
 );
+router.delete(
+  "/project/:projectId/tasks/:taskId/delete/subTasks/:subTaskId",
+  checkUserPermission("delete:subtask"),
+  deleteSubTask
+);
+
+// attachments 
+router.post("/project/:projectId/tasks/:taskId/attachments", checkUserPermission("edit:task"), uploadAttachments, addAttachments)
+router.delete('/project/:projectId/tasks/:taskId/attachments/:attachmentId', checkUserPermission('delete:task'), uploadAttachments, deleteAttachments);
 
 export default router;

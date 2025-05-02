@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "tsc -b && node ./dist/index.js"
+    "start": "ts-node-dev --respawn --transpile-only src/index.ts"
   },
   "author": "",
   "license": "ISC",
@@ -23,6 +23,7 @@
     "mongoose": "^8.13.2",
     "multer": "^1.4.5-lts.2",
     "nodemailer": "^6.10.1",
+    "winston": "^3.17.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
@@ -35,6 +36,7 @@
     "@types/nodemailer": "^6.4.17",
     "nodemon": "^3.1.9",
     "prettier": "^3.5.3",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3"
   }
 }

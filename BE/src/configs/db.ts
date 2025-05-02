@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { envConfig } from "./env";
+import { logger } from "../utils/logger";
 
 const dbConnect = async () =>{
     try {
@@ -7,9 +8,9 @@ const dbConnect = async () =>{
         console.log("mongodb connected successfully ")
     } catch (error) {
         if( error instanceof Error){
-            console.log("Error in mongodb connection", error.message)
+            logger.error("Error in mongodb connection", error.message)
         }else{
-            console.log("unknown error in db connection" , error)
+            logger.error("unknown error in db connection" , error)
         }
         process.exit(1);
     }

@@ -13,7 +13,7 @@ import { CustomError } from "../utils/CustomError";
 import { ProjectMember } from "../models/projectMember.models";
 import mongoose from "mongoose";
 import { User } from "../models/user.models";
-import { extractUserField } from "../utils/helper";
+import { extractUserField, validateObjectId } from "../utils/helper";
 
 const createProject = asyncHandler(async (req: Request, res: Response) => {
   const { name, desc } = handleZodError(validateCreateProjectData(req.body));
@@ -329,21 +329,15 @@ const addMember = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const removeMember = asyncHandler(async (req: Request, res: Response) => {
-  const { email, role } = handleZodError(validateMemberData(req.body));
-  const projectId = req.params.projectId;
+  // const { email, role } = handleZodError(validateMemberData(req.body));
+  // const projectId = req.params.projectId;
+  
+  const {memId} = req.params 
 
-  const user = await User.findOne({ email: email });
-  if (!user) {
-    throw new CustomError(
-      ResponseStatus.NotFound,
-      "Cannot add user as user doesnt exists"
-    );
-  }
+  validateObjectId(memId, "memberId")
 
-  const userInProject = await ProjectMember.findOne({
-    user: user._id,
-    project: projectId,
-  });
+
+  const userInProject = await ProjectMember.findByIdAndDelete(memId);
 
   if (!userInProject) {
     throw new CustomError(
@@ -352,18 +346,14 @@ const removeMember = asyncHandler(async (req: Request, res: Response) => {
     );
   }
 
-  await ProjectMember.deleteOne({
-    user: user._id,
-    project: projectId,
-    role: role,
-  });
+
 
   res
     .status(200)
     .json(
       new ApiResponse(
         ResponseStatus.Success,
-        { user: user._id, project: projectId, role: role },
+        null,
         "Deleted member successfully"
       )
     );
