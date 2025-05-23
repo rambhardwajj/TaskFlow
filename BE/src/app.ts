@@ -13,8 +13,6 @@ app.use(cookieParser())
 app.use(express.urlencoded({extended: true}))
 app.use(cors())
 
-
-
 app.use("/api/v1/user", userRouter )
 app.use("/api/v1/project", projectRouter)
 app.use("/api/v1/task", taskRouter )

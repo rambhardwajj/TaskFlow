@@ -177,8 +177,8 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const accessToken = await user.generateAccessToken();
   const refreshToken = await user.generateRefreshToken();
 
-  console.log("at ", accessToken);
-  console.log("rt ", refreshToken);
+  // console.log("at ", accessToken);
+  // console.log("rt ", refreshToken);
 
   user.refreshToken = refreshToken;
 
@@ -208,10 +208,10 @@ const logOutUser = asyncHandler(async (req: Request, res: Response) => {
   );
 
   res
-    .status(ResponseStatus.Success)
-    .clearCookie("accessToken")
-    .clearCookie("refreshToken")
-    .json(
+  .clearCookie("accessToken")
+  .clearCookie("refreshToken")
+  .status(ResponseStatus.Success)
+  .json(
       new ApiResponse(ResponseStatus.Success, null, "logged out successfully")
     );
 });

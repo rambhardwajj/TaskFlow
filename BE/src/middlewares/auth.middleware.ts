@@ -8,12 +8,11 @@ import { logger } from "../utils/logger";
 
 const isLoggedIn = (req:Request, res:Response, next: NextFunction ) =>{
     const {accessToken} = req.cookies;
-
     if( !accessToken){
         logger.error("isLoggedIn middleware: access token is undefined")
         throw new CustomError(ResponseStatus.Unauthorized, "Unauthorised request")
     }
-    
+
     try {
         const decoded = jwt.verify(accessToken, envConfig.ACCESS_TOKEN_SECRET)
         req.user = decoded as IUser;
@@ -27,4 +26,4 @@ const isLoggedIn = (req:Request, res:Response, next: NextFunction ) =>{
     }
 }
 
-export { isLoggedIn }
+export { isLoggedIn } 

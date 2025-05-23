@@ -15,8 +15,6 @@ const errorHandler = ( error : any, req: Request, res: Response , next : NextFun
         customError = new CustomError( ResponseStatus.InternalServerError, error.message,  )
     }
 
-
-
     logger.error("errorHandler Middleware executed", error.message)
     res.status(customError.statusCode).json({
         success: false, 

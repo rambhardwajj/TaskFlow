@@ -97,6 +97,7 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.isPasswordCorrect = async function (password : string ){
     return await bcrypt.compare(password,this.password)
 }
+
 userSchema.methods.generateAccessToken = async function(){
   const accessToken = jwt.sign( 
     {
@@ -110,6 +111,7 @@ userSchema.methods.generateAccessToken = async function(){
   )
   return accessToken
 }
+
 userSchema.methods.generateRefreshToken = async function(){
   const refreshToken  = jwt.sign(
     {
@@ -122,6 +124,7 @@ userSchema.methods.generateRefreshToken = async function(){
   )
   return refreshToken
 }
+
 userSchema.methods.generateToken = function(){
     const unHashedToken = crypto.randomBytes(32).toString("hex")
     const hashedToken = crypto.createHash('sha256').update(unHashedToken).digest('hex');
