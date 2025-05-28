@@ -1,0 +1,62 @@
+import { LayoutDashboard, ListChecks, Menu, Plus } from "lucide-react";
+import { useState } from "react";
+import { cn } from "../lib/utils";
+import { Link } from "react-router-dom";
+
+const Sidebar = () => {
+  const [collapsed, setCollapsed] = useState(false);
+
+  return (
+    <div
+      className={cn(
+        "min-h-[90vh] bg-black text-white flex flex-col justify-between transition-all duration-300 ease-in-out border-r border-zinc-800",
+        collapsed ? "w-16" : "w-70"
+      )}
+    >
+      {/* Top Section */}
+      <div>
+        {/* Header */}
+        <div className="flex items-center justify-between p-4">
+          {!collapsed && <h1 className="text-xl font-semibold">Project Manager</h1>}
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="text-white focus:outline-none"
+          >
+            <Menu size={20} />
+          </button>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex flex-col gap-3 mt-4 px-2">
+          <Link
+            to="/projects"
+            className="flex items-center gap-3 hover:bg-zinc-800 p-2 rounded"
+          >
+            <LayoutDashboard size={20} />
+            {!collapsed && <span>My Projects</span>}
+          </Link>
+          <Link
+            to="/tasks"
+            className="flex items-center gap-3 hover:bg-zinc-800 p-2 rounded"
+          >
+            <ListChecks size={20} />
+            {!collapsed && <span>My Tasks</span>}
+          </Link>
+        </nav>
+      </div>
+
+      {/* Bottom Section */}
+      <div className="p-4  border-t border-zinc-800">
+        <Link
+        to='/projects/create'
+          className="flex cursor-pointer items-center gap-2 bg-cyan-800 hover:bg-cyan-600 text-white px-4 py-2 rounded w-full justify-center transition"
+        >
+          <Plus size={18} />
+          {!collapsed && <span>Create Project</span>}
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+export {Sidebar}

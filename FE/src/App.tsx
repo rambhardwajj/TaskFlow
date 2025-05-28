@@ -1,11 +1,13 @@
 // src/App.tsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Projects from "./pages/Projects";
-import {Layout} from "./pages/Layout";
+import { Layout } from "./pages/Layout";
 import TasksOfProject from "./pages/TasksOfProject";
-import {Dashboard} from "./pages/Dashboard";
+import { Dashboard } from "./pages/Dashboard";
 import CreateProjectPage from "./pages/CreateProject";
 import MyTasks from "./pages/MyTasks";
+import Login from "./mycomponents/Login";
+import Signup from "./mycomponents/Signup";
 
 export default function App() {
   return (
@@ -18,7 +20,9 @@ export default function App() {
           <Route path="tasks" element={<MyTasks />} />
           <Route index element={<Dashboard />} />
           {/* <Route path=":projectId" element={<ProjectPage />} /> */}
-
+        
+          <Route path="Login" element={<Login />} />
+          <Route path="Signup" element={<Signup />} />
         </Route>
       </Routes>
     </Router>
