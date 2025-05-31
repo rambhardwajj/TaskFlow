@@ -8,7 +8,7 @@ const router = Router()
 
 
 router.post('/auth/register', upload.single("avatar") ,registerUser)
-router.get('/auth/login', authLimiter, loginUser)
+router.post('/auth/login', authLimiter, loginUser)
 router.get('/auth/verify/:token', verifyUser)
 router.get('/auth/resend-verification',emailsLimiter, resendVerificationEmail)
 router.get('/auth/logout', isLoggedIn,  logOutUser)

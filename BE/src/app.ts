@@ -11,7 +11,11 @@ const app : Application  =  express()
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.urlencoded({extended: true}))
-app.use(cors())
+app.use(cors(
+    {credentials: true,
+        origin: ['http://localhost:5173'],
+    }
+))
 
 app.use("/api/v1/user", userRouter )
 app.use("/api/v1/project", projectRouter)
