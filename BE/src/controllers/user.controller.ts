@@ -193,12 +193,14 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
         .cookie("accessToken", accessToken, {
             httpOnly: true,
             secure: false,
-            sameSite: "none",
+            sameSite: "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000,
         })
         .cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: false,
-            sameSite: "none",
+            sameSite: "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000,
         })
         .json(
             new ApiResponse(
@@ -359,7 +361,14 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         );
 });
 
+const getUser = asyncHandler( async(req, res) => {
+    const user = req.user 
+    
+    res.status(200).json(new ApiResponse(200, user, "User data retrieved successfully"));
+})
+
 export {
+    getUser,
     registerUser,
     verifyUser,
     resendVerificationEmail,
