@@ -1,23 +1,36 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const mockProjects = [
-  { name: "Simple Plan", sharedWith: "Ram_accounts", lastAccessed: "30m ago" },
-  {
-    name: "Demo_for_MArina",
-    sharedWith: "Ram_accounts",
-    lastAccessed: "Mar 12",
-  },
-  { name: "Calendar", sharedWith: "Ram_accounts", lastAccessed: "Mar 12" },
-  { name: "Demo - Marina", sharedWith: "Ram_accounts", lastAccessed: "Mar 4" },
-  {
-    name: "Software Development",
-    sharedWith: "Ram_accounts",
-    lastAccessed: "Feb 25",
-  },
-];
+interface Project {
+  role: string,
+  projectId: string, 
+  name: string,
+  createdAt: string,
+  memberCount: number,
+  createdBy: {
+    username: string,
+    email:string
+  }
+}
 
-export default function ProjectTable( props:any) {
-  console.log(props)
+
+export default function ProjectTable() {
+  const [projects , setProjects] = useState<Project[]>([])
+  useEffect( () => {
+    const getProjects = async () =>{
+      try {
+        console.log('yahan aaya')
+        const response = await axios.get('http://localhost:8200/api/v1/project/',  { withCredentials: true } )
+        console.log("Projects:", response.data);
+        setProjects(response.data.data)
+      } catch (error) {
+         console.error("Failed to fetch projects", error);
+      }
+    }
+    getProjects()
+  }, []);
+
   const Initials = (props: { ini: string }) => {
     return <span className="bg-sky-400 px-2 rounded-lg ">{props.ini}</span>;
   };
@@ -32,10 +45,10 @@ export default function ProjectTable( props:any) {
                 Project Name
               </th>
               <th className="py-3 px-5 text-sm font-semibold uppercase tracking-wide">
-                Assigned To
+                Created At
               </th>
               <th className="py-3 px-5 text-sm font-semibold uppercase tracking-wide">
-                Assigned By
+                Created By
               </th>
               <th className="py-3 px-5 text-sm font-semibold uppercase tracking-wide">
                 Members
@@ -43,13 +56,11 @@ export default function ProjectTable( props:any) {
               <th className="py-3 px-5 text-sm font-semibold uppercase tracking-wide">
                 Your Role
               </th>
-              <th className="py-3 px-5 text-sm font-semibold uppercase tracking-wide">
-                Last Accessed
-              </th>
+              
             </tr>
           </thead>
           <tbody>
-            {mockProjects.map((project, index) => (
+            {projects.map((project, index) => (
               <tr
                 key={index}
                 className="bg-neutral-900 border-b border-zinc-800 transition-transform hover:scale-[1.01] hover:bg-neutral-800 cursor-pointer"
@@ -60,25 +71,22 @@ export default function ProjectTable( props:any) {
                   </Link>
                 </td>
                 <td className="py-3 px-5 text-zinc-400">
-                  {project.sharedWith}
+                  {project.createdAt}
                 </td>
                 <td className="py-3 px-5 text-zinc-400">
-                  {project.sharedWith}
+                  {project.createdBy.username}
                 </td>
-                <td className="py-3 px-5 text-zinc-400">21</td>
-                <td className="py-3 px-5 text-zinc-300">Member</td>
-                <td className="py-3 px-5 text-zinc-300">
-                  {project.lastAccessed}
-                </td>
+                <td className="py-3 px-5 text-zinc-400">{project.memberCount}</td>
+                <td className="py-3 px-5 text-zinc-300">{project.role}</td>
+                
               </tr>
             ))}
             <tr className="bg-neutral-900 rounded-b-sm hover:bg-neutral-800 cursor-pointer">
-              <Link to="/projects/create">
-              <td className="py-3 px-5 text-center  text-cyan-400">
-                 + Create Project
-              </td>
-              
-              </Link>
+                <td className=" text-center  text-cyan-400">
+                  <Link to="/projects/create" className="py-3 px-5">
+                      + Create Project
+                  </Link>
+                </td>
             </tr>
           </tbody>
         </table>

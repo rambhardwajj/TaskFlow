@@ -5,19 +5,31 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store/store";
 import { loginUser } from "@/redux/slices/authSlice";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function Login() {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const { loading, error, user } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     dispatch(loginUser({ email, password }));
   };
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/projects");
+    }
+  }, [user, navigate]);
 
   return (
     <div className="min-h-[89vh] flex items-center justify-center bg-neutral-950 p-4">
@@ -46,7 +58,11 @@ export default function Login() {
               />
             </div>
             {error && <p className="text-red-500 text-sm">{error}</p>}
-            <Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full bg-cyan-600 hover:bg-cyan-500 text-white"
+              disabled={loading}
+            >
               {loading ? "Logging in..." : "Login"}
             </Button>
           </form>
