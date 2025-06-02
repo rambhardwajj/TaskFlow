@@ -362,9 +362,10 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 });
 
 const getUser = asyncHandler( async(req, res) => {
-    const user = req.user 
+    const user = req.user
+    console.log(user) 
     
-    res.status(200).json(new ApiResponse(200, user, "User data retrieved successfully"));
+    res.status(200).json(new ApiResponse(200, {user}, "User data retrieved successfully"));
 })
 
 export {

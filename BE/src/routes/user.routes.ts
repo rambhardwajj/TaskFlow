@@ -14,6 +14,6 @@ router.get('/auth/logout', isLoggedIn,  logOutUser)
 router.get('/auth/forgot-password',emailsLimiter, forgotPassword)
 router.get('/auth/reset-password/:resetToken', resetPassword)
 router.get('/auth/refresh-token', refreshAccessToken)
-router.get('/auth/me', isLoggedIn, getUser )
+router.get('/auth/me', isLoggedIn , getUser )
 
 export default router 
