@@ -53,7 +53,7 @@ export default function ProjectTable() {
             </tr>
           </thead>
           <tbody>
-            {projects.map((project, index) => (
+            {loading ? <div>Loading </div> : projects.map((project, index) => (
               <tr
                 key={index}
                 className="bg-neutral-900 border-b border-zinc-800 transition-transform hover:scale-[1.01] hover:bg-neutral-800 cursor-pointer"

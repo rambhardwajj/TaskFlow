@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Plus } from "lucide-react";
 import { TaskCard } from "./TaskCard";
-import { Task } from "../pages/TasksOfProject";
+import { Task } from "@/redux/slices/projectsTasksSlice";
 
 interface KanbanColumnProps {
   title: string;
@@ -23,7 +23,7 @@ interface KanbanColumnProps {
         </button>
       </div>
 
-      <div className="flex flex-col gap-4 overflow-y-auto max-h-[calc(80vh-100px)] pr-2">
+      <div className="flex flex-col gap-4 overflow-y-auto  max-h-[calc(80vh-100px)] pr-2">
         {tasks.map((task, idx) => (
           <TaskCard key={idx} {...task} />
         ))}
