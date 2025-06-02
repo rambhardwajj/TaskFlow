@@ -10,7 +10,7 @@ const Navbar = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const user = useSelector((state: RootState) => state.auth.user);
-  console.log(user);
+  // console.log(user);
 
   const navLinks: any = [
     // { label: "Dashboard", to: "/" },

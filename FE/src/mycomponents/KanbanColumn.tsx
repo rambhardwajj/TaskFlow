@@ -11,7 +11,7 @@ interface KanbanColumnProps {
 
  const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
   return (
-    <div className="min-w-[300px] w-[80vw] sm:w-[350px] bg-neutral-900 p-4 rounded-lg shadow-lg flex flex-col gap-4 transition hover:scale-[1.01]">
+    <div className="min-w-[250px] w-[80vw] sm:min-w-[300px] bg-neutral-900 p-4 rounded-lg shadow-lg flex flex-col gap-4 transition hover:scale-[1.01]">
 
       <div className="flex justify-between items-center mb-2">
         <h3 className="font-semibold text-lg">{title}</h3>

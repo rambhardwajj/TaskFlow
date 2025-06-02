@@ -13,7 +13,7 @@ export const TaskCard: FC<Task> = ({
   return (
     <div className="bg-neutral-950 p-4 rounded-md border border-zinc-700 hover:border-blue-500 transition-all hover:shadow-lg group cursor-pointer space-y-2">
       {/* Title */}
-      <p className="font-semibold text-white group-hover:text-blue-300 transition">{title}</p>
+      <p className="font-semibold text-cyan-500 group-hover:text-blue-300 transition">{title}</p>
 
       {/* Description Tag */}
       {desc && (
@@ -45,7 +45,7 @@ export const TaskCard: FC<Task> = ({
             alt={assignedTo.userName}
             className="w-6 h-6 rounded-full object-cover"
           />
-          <span className="text-xs text-zinc-400">{assignedTo.userName}</span>
+          <span className="text-xs text-cyan-600">To: {assignedTo.userName}</span>
         </div>
         <div className="flex items-center gap-2">
           <img
@@ -53,7 +53,7 @@ export const TaskCard: FC<Task> = ({
             alt={assignedBy.userName}
             className="w-6 h-6 rounded-full object-cover"
           />
-          <span className="text-xs text-zinc-400">{assignedBy.userName}</span>
+          <span className="text-xs text-cyan-800">By: {assignedBy.userName}</span>
         </div>
       </div>
     </div>

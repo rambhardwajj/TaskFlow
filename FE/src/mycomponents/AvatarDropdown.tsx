@@ -34,7 +34,7 @@ export const AvatarDropdown = () => {
     <div className="relative" ref={dropdownRef}>
       <button onClick={() => setOpen(!open)}>
         <img
-          src={user.avatar?.url || "/default-avatar.png"}
+          src={user.avatar?.url || "/me.jpg"}
           alt="avatar"
           className="cursor-pointer rounded-full w-8 h-8 object-cover"
         />
