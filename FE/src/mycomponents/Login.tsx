@@ -27,7 +27,7 @@ export default function Login() {
 
   useEffect(() => {
     if (user) {
-      navigate("/projects");
+      navigate("/");
     }
   }, [user, navigate]);
 

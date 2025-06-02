@@ -2,7 +2,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-interface Project {
+
+
+export interface Project {
   role: string,
   projectId: string, 
   name: string,
@@ -81,8 +83,8 @@ export default function ProjectTable() {
                 
               </tr>
             ))}
-            <tr className="bg-neutral-900 rounded-b-sm hover:bg-neutral-800 cursor-pointer">
-                <td className=" text-center  text-cyan-400">
+            <tr className=" bg-neutral-900 rounded-b-sm hover:bg-neutral-800 cursor-pointer">
+                <td className=" py-3 px-5 text-center  text-cyan-400">
                   <Link to="/projects/create" className="py-3 px-5">
                       + Create Project
                   </Link>

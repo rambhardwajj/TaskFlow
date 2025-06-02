@@ -5,12 +5,14 @@ interface AuthState {
   user: any;
   loading: boolean;
   error: string | null;
+  userLoading: boolean
 }
 
 const initialState: AuthState = {
   user: null,
   loading: false,
   error: null,
+  userLoading: true
 };
 
 export const loginUser = createAsyncThunk(
@@ -60,13 +62,13 @@ export const signupUser = createAsyncThunk(
 export const getUser = createAsyncThunk("auth/getUser", async (_, thunkAPI) => {
   try {
     const res = await axios.get(
-      "http://localhost:8200/api/v1/user/auth/register",
+      "http://localhost:8200/api/v1/user/auth/me",
       { withCredentials: true }
     );
-    console.log(res.data);
-    return res.data;
+    console.log("getUser data ", res.data);
+    return res.data.data;
   } catch (error: any) {
-    return thunkAPI.rejectWithValue(error.response.data);
+    return thunkAPI.rejectWithValue(error.response.data.message);
   }
 });
 
@@ -110,15 +112,15 @@ const authSlice = createSlice({
 
       // getUser
       .addCase(getUser.pending, (state) => {
-        state.loading = true;
+        state.userLoading = true;
         state.error = null;
       })
       .addCase(getUser.fulfilled, (state, action) => {
-        state.loading = false;
         state.user = action.payload.user;
+        state.userLoading = false;
       })
       .addCase(getUser.rejected, (state, action) => {
-        state.loading = false;
+        state.userLoading = false;
         state.user = null;
         state.error = action.payload as string;
       });
