@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { CalendarDays, Paperclip } from "lucide-react";
-import { Task } from "../pages/TasksOfProject";
+import { CalendarDays, Paperclip, Plus } from "lucide-react";
+import { Task } from "@/redux/slices/projectsTasksSlice";
 
 export const TaskCard: FC<Task> = ({
   title,
@@ -9,11 +9,19 @@ export const TaskCard: FC<Task> = ({
   updatedAt,
   assignedTo,
   assignedBy,
+  status,
 }) => {
   return (
     <div className="bg-neutral-950 p-4 rounded-md border border-zinc-700 hover:border-blue-500 transition-all hover:shadow-lg group cursor-pointer space-y-2">
       {/* Title */}
-      <p className="font-semibold text-cyan-500 group-hover:text-blue-300 transition">{title}</p>
+      <div className="flex justify-between">
+        <p className="font-semibold text-cyan-500 group-hover:text-blue-300 transition">
+          {title}
+        </p>
+        <button>
+          <Plus className="w-4 cursor-pointer hover:scale-[1.3] hover:text-green-600 " />
+        </button>
+      </div>
 
       {/* Description Tag */}
       {desc && (
@@ -31,7 +39,7 @@ export const TaskCard: FC<Task> = ({
 
         {attachments && attachments?.length > 0 && (
           <div className="flex items-center gap-1">
-            <Paperclip size={14} />
+            <Paperclip size={14} className="hover:text-cyan-800" />
             <span>{attachments.length}</span>
           </div>
         )}
@@ -45,7 +53,14 @@ export const TaskCard: FC<Task> = ({
             alt={assignedTo.userName}
             className="w-6 h-6 rounded-full object-cover"
           />
-          <span className="text-xs text-cyan-600">To: {assignedTo.userName}</span>
+          <span className="text-[10px] text-zinc-400 ">
+            Assignie:{" "}
+            {
+              <p className="font-bold text-xs hover:text-cyan-600">
+                {assignedTo.userName}
+              </p>
+            }
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <img
@@ -53,7 +68,14 @@ export const TaskCard: FC<Task> = ({
             alt={assignedBy.userName}
             className="w-6 h-6 rounded-full object-cover"
           />
-          <span className="text-xs text-cyan-800">By: {assignedBy.userName}</span>
+          <span className="text-[10px]  text-zinc-400">
+            Reporter:{" "}
+            {
+              <p className="font-bold hover:text-cyan-600 text-xs">
+                {assignedBy.userName}
+              </p>
+            }
+          </span>
         </div>
       </div>
     </div>

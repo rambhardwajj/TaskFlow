@@ -32,7 +32,7 @@ export default function TasksOfProject() {
   };
 
   return (
-    <div className="flex">
+    <div className="flex ">
       <div className="w-full bg-neutral-950 text-white p-4 overflow-hidden">
         <TasksNavigation />
         {loading ? (

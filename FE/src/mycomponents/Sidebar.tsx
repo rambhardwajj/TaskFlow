@@ -1,4 +1,4 @@
-import { LayoutDashboard, ListChecks, Menu, Plus } from "lucide-react";
+import { ArrowLeft, Divide, LayoutDashboard, ListChecks, Menu, Plus } from "lucide-react";
 import { useState } from "react";
 import { cn } from "../lib/utils";
 import { Link } from "react-router-dom";
@@ -22,7 +22,7 @@ const Sidebar = () => {
             onClick={() => setCollapsed(!collapsed)}
             className="text-white focus:outline-none"
           >
-            <Menu size={20} />
+           {collapsed ? <Menu className="hover:cursor-pointer" size={20} />: <ArrowLeft className="hover:cursor-pointer" />}
           </button>
         </div>
 
