@@ -4,6 +4,7 @@ import axios from "axios";
 export type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
 
 export interface Task {
+  _id: string
   title: string;
   desc?: string;
   attachments?: any[];
