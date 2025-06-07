@@ -5,12 +5,8 @@ import { fetchProjectTasks, Task } from "@/redux/slices/projectsTasksSlice";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
@@ -86,12 +82,14 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
     <div className="min-w-[200px] w-[80vw] sm:min-w-[300px] bg-neutral-900 mr-1 p-4 rounded-lg shadow-lg flex flex-col gap-4 transition hover:scale-[1.003]">
       <div className="flex justify-between items-center mb-2">
         <div className="font-semibold text-sm">{title}</div>
-        <button
-          className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1 transition"
-          onClick={onAddTask}
-        >
-          <Plus size={14} /> Add task
-        </button>
+        {title === "TODO" && projectId && (
+          <button
+            className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1 transition"
+            onClick={onAddTask}
+          >
+            <Plus size={14} /> Add task
+          </button>
+        )}
       </div>
 
       <div className="flex flex-col gap-2 overflow-y-auto max-h-[calc(80vh-100px)] pr-2">
@@ -110,7 +108,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
           if (!open) setSelectedTask(null);
         }}
       >
-        <DialogContent className="min-w-[65vw] bg-[#1e1e1e] border border-[#333]   mx-auto rounded-lg shadow-2xl p-6 space-y-1  max-h-[63vh] overflow-y-scroll">
+        <DialogContent className=" min-w-[70vw] bg-[#1e1e1e] border border-[#333]   mx-auto rounded-lg shadow-2xl p-6 space-y-1  max-h-[63vh] overflow-y-auto">
           {/* Tab Header */}
 
           <div className="flex border-b border-zinc-700  text-sm font-medium text-zinc-400">
@@ -120,9 +118,9 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
           </div>
 
           {selectedTask && (
-            <div className="flex gap-4">
+            <div className="flex gap-4 justify-between">
               {/* Title & Description */}
-              <div className="min-w-[45vw] justify-between space-y-3">
+              <div className="w- full min-w-[45vw] justify-between space-y-3">
                 <div className="space-y-2">
                   <h2 className="text-white text-2xl font-semibold tracking-tight">
                     {editMode ? (
@@ -232,7 +230,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
           )}
 
           {/* Footer */}
-          <DialogFooter className="pt-4 flex flex-col-reverse sm:flex-row justify-between gap-4">
+          <DialogFooter className="mt-[-50px] flex flex-col-reverse sm:flex-row justify-between gap-4">
             <Button
               variant="secondary"
               onClick={() => setEditMode((prev) => !prev)}

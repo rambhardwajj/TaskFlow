@@ -166,6 +166,7 @@ const createSubTask = asyncHandler(async (req: Request, res: Response) => {
         task: taskId,
         project: projectId,
         createdBy: req.user._id,
+        isCompleted: false
     });
 
     if (!newSubTask) throw new CustomError(500, "subTask not created");
@@ -177,9 +178,10 @@ const createSubTask = asyncHandler(async (req: Request, res: Response) => {
 
 const updateSubTask = asyncHandler(async (req: Request, res: Response) => {
     const { subTaskId } = req.params;
-    const { title, isCompleted } = handleZodError(
-        validateSubTaskData(req.body)
-    );
+    const { title, isCompleted } = req.body
+
+    console.log("completed " , isCompleted)
+    console.log("title " , title)
 
     if (!mongoose.Types.ObjectId.isValid(subTaskId)) {
         throw new CustomError(400, "invalid subtask id ");
@@ -399,7 +401,7 @@ const getTasks = asyncHandler(async (req: Request, res: Response) => {
         },
     ]);
 
-    console.log(allTasks);
+    // console.log(allTasks);
 
     res.status(200).json(
         new ApiResponse(ResponseStatus.Success, allTasks, "all tasks returned")
@@ -485,6 +487,7 @@ const getSubTasks = asyncHandler(async (req, res) => {
             },
         },
     ]);
+    // console.log(subTasks)
 
     if( !subTasks) {
       throw new CustomError(400, "No subtasks found");

@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import AssignedUserDialog from "./AssignedUserDialog";
+import { tracingChannel } from "diagnostics_channel";
 
 export const TaskCard: FC<Task> = ({
   _id,
@@ -41,14 +42,14 @@ export const TaskCard: FC<Task> = ({
   status,
 }) => {
   const [subtaskTitle, setSubtaskTitle] = useState("");
-  const [subTasks, setSubTasks] = useState<{ title: string; _id: string }[]>(
-    []
-  );
+  const [subTasks, setSubTasks] = useState<
+    { title: string; _id: string; isCompleted: boolean }[]
+  >([]);
   const { projectId } = useParams();
   const [open, setOpen] = useState(false);
   const [subTasksOpen, setSubTasksOpen] = useState(false);
 
-  const handleSubmit = async () => {
+  const addSubTask = async () => {
     if (!subtaskTitle.trim()) return;
 
     try {
@@ -71,6 +72,22 @@ export const TaskCard: FC<Task> = ({
     }
   };
 
+  const deleteSubTask = async (subtaskId: string) => {
+    try {
+      const res = await axios.delete(
+        `http://localhost:8200/api/v1/task/project/${projectId}/tasks/${_id}/delete/subTasks/${subtaskId}`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log("Subtask deleted:", res.data);
+      getAllSubtasks();
+      setOpen(false);
+    } catch (error) {
+      console.error("Error is delting , ", error);
+    }
+  };
+
   const getAllSubtasks = async () => {
     try {
       const res = await axios.get(
@@ -86,9 +103,27 @@ export const TaskCard: FC<Task> = ({
     }
   };
 
+  const updateSubTask = async (subtask: any) => {
+    try {
+      const res = await axios.patch(
+        `http://localhost:8200/api/v1/task/project/${projectId}/tasks/${_id}/update/subTasks/${subtask._id}`,
+        {
+          title: subtask.title,
+          isCompleted: true,
+        },
+        { withCredentials: true }
+      );
+
+      console.log(res.data);
+      getAllSubtasks();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
-      <div className="bg-neutral-950 p-4 rounded-md border border-neutral-00 hover:border-blue-500 transition-all hover:shadow-lg group cursor-pointer space-y-1">
+      <div className="bg-neutral-950 p-4 rounded-md border border-neutral-800 hover:border-blue-500 transition-all hover:shadow-lg group cursor-pointer space-y-1">
         {/* First line  */}
         <div className="flex justify-between">
           <p className="font-semibold text-cyan-500 group-hover:text-blue-300 text-sm transition">
@@ -118,7 +153,7 @@ export const TaskCard: FC<Task> = ({
                 </Tooltip>
                 <DialogContent className="bg-neutral-900 border-zinc-700">
                   <DialogHeader>
-                    <DialogTitle className="text-white">
+                    <DialogTitle className="text-white mb-3">
                       All SubTasks
                     </DialogTitle>
                     {subTasks.length === 0 ? (
@@ -130,14 +165,30 @@ export const TaskCard: FC<Task> = ({
                         {subTasks.map((subtask) => (
                           <li
                             key={subtask._id}
-                            className="text-sm text-white border border-zinc-700 p-2 rounded flex justify-between"
+                            className={`text-sm text-white p-2 rounded flex justify-between border ${
+                              subtask.isCompleted
+                                ? "border-green-600"
+                                : "border-zinc-700"
+                            }`}
                           >
                             {subtask.title}
                             <div>
-                              <button>
-                                <SquareCheck className="w-6 cursor-pointer hover:scale-[1.3] hover:text-green-600 mr-2 " />
-                              </button>
-                              <button>
+                              {!subtask.isCompleted && (
+                                <button
+                                  onClick={(e) => {
+                                    updateSubTask(subtask);
+                                    e.stopPropagation();
+                                  }}
+                                >
+                                  <SquareCheck className="w-6 cursor-pointer hover:scale-[1.3] hover:text-green-600 mr-2  " />
+                                </button>
+                              )}
+                              <button
+                                onClick={(e) => {
+                                  deleteSubTask(subtask._id);
+                                  e.stopPropagation();
+                                }}
+                              >
                                 <X className="w-6 cursor-pointer hover:scale-[1.3] hover:text-red-600  " />
                               </button>
                             </div>
@@ -204,10 +255,7 @@ export const TaskCard: FC<Task> = ({
                     >
                       Cancel
                     </Button>
-                    <Button
-                      className="hover:bg-cyan-700"
-                      onClick={handleSubmit}
-                    >
+                    <Button className="hover:bg-cyan-700" onClick={addSubTask}>
                       Create
                     </Button>
                   </DialogFooter>
