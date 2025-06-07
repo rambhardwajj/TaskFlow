@@ -387,10 +387,12 @@ const getTasks = asyncHandler(async (req: Request, res: Response) => {
                 updatedAt: 1,
                 assignedTo: {
                     userName: "$assignedToInfo.userName",
+                    email: "$assignedToInfo.email",
                     avatar: "$assignedToInfo.avatar.url",
                 },
                 assignedBy: {
                     userName: "$assignedByInfo.userName",
+                    email:"$assignedByInfo.email",
                     avatar: "$assignedByInfo.avatar.url",
                 },
             },
