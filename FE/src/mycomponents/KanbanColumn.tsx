@@ -83,7 +83,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
   };
 
   return (
-    <div className="min-w-[250px] w-[80vw] sm:min-w-[300px] bg-neutral-900 mr-1 p-4 rounded-lg shadow-lg flex flex-col gap-4 transition hover:scale-[1.003]">
+    <div className="min-w-[200px] w-[80vw] sm:min-w-[300px] bg-neutral-900 mr-1 p-4 rounded-lg shadow-lg flex flex-col gap-4 transition hover:scale-[1.003]">
       <div className="flex justify-between items-center mb-2">
         <div className="font-semibold text-sm">{title}</div>
         <button
@@ -94,7 +94,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
         </button>
       </div>
 
-      <div className="flex flex-col gap-4 overflow-y-auto max-h-[calc(80vh-100px)] pr-2">
+      <div className="flex flex-col gap-2 overflow-y-auto max-h-[calc(80vh-100px)] pr-2">
         {tasks.map((task) => (
           <div key={task._id} onClick={() => handleCardClick(task)}>
             <TaskCard {...task} />
@@ -110,64 +110,101 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
           if (!open) setSelectedTask(null);
         }}
       >
-        <DialogContent className="bg-[#1e1e1e] border border-[#333] max-w-4xl mx-auto rounded-lg shadow-2xl p-6 space-y-1  max-h-[70vh] overflow-y-scroll">
+        <DialogContent className="min-w-[65vw] bg-[#1e1e1e] border border-[#333]   mx-auto rounded-lg shadow-2xl p-6 space-y-1  max-h-[63vh] overflow-y-scroll">
           {/* Tab Header */}
-          <div className="flex gap-6 border-b border-zinc-700 pb-2 text-sm font-medium text-zinc-400">
+
+          <div className="flex border-b border-zinc-700  text-sm font-medium text-zinc-400">
             <button className="text-white border-b-2 border-blue-600 pb-1">
               General
             </button>
           </div>
 
           {selectedTask && (
-            <>
+            <div className="flex gap-4">
               {/* Title & Description */}
-              <div className="space-y-4">
-                <h2 className="text-white text-2xl font-semibold tracking-tight">
-                  {editMode ? "Edit Task" : "Task Details"}
-                </h2>
-                {!editMode && (
-                  <p className="text-zinc-400 text-sm">
-                    Comprehensive view of your selected task
+              <div className="min-w-[45vw] justify-between space-y-3">
+                <div className="space-y-2">
+                  <h2 className="text-white text-2xl font-semibold tracking-tight">
+                    {editMode ? (
+                      <div>
+                        Edit Task
+                        <Textarea
+                          className=" mt-2 bg-zinc-800 border border-zinc-700 text-white focus:ring-2 focus:ring-blue-600 rounded-lg min-h-[30px]"
+                          value={selectedTask.title}
+                          onChange={(e) =>
+                            handleInputChange("title", e.target.value)
+                          }
+                        />
+                      </div>
+                    ) : (
+                      `${selectedTask.title}`
+                    )}
+                  </h2>
+                  {!editMode && (
+                    <p className="text-zinc-400 text-sm">
+                      Comprehensive view of your selected task
+                    </p>
+                  )}
+                </div>
+
+                {/* Description Section */}
+                <div className="space-y-2 bg-[#2a2a2a] border border-[#444] rounded-md p-4">
+                  <h3 className="text-white font-semibold text-base">
+                    Description
+                  </h3>
+                  {editMode ? (
+                    <Textarea
+                      className="bg-zinc-800 border border-zinc-700 text-white focus:ring-2 focus:ring-blue-600 rounded-lg min-h-[100px]"
+                      value={selectedTask.desc}
+                      onChange={(e) =>
+                        handleInputChange("desc", e.target.value)
+                      }
+                    />
+                  ) : (
+                    <ul className="list-disc pl-5 text-zinc-300 text-sm space-y-1">
+                      <li>{selectedTask.desc}</li>
+                    </ul>
+                  )}
+                </div>
+
+                {/* Status */}
+                <div>
+                  <label className="block mb-2 text-sm font-semibold text-zinc-400">
+                    Status
+                  </label>
+                  <p className="inline-block px-3 py-1 text-sm rounded-full bg-zinc-800 text-white border border-zinc-600">
+                    {selectedTask.status}
                   </p>
-                )}
+                </div>
+
+                {/* Assignee & Reporter */}
+
+                {/* Attachments */}
+                <div>
+                  <h4 className="text-white font-semibold mb-2">Attachments</h4>
+                  <div className="flex gap-3 overflow-x-auto">
+                    {selectedTask.attachments?.map((att, idx) => (
+                      <div
+                        key={idx}
+                        className="min-w-[120px] h-[70px] bg-zinc-800 rounded-md border border-zinc-600 overflow-hidden"
+                      >
+                        <img
+                          src={att.url}
+                          alt="attachment"
+                          className="object-cover w-full h-full"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
 
-              {/* Description Section */}
-              <div className="space-y-4 bg-[#2a2a2a] border border-[#444] rounded-md p-4">
-                <h3 className="text-white font-semibold text-base">
-                  Description
-                </h3>
-                {editMode ? (
-                  <Textarea
-                    className="bg-zinc-800 border border-zinc-700 text-white focus:ring-2 focus:ring-blue-600 rounded-lg min-h-[100px]"
-                    value={selectedTask.desc}
-                    onChange={(e) => handleInputChange("desc", e.target.value)}
-                  />
-                ) : (
-                  <ul className="list-disc pl-5 text-zinc-300 text-sm space-y-1">
-                    
-                    <li>{selectedTask.desc}</li>
-                  </ul>
-                )}
-              </div>
-
-
-              {/* Status */}
-              <div>
-                <label className="block mb-2 text-sm font-semibold text-zinc-400">
-                  Status
-                </label>
-                <p className="inline-block px-3 py-1 text-sm rounded-full bg-zinc-800 text-white border border-zinc-600">
-                  {selectedTask.status}
-                </p>
-              </div>
-
-              {/* Assignee & Reporter */}
-              <div className="flex flex-col sm:flex-row gap-6">
+              {/* Users  */}
+              <div className="flex flex-col max-w-[30vw] gap-6">
                 {/* Assignee */}
-                <div className="bg-[#2a2a2a] rounded-md p-4 w-full sm:w-1/2 border border-[#444]">
+                <div className="bg-[#2a2a2a] rounded-md p-1 pl-3 pb-2 w-full min-w-[15vw] border border-[#444]">
                   <h4 className="text-zinc-400 text-xs mb-1">Assignee</h4>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 pt-2">
                     <img
                       src={selectedTask.assignedTo.avatar}
                       className="w-8 h-8 rounded-full border border-zinc-700"
@@ -178,9 +215,9 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
                   </div>
                 </div>
                 {/* Reporter */}
-                <div className="bg-[#2a2a2a] rounded-md p-4 w-full sm:w-1/2 border border-[#444]">
+                <div className="bg-[#2a2a2a] rounded-md p-1 pl-3 pb-2  w-full border border-[#444]">
                   <h4 className="text-zinc-400 text-xs mb-1">Reporter</h4>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 pt-2">
                     <img
                       src={selectedTask.assignedBy.avatar}
                       className="w-8 h-8 rounded-full border border-zinc-700"
@@ -191,46 +228,27 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
                   </div>
                 </div>
               </div>
-
-              {/* Attachments */}
-              <div>
-                <h4 className="text-white font-semibold mb-2">Attachments</h4>
-                <div className="flex gap-3 overflow-x-auto">
-                  {selectedTask.attachments?.map((att, idx) => (
-                    <div
-                      key={idx}
-                      className="min-w-[120px] h-[70px] bg-zinc-800 rounded-md border border-zinc-600 overflow-hidden"
-                    >
-                      <img
-                        src={att.url}
-                        alt="attachment"
-                        className="object-cover w-full h-full"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Footer */}
-              <DialogFooter className="pt-4 flex flex-col-reverse sm:flex-row justify-between gap-4">
-                <Button
-                  variant="secondary"
-                  onClick={() => setEditMode((prev) => !prev)}
-                  className="w-full sm:w-auto bg-transparent hover:bg-zinc-800 text-white border border-zinc-700"
-                >
-                  {editMode ? "Cancel Edit" : "Edit"}
-                </Button>
-                {editMode && (
-                  <Button
-                    className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium"
-                    onClick={handleSaveTask}
-                  >
-                    Save Changes
-                  </Button>
-                )}
-              </DialogFooter>
-            </>
+            </div>
           )}
+
+          {/* Footer */}
+          <DialogFooter className="pt-4 flex flex-col-reverse sm:flex-row justify-between gap-4">
+            <Button
+              variant="secondary"
+              onClick={() => setEditMode((prev) => !prev)}
+              className="w-full sm:w-auto bg-transparent hover:bg-zinc-800 text-white border border-zinc-700"
+            >
+              {editMode ? "Cancel Edit" : "Edit"}
+            </Button>
+            {editMode && (
+              <Button
+                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium"
+                onClick={handleSaveTask}
+              >
+                Save Changes
+              </Button>
+            )}
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
