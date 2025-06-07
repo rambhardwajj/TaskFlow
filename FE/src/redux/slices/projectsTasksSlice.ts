@@ -13,10 +13,12 @@ export interface Task {
   assignedTo: {
     userName: string;
     avatar: string;
+    email: string
   };
   assignedBy: {
     userName: string;
     avatar: string;
+    email: string;
   };
 }
 
