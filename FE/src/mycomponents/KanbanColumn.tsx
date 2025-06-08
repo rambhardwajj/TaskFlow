@@ -2,11 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { TaskCard } from "./TaskCard";
 import { fetchProjectTasks, Task } from "@/redux/slices/projectsTasksSlice";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
@@ -14,14 +10,15 @@ import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store/store";
+import { DialogTrigger } from "@radix-ui/react-dialog";
+import { NewTaskDialog } from "./NewTaskDialog";
 
 interface KanbanColumnProps {
   title: string;
   tasks: Task[];
-  onAddTask?: () => void;
 }
 
-const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
+const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
   const { projectId } = useParams();
   console.log(projectId);
 
@@ -29,19 +26,18 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [editMode, setEditMode] = useState(false);
+  const [newTaskOpen, setOpenNewTask] = useState<boolean>(false);
+  const [newTask, setNewTask] = useState<Task | null>(null);
 
   const handleCardClick = (task: Task) => {
     setSelectedTask(task);
     setEditMode(false);
   };
-
   const handleInputChange = (field: keyof Task, value: string) => {
     if (!selectedTask) return;
     setSelectedTask({ ...selectedTask, [field]: value });
   };
-
   const handleSaveTask = async () => {
-    console.log(selectedTask);
     if (!selectedTask) return;
     const taskId = selectedTask._id;
     if (!selectedTask.title?.trim()) {
@@ -65,7 +61,6 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
           withCredentials: true,
         }
       );
-      console.log(res.data);
       if (res.data) {
         toast.success("Task updated successfully");
       }
@@ -78,17 +73,52 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
     }
   };
 
+  const handleNewTaskSubmit =  async (formData: FormData) => {
+    console.log(formData)
+    await addTask(formData);
+  };
+  const addTask = async (formData: FormData) => {
+    try {
+      console.log("in addTask")
+      const res = await axios.post(
+        `http://localhost:8200/api/v1/task/project/${projectId}/create/tasks`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (res.data) {
+        toast.success("Task created successfully");
+        setOpenNewTask(false);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to create task");
+    }
+  };
+
   return (
     <div className="min-w-[200px] w-[80vw] sm:min-w-[300px] bg-neutral-900 mr-1 p-4 rounded-lg shadow-lg flex flex-col gap-4 transition hover:scale-[1.003]">
       <div className="flex justify-between items-center mb-2">
         <div className="font-semibold text-sm">{title}</div>
         {title === "TODO" && projectId && (
-          <button
-            className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1 transition"
-            onClick={onAddTask}
-          >
-            <Plus size={14} /> Add task
-          </button>
+          <div>
+            <button
+              onClick={() => setOpenNewTask(true)}
+              className="text-xs cursor-pointer hover:scale-[1.1] text-blue-400 hover:text-blue-300 flex items-center gap-1 transition"
+            >
+              <Plus size={14} /> Add task
+            </button>
+
+            <NewTaskDialog
+              open={newTaskOpen}
+              onOpenChange={setOpenNewTask}
+              onSubmit={handleNewTaskSubmit}
+            />
+          </div>
         )}
       </div>
 
@@ -175,7 +205,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
                   </p>
                 </div>
 
-                {/* Assignee & Reporter */}
+             
 
                 {/* Attachments */}
                 <div>
@@ -197,11 +227,13 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
                 </div>
               </div>
 
-              {/* Users  */}
+              {/* Users  */}   {/* Assignee & Reporter */}
               <div className="flex flex-col max-w-[30vw] gap-6">
                 {/* Assignee */}
                 <div className="bg-[#2a2a2a] rounded-md p-1 pl-3 pb-2 w-full min-w-[15vw] border border-[#444]">
-                  <h4 className="text-zinc-400 text-xs mb-1">Assignee</h4>
+                  <h4 className="text-zinc-400 text-xs mb-1">Assignee  <p className="text-white text-sm font-medium">
+                      {selectedTask.assignedTo.email}
+                    </p></h4>
                   <div className="flex items-center gap-3 pt-2">
                     <img
                       src={selectedTask.assignedTo.avatar}
@@ -211,10 +243,13 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks, onAddTask }) => {
                       {selectedTask.assignedTo.userName}
                     </p>
                   </div>
+                   
                 </div>
                 {/* Reporter */}
                 <div className="bg-[#2a2a2a] rounded-md p-1 pl-3 pb-2  w-full border border-[#444]">
-                  <h4 className="text-zinc-400 text-xs mb-1">Reporter</h4>
+                  <h4 className="text-zinc-400 text-xs mb-1">Reporter  <p className="text-white text-sm font-medium">
+                      {selectedTask.assignedTo.email}
+                    </p></h4>
                   <div className="flex items-center gap-3 pt-2">
                     <img
                       src={selectedTask.assignedBy.avatar}

@@ -2,19 +2,18 @@ import { FC, useState } from "react";
 import {
   CalendarDays,
   ListTodo,
-  Mail,
   Paperclip,
   Plus,
   SquareCheck,
+  Trash,
   X,
 } from "lucide-react";
-import { Task } from "@/redux/slices/projectsTasksSlice";
+import { fetchProjectTasks, Task } from "@/redux/slices/projectsTasksSlice";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -24,12 +23,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import AssignedUserDialog from "./AssignedUserDialog";
-import { tracingChannel } from "diagnostics_channel";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store/store";
+import { toast } from "sonner";
 
 export const TaskCard: FC<Task> = ({
   _id,
@@ -39,7 +39,6 @@ export const TaskCard: FC<Task> = ({
   updatedAt,
   assignedTo,
   assignedBy,
-  status,
 }) => {
   const [subtaskTitle, setSubtaskTitle] = useState("");
   const [subTasks, setSubTasks] = useState<
@@ -48,6 +47,9 @@ export const TaskCard: FC<Task> = ({
   const { projectId } = useParams();
   const [open, setOpen] = useState(false);
   const [subTasksOpen, setSubTasksOpen] = useState(false);
+  const [delOpen, setDelOpen] = useState(false);
+
+  const dispatch = useDispatch<AppDispatch>();
 
   const addSubTask = async () => {
     if (!subtaskTitle.trim()) return;
@@ -121,6 +123,26 @@ export const TaskCard: FC<Task> = ({
     }
   };
 
+  const handleDeleteTask = async (taskId: string) => {
+    try {
+      const res = await axios.delete(
+        `http://localhost:8200/api/v1/task/project/${projectId}/delete/tasks/${taskId}`,
+        { withCredentials: true }
+      );
+      toast.success("Task deleted successfully");
+      console.log("Task deleted:", res.data);
+
+      if (projectId) {
+        dispatch(fetchProjectTasks(projectId));
+      }
+      setDelOpen(false);
+    } catch (error) {
+      toast.error("Failed to delete task");
+
+      console.log("Error in deleting the task", error);
+    }
+  };
+
   return (
     <>
       <div className="bg-neutral-950 p-4 rounded-md border border-neutral-800 hover:border-blue-500 transition-all hover:shadow-lg group cursor-pointer space-y-1">
@@ -130,7 +152,7 @@ export const TaskCard: FC<Task> = ({
             {title}
           </p>
           <div className="flex gap-2 items-center ">
-            {/* Subtaks Dialog box */}
+            {/* List  Subtaks Dialog box */}
             <div onClick={(e) => e.stopPropagation()}>
               <Dialog open={subTasksOpen} onOpenChange={setSubTasksOpen}>
                 <Tooltip>
@@ -161,7 +183,7 @@ export const TaskCard: FC<Task> = ({
                         No Subtasks found.
                       </p>
                     ) : (
-                      <ul className="space-y-2">
+                      <ul className="space-y-1">
                         {subTasks.map((subtask) => (
                           <li
                             key={subtask._id}
@@ -172,7 +194,7 @@ export const TaskCard: FC<Task> = ({
                             }`}
                           >
                             {subtask.title}
-                            <div>
+                            <div className="">
                               {!subtask.isCompleted && (
                                 <button
                                   onClick={(e) => {
@@ -200,6 +222,7 @@ export const TaskCard: FC<Task> = ({
 
                   <DialogFooter className="pt-4">
                     <Button
+                      className="cursor-pointer"
                       type="button"
                       variant="secondary"
                       onClick={() => setSubTasksOpen(false)}
@@ -211,7 +234,7 @@ export const TaskCard: FC<Task> = ({
               </Dialog>
             </div>
 
-            {/* Create SubTask Dialog box */}
+            {/* + Create SubTask Dialog box */}
             <div onClick={(e) => e.stopPropagation()}>
               <Dialog open={open} onOpenChange={setOpen}>
                 <Tooltip>
@@ -249,29 +272,88 @@ export const TaskCard: FC<Task> = ({
 
                   <DialogFooter className="pt-4">
                     <Button
+                      className="cursor-pointer"
                       type="button"
                       variant="secondary"
                       onClick={() => setOpen(false)}
                     >
                       Cancel
                     </Button>
-                    <Button className="hover:bg-cyan-700" onClick={addSubTask}>
+                    <Button
+                      className="hover:bg-cyan-700 cursor-pointer"
+                      onClick={addSubTask}
+                    >
                       Create
                     </Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
             </div>
+
+            {/* Delete Task  */}
+            <div onClick={(e) => e.stopPropagation()}>
+              <Dialog open={delOpen} onOpenChange={setDelOpen}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DialogTrigger asChild>
+                      <button>
+                        <Trash className="w-4 cursor-pointer hover:scale-[1.3] hover:text-red-600 " />
+                      </button>
+                    </DialogTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>Delete Task</TooltipContent>
+                </Tooltip>
+                <DialogContent className="bg-[#1e1e1e] text-white border border-zinc-700 rounded-lg p-6 space-y-4">
+                  <div className="space-y-2">
+                    <h2 className="text-lg font-semibold text-red-500">
+                      <DialogHeader>
+                        <DialogTitle className="text-white">
+                          Delete Task??
+                        </DialogTitle>
+                      </DialogHeader>
+                    </h2>
+                    <p className="text-sm text-zinc-400">
+                      Are you sure you want to delete this task? This action is{" "}
+                      <span className="text-red-500 font-semibold">
+                        permanent
+                      </span>{" "}
+                      and cannot be undone.
+                    </p>
+                  </div>
+
+                  <div className="flex justify-end gap-3">
+                    <button
+                      className="cursor-pointer px-4 py-2 rounded bg-zinc-700 hover:bg-zinc-600 text-sm"
+                      onClick={() => setDelOpen(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="cursor-pointer px-4 py-2 rounded bg-red-600 hover:bg-red-700 text-sm font-semibold"
+                      onClick={() => {
+                        setDelOpen(true);
+                        handleDeleteTask(_id);
+                      }}
+                    >
+                      Delete Task
+                    </button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </div>
 
-        {/* rest of your task card UI... */}
+        {/* 2nd Line  */}
         {desc && (
           <div className="inline-block bg-zinc-800 text-zinc-300 px-2 py-1 rounded-md text-[10px] font-medium">
             {desc}
           </div>
         )}
+
+        {/* 3rd Line  */}
         <div className="flex items-center justify-between  text-zinc-400 mt-1">
+          {/* Calendar  */}
           <div className="flex items-center gap-2 text-[10px]">
             <CalendarDays size={14} />
             <span>{new Date(updatedAt).toLocaleDateString()}</span>
@@ -328,6 +410,8 @@ export const TaskCard: FC<Task> = ({
             </Dialog>
           </div>
         </div>
+
+        {/* 4th line  */}
         <div className="flex items-center justify-between mt-3">
           {/* Assigned To  */}
           <div
@@ -359,9 +443,9 @@ export const TaskCard: FC<Task> = ({
             </Dialog>
             <span className="text-[10px] text-zinc-400">
               Assignie: {assignedTo.userName}
-              <p className="font-bold text-xs hover:text-cyan-600">
+              {/* <p className="font-bold text-xs hover:text-cyan-600">
                 {assignedTo.email}
-              </p>
+              </p> */}
             </span>
           </div>
           {/* Assigned By  */}
@@ -393,10 +477,10 @@ export const TaskCard: FC<Task> = ({
               />
             </Dialog>
             <span className="text-[10px] text-zinc-400">
-              Assignie: {assignedBy.userName}
-              <p className="font-bold text-xs hover:text-cyan-600">
+              Reporter: {assignedBy.userName}
+              {/* <p className="font-bold text-xs hover:text-cyan-600">
                 {assignedBy.email}
-              </p>
+              </p> */}
             </span>
           </div>
         </div>

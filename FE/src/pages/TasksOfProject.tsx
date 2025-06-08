@@ -36,12 +36,13 @@ export default function TasksOfProject() {
   const currProject = projects.find(
     (project) => project.projectId === projectId
   );
-  console.log("currProject", currProject);
   const tasksBySection = tasksByProject[projectId ?? ""] ?? {
     TODO: [],
     IN_PROGRESS: [],
     DONE: [],
   };
+
+  
 
   return (
     <div className="flex ">
@@ -56,7 +57,6 @@ export default function TasksOfProject() {
                 key={section}
                 title={section}
                 tasks={tasksBySection[section]}
-                onAddTask={() => console.log(`Add task to ${section}`)}
               />
             ))}
           </div>
