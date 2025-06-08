@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Trash } from "lucide-react";
+import { SquarePen, Trash } from "lucide-react";
 
 export interface Project {
   role: string;
@@ -41,7 +41,11 @@ export default function ProjectTable() {
   }, [dispatch]);
 
   const Initials = (props: { ini: string }) => {
-    return <span className="bg-cyan-600 px-2 mr-3 text-violet-950 rounded-xs ">{props.ini}</span>;
+    return (
+      <span className="bg-cyan-600 px-2 mr-3 text-violet-950 rounded-xs ">
+        {props.ini}
+      </span>
+    );
   };
 
   const handleCreateProject = async () => {
@@ -63,28 +67,43 @@ export default function ProjectTable() {
     }
   };
 
+  const [delOpen, setDelOpen] = useState(false);
+  const handleDeleteProject = async (id: string) => {
+    try {
+      await axios.delete(`http://localhost:8200/api/v1/project/delete/${id}`, {
+        withCredentials: true,
+      });
+      toast.success("Project deleted successfully!");
+      dispatch(getAllProjects());
+      setDelOpen(false);
+    } catch (error) {
+      toast.error("Failed to delete project.");
+      console.error(error);
+    }
+  };
+
   return (
     <div className="w-full p-4 overflow-auto ">
       <div className="overflow-x-none ">
         <table className="min-w-full table-auto text-left  ">
           <thead className="bg-black text-zinc-200 sticky top-0 z-10  ">
             <tr>
-              <th className="py-3 px-5 text-sm font-semibold uppercase tracking-wide ">
+              <th className="py-3 px-5 text-sm font-semibold  tracking-wide ">
                 Project Name
               </th>
-              <th className="py-3 px-5 text-sm font-semibold uppercase tracking-wide">
+              <th className="py-3 px-5 text-sm font-semibold  tracking-wide">
                 Created At
               </th>
-              <th className="py-3 px-5 text-sm font-semibold uppercase tracking-wide">
+              <th className="py-3 px-5 text-sm font-semibold  tracking-wide">
                 Created By
               </th>
-              <th className="py-3 px-5 text-sm font-semibold uppercase tracking-wide">
+              <th className="py-3 px-1 text-sm font-semibold  tracking-wide">
                 Members
               </th>
-              <th className="py-3 px-5 text-sm font-semibold uppercase tracking-wide">
+              <th className="py-3 px-1 text-sm font-semibold  tracking-wide">
                 Your Role
               </th>
-              <th className="py-3 px-2 text-sm font-semibold uppercase tracking-wide">
+              <th className="py-3 px-1 text-sm font-semibold  tracking-wide">
                 Actions
               </th>
             </tr>
@@ -98,22 +117,75 @@ export default function ProjectTable() {
                   key={index}
                   className="bg-neutral-900 border-b border-zinc-800 transition-transform hover:scale-[1.002] hover:bg-neutral-800 cursor-pointer"
                 >
-                  <td className="py-3 px-5  font-medium text-zinc-100">
-                    <Link to={`/${project.projectId}/tasks`}>
+                  <td className="my-3 ml-5 flex justify-between  font-medium text-zinc-100">
+                    <Link
+                      className=" text-sm hover:scale-[1.08] hover:text-blue-600 mr-10"
+                      to={`/${project.projectId}/tasks`}
+                    >
                       {<Initials ini={project.name.charAt(0)} />} {project.name}
                     </Link>
+                    <div onClick={(e) => e.stopPropagation()}>
+                      <Link to={`/${project.projectId}`} >
+                        <SquarePen className=" hover:scale-[1.1] hover:text-green-500 w-5 h-5 mx-2 text-green-700 " />
+                      </Link>
+                    </div>
                   </td>
-                  <td className="py-3 px-5 text-zinc-400">
+                  <td className="py-3 px-5 text-zinc-400 text-xs">
                     {project.createdAt}
                   </td>
-                  <td className="py-3 px-5 text-zinc-400">
+                  <td className="py-3 px-5 text-zinc-400 text-xs">
                     {project.createdBy.username}
                   </td>
-                  <td className="py-3 px-5 text-zinc-400">
+                  <td className="py-3 px-5 text-zinc-400 text-xs">
                     {project.memberCount}
                   </td>
-                  <td className="py-3 px-5 text-zinc-300">{project.role}</td>
-                  <td className="py-3 px-5 text-red-600"><Trash className="hover:scale-[1.2]"/></td>
+                  <td className="py-3 px-5 text-zinc-300 text-xs">
+                    {project.role}
+                  </td>
+                  <td
+                    className="py-3 px-5 text-red-600  "
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {/* Delete  */}
+                    <Dialog open={delOpen} onOpenChange={setDelOpen}>
+                      <DialogTrigger asChild>
+                        <button
+                          className="cursor-pointer "
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDelOpen(true);
+                          }}
+                        >
+                          <Trash className=" w-5 hover:scale-[1.2] hover:text-red-500" />
+                        </button>
+                      </DialogTrigger>
+                      <DialogContent className="bg-neutral-900 rounded-b-sm hover:bg-neutral-800 text-white">
+                        <div className="space-y-4">
+                          <DialogTitle>
+                            Are you sure you want to delete this project -{" "}
+                            {project.name} ?
+                          </DialogTitle>
+                          <div className="flex justify-end space-x-2 pt-4">
+                            <button
+                              onClick={() => setDelOpen(false)}
+                              className="rounded-md border px-4 py-2 text-sm hover:bg-black cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              onClick={() => {
+                                setDelOpen(true);
+                                handleDeleteProject(project.projectId);
+                              }}
+                              className="rounded-md bg-red-600 px-4 py-2 text-sm text-white cursor-pointer hover:bg-red-700"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </td>
                 </tr>
               ))
             )}
@@ -130,7 +202,7 @@ export default function ProjectTable() {
                   </DialogTrigger>
                   <DialogContent className="bg-neutral-900 rounded-b-sm hover:bg-neutral-800 text-white">
                     <div className="space-y-4">
-                        <DialogTitle>Create New Project</DialogTitle>
+                      <DialogTitle>Create New Project</DialogTitle>
                       <p className="text-sm text-gray-500">
                         Enter the name and description for your project.
                       </p>

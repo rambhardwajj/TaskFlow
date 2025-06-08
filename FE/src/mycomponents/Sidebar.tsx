@@ -48,11 +48,11 @@ const Sidebar = () => {
       {/* Bottom Section */}
       <div className="p-4  border-t border-zinc-800">
         <Link
-        to='/projects/create'
-          className="flex cursor-pointer items-center gap-2 bg-cyan-800 hover:bg-cyan-600 text-white px-4 py-2 rounded w-full justify-center transition"
+        to='/me'
+          className="flex cursor-pointer items-center  bg-cyan-800 hover:bg-cyan-600 text-white py-2  rounded w-full justify-center transition"
         >
-          <Plus size={18} />
-          {!collapsed && <span>Create Project</span>}
+         
+          {!collapsed ? <span>Profile</span>: <img src="/me.jpg" alt="Logo" className="  w-6 h-6 rounded-xl" />}
         </Link>
       </div>
     </div>

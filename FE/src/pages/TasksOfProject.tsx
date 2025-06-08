@@ -41,9 +41,7 @@ export default function TasksOfProject() {
     IN_PROGRESS: [],
     DONE: [],
   };
-
   
-
   return (
     <div className="flex ">
       <div className=" bg-neutral-950 text-white p-4 overflow-hidden">
