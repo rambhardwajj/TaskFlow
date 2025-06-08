@@ -110,7 +110,7 @@ export default function ProjectTable() {
           </thead>
           <tbody>
             {loading ? (
-              <div>Loading </div>
+              <div className="min-h-[20vh] min-w-[80vw] ">  </div>
             ) : (
               projects.map((project, index) => (
                 <tr

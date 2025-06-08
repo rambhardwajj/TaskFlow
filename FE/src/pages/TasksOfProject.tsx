@@ -16,10 +16,10 @@ const sections: TaskStatus[] = ["TODO", "IN_PROGRESS", "DONE"];
 export default function TasksOfProject() {
   const { projectId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
+  const { projects } = useSelector((state: RootState) => state.projects);
   const { tasksByProject, loading } = useSelector(
     (state: RootState) => state.projectTasks
   );
-  const { projects } = useSelector((state: RootState) => state.projects);
 
   useEffect(() => {
     if (projectId) {
@@ -43,11 +43,11 @@ export default function TasksOfProject() {
   };
   
   return (
-    <div className="flex ">
-      <div className=" bg-neutral-950 text-white p-4 overflow-hidden">
+    <div className="flex min-h-[90vh] min-w-[80vw] ">
+      <div className=" bg-neutral-900 text-white p-4 overflow-hidden">
         {currProject && <TasksNavigation currProject={currProject} />}
         {loading ? (
-          <div className="text-white text-center mt-10">Loading tasks...</div>
+          <div className="text-white text-center mt-10 min-w-[100vw]">Loading tasks...</div>
         ) : (
           <div className="flex gap-3 overflow-x-auto h-[74vh] overflow-y-hidden pb-4">
             {sections.map((section) => (

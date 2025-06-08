@@ -27,7 +27,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [newTaskOpen, setOpenNewTask] = useState<boolean>(false);
-  const [newTask, setNewTask] = useState<Task | null>(null);
+  const [added, setAdded] =  useState(false)
 
   const handleCardClick = (task: Task) => {
     setSelectedTask(task);
@@ -73,6 +73,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
     }
   };
 
+
   const handleNewTaskSubmit =  async (formData: FormData) => {
     console.log(formData)
     await addTask(formData);
@@ -90,10 +91,12 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
           },
         }
       );
+      setAdded(!added)
       if (res.data) {
         toast.success("Task created successfully");
         setOpenNewTask(false);
       }
+      if (projectId) dispatch(fetchProjectTasks(projectId));
     } catch (error) {
       console.log(error);
       toast.error("Failed to create task");
@@ -101,7 +104,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
   };
 
   return (
-    <div className="min-w-[200px] w-[80vw] sm:min-w-[300px] bg-neutral-900 mr-1 p-4 rounded-lg shadow-lg flex flex-col gap-4 transition hover:scale-[1.003]">
+    <div className="min-w-[200px] w-[80vw] sm:min-w-[300px] bg-neutral-800 mr-1 p-4 rounded-lg shadow-lg flex flex-col gap-4 transition hover:scale-[1.003]">
       <div className="flex justify-between items-center mb-2">
         <div className="font-semibold text-sm">{title}</div>
         {title === "TODO" && projectId && (
