@@ -70,13 +70,23 @@ export type PermissionType = typeof UserRoles[UserRoleType][number]
 
 
 export const hasPermission = async (  userId :string , projectId: string , permission: PermissionType)=>{
-  const userProjectMember = await ProjectMember.findOne({user:userId, project:projectId })
-  const userRole = userProjectMember?.role
-  if( !userRole ){
-    logger.error("Has permission Error ")
-    throw new CustomError(ResponseStatus.NotFound , "User role doesn't exists")
+  console.log("inside HasPermission")
+  try {
+    
+    const userProjectMember = await ProjectMember.findOne({user:userId, project:projectId })
+    console.log(userProjectMember)
+
+    const userRole = userProjectMember?.role
+
+
+    if( !userRole ){
+      logger.error("Has permission Error ")
+      throw new CustomError(ResponseStatus.NotFound , "User role doesn't exists")
+    }
+    return (UserRoles[userRole] as readonly PermissionType[] ).includes(permission)
+  } catch (error) {
+    console.log(error)
   }
-  return (UserRoles[userRole] as readonly PermissionType[] ).includes(permission)
 }
 
 export const AvailableUserRoles = Object.values(UserRoles);

@@ -10,7 +10,7 @@ const checkUserPermission = (permission: PermissionType) =>{
         try {
             const userId  = req.user._id as string
             const projectId = req.params.projectId
-
+            console.log("checkUser- projectId ", projectId)
             if( !userId || !projectId ){
                 throw new CustomError(ResponseStatus.BadRequest, "Missing user on project Id")
             }
