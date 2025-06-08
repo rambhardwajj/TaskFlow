@@ -4,7 +4,6 @@ import Projects from "./pages/Projects";
 import { Layout } from "./pages/Layout";
 import TasksOfProject from "./pages/TasksOfProject";
 import { Dashboard } from "./pages/Dashboard";
-import CreateProjectPage from "./pages/CreateProject";
 import MyTasks from "./pages/MyTasks";
 import Login from "./mycomponents/Login";
 import Signup from "./mycomponents/Signup";
@@ -21,7 +20,6 @@ export default function App() {
             <Route path="projects" element={<Projects />} />
             <Route path=":projectId" element={<Project />} />
             <Route path=":projectId/tasks" element={<TasksOfProject />} />
-            <Route path="projects/create" element={<CreateProjectPage />} />
             <Route path="tasks" element={<MyTasks />} />
           </Route>
         <Route path="login" element={<Login />} />
