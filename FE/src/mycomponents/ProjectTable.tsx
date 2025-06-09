@@ -115,18 +115,18 @@ export default function ProjectTable() {
               projects.map((project, index) => (
                 <tr
                   key={index}
-                  className="bg-neutral-900 border-b border-zinc-800 transition-transform hover:scale-[1.002] hover:bg-neutral-800 cursor-pointer"
+                  className="bg-neutral-900 border-b border-zinc-800 transition-transform hover:scale-[1.002] hover:bg-neutral-800 "
                 >
                   <td className="my-3 ml-5 flex justify-between  font-medium text-zinc-100">
                     <Link
-                      className=" text-sm hover:scale-[1.08] hover:text-blue-600 mr-10"
+                      className=" text-sm hover:scale-[1.08] hover:text-blue-600 cursor-pointer"
                       to={`/${project.projectId}/tasks`}
                     >
                       {<Initials ini={project.name.charAt(0)} />} {project.name}
                     </Link>
                     <div onClick={(e) => e.stopPropagation()}>
                       <Link to={`/${project.projectId}`} >
-                        <SquarePen className=" hover:scale-[1.1] hover:text-green-500 w-5 h-5 mx-2 text-green-700 " />
+                        <SquarePen className=" hover:scale-[1.1] hover:text-green-500 w-5 h-5 mx-2 text-green-700 cursor-pointer" />
                       </Link>
                     </div>
                   </td>
