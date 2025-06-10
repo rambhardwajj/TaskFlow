@@ -1,47 +1,48 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { RootState } from "../store/store";
 
 export type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
 
-interface Task {
+export interface myTask {
   _id: string;
   title: string;
   desc: string;
-  project: Project;
-  assignedTo: User;
-  assignedBy: User;
+  project: myProject;
+  assignedTo: myUser;
+  assignedBy: myUser;
   status: TaskStatus;
-  attachments: Attachment[];
+  attachments: myAttachment[];
   createdAt: string; // or Date if you're parsing it
   updatedAt: string; // or Date
   __v: number;
 }
 
-interface Avatar {
+export interface myAvatar {
   url: string;
   localPath: string;
   _id: string;
 }
 
-interface User {
+export interface myUser {
   _id: string;
   userName: string;
   email: string;
-  avatar: Avatar;
+  avatar: myAvatar;
 }
 
-interface Project {
+export interface myProject {
   _id: string;
 }
 
-interface Attachment {
+export interface myAttachment {
   mimetype: string;
   size: number;
   _id: string;
 }
 
-interface UserTasks {
-  byId: Record<string, Task>;
+export interface UserTasks {
+  byId: Record<string, myTask>;
   userTasks: Record<TaskStatus, string[]>;
   loading: boolean;
   error: string | null;
@@ -58,7 +59,7 @@ const initialState: UserTasks = {
   error: null,
 };
 
-export const fetchUserTasks = createAsyncThunk<{ tasks: Task[] }>(
+export const fetchUserTasks = createAsyncThunk<{ tasks: myTask[] }>(
   "userTasks/getAll",
   async (_, thunkAPI) => {
     try {
@@ -71,6 +72,31 @@ export const fetchUserTasks = createAsyncThunk<{ tasks: Task[] }>(
         error.response?.data?.message || "Error geting tasks"
       );
     }
+  }
+);
+
+export const updateTaskStatus = createAsyncThunk(
+  "userTasks/updateTaskStatus",
+  async ({
+    taskId,
+    newStatus,
+  }: {
+    taskId: string;
+    newStatus: TaskStatus;
+  }, { getState }) => {
+    const state = getState() as RootState;
+    const task = state.userTasks.byId[taskId];
+    const projectId = task.project._id; // Get project ID from the task in state
+    
+    const response = await axios.patch(
+      `http://localhost:8200/api/v1/task/project/${projectId}/update/tasks/${taskId}`,
+      { status: newStatus },
+      { withCredentials: true }
+    );
+
+    console.log(response.data.data)
+
+    return { taskId, newStatus };
   }
 );
 
@@ -104,6 +130,26 @@ const userTasksSlice = createSlice({
       .addCase(fetchUserTasks.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+
+
+      .addCase(updateTaskStatus.fulfilled, (state, action) => {
+        const { taskId, newStatus } = action.payload;
+        const task = state.byId[taskId];
+
+        if (task) {
+          // Remove from old status array
+          const oldStatus = task.status;
+          state.userTasks[oldStatus] = state.userTasks[oldStatus].filter(
+            (id) => id !== taskId
+          );
+
+          // Add to new status array
+          state.userTasks[newStatus].push(taskId);
+
+          // Update task status
+          state.byId[taskId].status = newStatus;
+        }
       });
   },
 });

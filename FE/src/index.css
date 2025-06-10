@@ -44,6 +44,32 @@ body{
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
 }
+/* For Webkit browsers (Chrome, Safari, Edge, Opera) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* width of the scrollbar */
+  height: 8px; /* height of the scrollbar for horizontal scrolling */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #2c2c2c; /* color of the scrollbar track */
+  border-radius: 10px; /* rounded corners for the track */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #555; /* color of the scrollbar thumb */
+  border-radius: 10px; /* rounded corners for the thumb */
+  border: 2px solid #2c2c2c; /* creates a padding around the thumb */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #777; /* color of the thumb on hover */
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin; /* "auto" or "thin" */
+  scrollbar-color: #555 #2c2c2c; /* thumb color track color */
+}
 
 :root {
     --radius: 0.625rem;
