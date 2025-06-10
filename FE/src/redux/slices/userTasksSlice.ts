@@ -77,24 +77,27 @@ export const fetchUserTasks = createAsyncThunk<{ tasks: myTask[] }>(
 
 export const updateTaskStatus = createAsyncThunk(
   "userTasks/updateTaskStatus",
-  async ({
-    taskId,
-    newStatus,
-  }: {
-    taskId: string;
-    newStatus: TaskStatus;
-  }, { getState }) => {
+  async (
+    {
+      taskId,
+      newStatus,
+    }: {
+      taskId: string;
+      newStatus: TaskStatus;
+    },
+    { getState }
+  ) => {
     const state = getState() as RootState;
     const task = state.userTasks.byId[taskId];
     const projectId = task.project._id; // Get project ID from the task in state
-    
+
     const response = await axios.patch(
-      `http://localhost:8200/api/v1/task/project/${projectId}/update/tasks/${taskId}`,
+      `http://localhost:8200/api/v1/task/project/${projectId}/update-status/tasks/${taskId}`,
       { status: newStatus },
       { withCredentials: true }
     );
 
-    console.log(response.data.data)
+    // console.log(response.data.data)
 
     return { taskId, newStatus };
   }
@@ -120,7 +123,7 @@ const userTasksSlice = createSlice({
 
         tasks.forEach((task) => {
           const id = task._id;
-          const status = (task.status || "TODO").toUpperCase() as TaskStatus;
+          const status = (task.status.toUpperCase() || "TODO") as TaskStatus;
           state.byId[id] = task;
           groupedTasks[status].push(id);
         });
@@ -131,25 +134,38 @@ const userTasksSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-
-
+     
       .addCase(updateTaskStatus.fulfilled, (state, action) => {
         const { taskId, newStatus } = action.payload;
         const task = state.byId[taskId];
 
         if (task) {
           // Remove from old status array
-          const oldStatus = task.status;
-          state.userTasks[oldStatus] = state.userTasks[oldStatus].filter(
-            (id) => id !== taskId
-          );
 
+          console.log("task status", task.status)
+          const oldStatus = task.status.toUpperCase();
+          console.log("oldStatus", oldStatus)
+
+          console.log("userTasks", state.userTasks)
+          console.log("userTasks[TODO]", state.userTasks["TODO"])
+
+          // console.log(state.userTasks[oldStatus]);
+          // @ts-ignore 
+          if (state.userTasks[oldStatus]) {
+            console.log(oldStatus)
+            // @ts-ignore 
+            state.userTasks[oldStatus] = state.userTasks[oldStatus].filter(
+              // @ts-ignore 
+              (id) => id !== taskId
+            );
+          }
           // Add to new status array
           state.userTasks[newStatus].push(taskId);
-
           // Update task status
           state.byId[taskId].status = newStatus;
         }
+
+        state.loading = false;
       });
   },
 });

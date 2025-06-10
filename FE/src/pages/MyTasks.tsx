@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchUserTasks,
+  myTask,
   updateTaskStatus,
 } from "@/redux/slices/userTasksSlice";
 import { AppDispatch, RootState } from "@/redux/store/store";
@@ -10,59 +11,59 @@ import { MyTaskCard } from "../mycomponents/MyTaskCard";
 
 const taskSections: TaskStatus[] = ["TODO", "IN_PROGRESS", "DONE"];
 
-const statusToLabel: Record<TaskStatus, string> = {
+export const statusToLabel: Record<TaskStatus, string> = {
   TODO: "To Do",
   IN_PROGRESS: "In Progress",
   DONE: "Done",
 };
 
 const MyTasks = () => {
+  const [selectedTask, setSelectedTask] = useState<myTask | null>(null);
+
   const dispatch = useDispatch<AppDispatch>();
   const { byId, userTasks, loading, error } = useSelector(
     (state: RootState) => state.userTasks
   );
+  useEffect(() => {
+    dispatch(fetchUserTasks());
+  }, [dispatch]);
 
   // State to track the ID of the task currently being dragged
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
   // State to track which column (TaskStatus) the user is currently dragging over
   const [dragOverStatus, setDragOverStatus] = useState<TaskStatus | null>(null);
 
-  useEffect(() => {
-    dispatch(fetchUserTasks());
-  }, [dispatch]);
-
   const handleDragStart = useCallback((e: React.DragEvent, taskId: string) => {
     setDraggedTaskId(taskId); // Store the ID of the task being dragged
     e.dataTransfer.setData("text/plain", taskId); // Set data for the drop event
     e.dataTransfer.effectAllowed = "move"; // Indicate a 'move' operation
-    // No custom drag image: rely on browser's default for better performance and simplicity.
   }, []);
 
   const handleDragEnd = useCallback(() => {
-    setDraggedTaskId(null); // Reset the dragged task ID
-    setDragOverStatus(null); // Ensure drag over status is also reset
+    setDraggedTaskId(null);
+    setDragOverStatus(null);
   }, []);
 
   const handleDragOverColumn = useCallback((e: React.DragEvent) => {
-    e.preventDefault(); // Prevent default to allow dropping
-    e.dataTransfer.dropEffect = "move"; // Visual feedback for 'move'
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
   }, []);
 
   const handleDragEnterColumn = useCallback(
     (e: React.DragEvent, status: TaskStatus) => {
-      e.preventDefault(); // Prevent default
-      setDragOverStatus(status); // Set the status of the column being dragged over
+      e.preventDefault();
+      setDragOverStatus(status);
     },
     []
   );
-  
+
   const handleDragLeaveColumn = useCallback((e: React.DragEvent) => {
     setDragOverStatus(null); // Clear the drag over status
   }, []);
 
   const handleDropColumn = useCallback(
     async (e: React.DragEvent, targetStatus: TaskStatus) => {
-      e.preventDefault(); // Prevent default browser drop behavior
+      e.preventDefault();
       const taskId = e.dataTransfer.getData("text/plain"); // Get the task ID from dataTransfer
 
       if (taskId) {
@@ -77,11 +78,9 @@ const MyTasks = () => {
                 taskId,
                 newStatus: targetStatus,
               })
-            ).unwrap(); // .unwrap() handles promise rejection
+            );
           } catch (err) {
-            // Handle API error during task status update
             console.error("Failed to update task status:", err);
-            // Provide user feedback (e.g., a toast or alert)
             alert(
               `Failed to update task status: ${
                 err instanceof Error ? err.message : String(err)
@@ -98,7 +97,7 @@ const MyTasks = () => {
   );
 
   return (
-    <div className="p-6 bg-zinc-900 h-[90vh]">
+    <div className="p-6 bg-zinc-900 h-[90vh] custom-scrollbar ">
       {" "}
       {/* Added bg and min-h-screen for better visual */}
       <h1 className="text-white text-sm font-bold mb-8 text-left">
@@ -109,7 +108,7 @@ const MyTasks = () => {
       ) : error ? (
         <p className="text-red-400 text-center text-lg">Error: {error}</p>
       ) : (
-        <div className="flex gap-3 overflow-x-auto justify-center">
+        <div className="flex gap-3 overflow-x-auto justify-start custom-scrollbar min-h-[78vh]">
           {taskSections.map((status) => (
             <div
               key={status}
@@ -132,6 +131,7 @@ const MyTasks = () => {
               <h2 className="text-white font-bold text-sm border-b border-zinc-700 pb-2 mb-2">
                 {statusToLabel[status]} ({userTasks[status].length})
               </h2>
+
               <div className="flex flex-col gap-3 overflow-y-auto max-h-[65vh] pr-2 custom-scrollbar">
                 {userTasks[status].length === 0 ? (
                   <p className="text-zinc-400 text-sm italic py-4 text-center">
