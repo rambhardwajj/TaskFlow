@@ -79,6 +79,35 @@ const createTask = asyncHandler(async (req: Request, res: Response) => {
     );
 });
 
+const updateTaskStatus = asyncHandler(async(req:Request, res: Response)=>{
+    const {status} = req.body;
+    const {taskId} = req.params
+    const existingTask = await Task.findOne({ _id: taskId });
+    if (!existingTask) {
+        throw new CustomError(
+            ResponseStatus.NotFound,
+            "existing task does not exists"
+        );
+    }
+
+    existingTask.status = status;
+
+    const taskUpdation = await Task.findByIdAndUpdate(taskId, existingTask, {
+        new: true,
+    });
+    if (!taskUpdation) {
+        throw new CustomError(
+            ResponseStatus.BadRequest,
+            "status updation failed"
+        );
+    }
+
+    res.status(200).json(
+        new ApiResponse(ResponseStatus.Success, taskUpdation, "status updated")
+    );
+
+})
+
 const updateTask = asyncHandler(async (req: Request, res: Response) => {
     const { title, email, desc, status } = handleZodError(
         validateUpdateTask(req.body)
@@ -94,6 +123,7 @@ const updateTask = asyncHandler(async (req: Request, res: Response) => {
         );
     }
 
+    
     const assignedTo = await User.findOne({ email });
     if (!assignedTo) {
         throw new CustomError(ResponseStatus.NotFound, "user email not found");
@@ -141,7 +171,7 @@ const updateTask = asyncHandler(async (req: Request, res: Response) => {
     }
 
     res.status(200).json(
-        new ApiResponse(ResponseStatus.Success, null, "task created")
+        new ApiResponse(ResponseStatus.Success, null, "task updated")
     );
 });
 
@@ -524,6 +554,7 @@ export {
     createTask,
     getUserTasks,
     deleteTask,
+    updateTaskStatus,
     updateTask,
     getTasks,
     getTaskById,

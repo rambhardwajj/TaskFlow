@@ -14,6 +14,7 @@ import {
   deleteAttachments,
   getSubTasks,
   getUserTasks,
+  updateTaskStatus,
 } from "../controllers/task.controller";
 import { checkUserPermission } from "../middlewares/hasPermission.middleware";
 import { upload, uploadAttachments } from "../middlewares/multer.middleware";
@@ -45,6 +46,13 @@ router.patch(
   uploadAttachments,
   updateTask
 );
+
+router.patch(
+  "/project/:projectId/update-status/tasks/:taskId",
+  checkUserPermission("edit:task"),
+  updateTaskStatus
+);
+
 router.delete(
   "/project/:projectId/delete/tasks/:taskId",
   checkUserPermission("delete:task"),
