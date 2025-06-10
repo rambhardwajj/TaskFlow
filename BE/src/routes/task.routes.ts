@@ -13,6 +13,7 @@ import {
   addAttachments,
   deleteAttachments,
   getSubTasks,
+  getUserTasks,
 } from "../controllers/task.controller";
 import { checkUserPermission } from "../middlewares/hasPermission.middleware";
 import { upload, uploadAttachments } from "../middlewares/multer.middleware";
@@ -48,6 +49,10 @@ router.delete(
   "/project/:projectId/delete/tasks/:taskId",
   checkUserPermission("delete:task"),
   deleteTask
+);
+router.get(
+  "/getAll",
+  getUserTasks
 );
 
 //subtask
