@@ -60,6 +60,7 @@ export const UserRoles = {
   ],
   member:[
     "view:task",
+    "view:project",
 
     "view:subtask",
     "create:subtask",
