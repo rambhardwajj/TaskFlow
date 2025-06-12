@@ -72,6 +72,7 @@ export const getUser = createAsyncThunk("auth/getUser", async (_, thunkAPI) => {
   }
 });
 
+
 const authSlice = createSlice({
   name: "auth",
   initialState,

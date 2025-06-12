@@ -425,7 +425,7 @@ export const TaskCard: FC<Task> = ({
                     <img
                       src={assignedTo.avatar}
                       alt={assignedTo.userName}
-                      className="w-6 h-6 rounded-full object-cover"
+                      className="w-5 h-5 rounded-full object-cover"
                     />
                   </DialogTrigger>
                 </TooltipTrigger>
@@ -460,7 +460,7 @@ export const TaskCard: FC<Task> = ({
                     <img
                       src={assignedBy.avatar}
                       alt={assignedBy.userName}
-                      className="w-6 h-6 rounded-full object-cover"
+                      className="w-5 h-5 rounded-full object-cover"
                     />
                   </DialogTrigger>
                 </TooltipTrigger>

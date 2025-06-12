@@ -419,7 +419,7 @@ export const MyTaskCard: FC<myTask> = ({
                   <DialogTrigger asChild>
                     <img
                       src={assignedTo.avatar.url}
-                      alt={assignedTo.userName}
+                      alt={`https://api.dicebear.com/7.x/initials/svg?seed=${assignedTo.userName}`}
                       className="w-6 h-6 rounded-full object-cover"
                     />
                   </DialogTrigger>
@@ -454,7 +454,7 @@ export const MyTaskCard: FC<myTask> = ({
                   <DialogTrigger asChild>
                     <img
                       src={assignedBy.avatar.url}
-                      alt={assignedBy.userName}
+                      alt={`https://api.dicebear.com/7.x/initials/svg?seed=${assignedTo.userName}`}
                       className="w-6 h-6 rounded-full object-cover"
                     />
                   </DialogTrigger>

@@ -16,7 +16,7 @@ const Layout = () => {
   }, [dispatch])
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex flex-col h-screen overflow-hidden custom-scrollbar">
       {/* Navbar */}
       <Navbar />
 
@@ -25,7 +25,7 @@ const Layout = () => {
         <Sidebar />
 
         {/* Page content */}
-        <main className="flex-1 overflow-auto bg-zinc-950 ">
+        <main className="flex-1 overflow-auto bg-neutral-950 custom-scrollbar ">
           <Outlet />
         </main>
       </div>

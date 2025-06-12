@@ -10,6 +10,7 @@ import {
 } from "@/redux/slices/projectsTasksSlice";
 import { AppDispatch, RootState } from "@/redux/store/store";
 import { getAllProjects } from "@/redux/slices/projectSlice";
+import { statusToLabel } from "./MyTasks";
 
 const sections: TaskStatus[] = ["TODO", "IN_PROGRESS", "DONE"];
 
@@ -36,29 +37,32 @@ export default function TasksOfProject() {
   const currProject = projects.find(
     (project) => project.projectId === projectId
   );
+
   const tasksBySection = tasksByProject[projectId ?? ""] ?? {
     TODO: [],
     IN_PROGRESS: [],
     DONE: [],
   };
-  
+
   return (
-    <div className="flex min-h-[90vh] min-w-[80vw] ">
+    <div className="flex min-h-[90vh] min-w-[80vw] relative ">
       <div className=" bg-neutral-900 text-white p-4 overflow-hidden">
         {currProject && <TasksNavigation currProject={currProject} />}
-        {loading ? (
-          <div className="text-white text-center mt-10 min-w-[100vw]">Loading tasks...</div>
-        ) : (
-          <div className="flex gap-3 overflow-x-auto h-[74vh] overflow-y-hidden pb-4">
-            {sections.map((section) => (
-              <KanbanColumn
-                key={section}
-                title={section}
-                tasks={tasksBySection[section]}
-              />
-            ))}
-          </div>
-        )}
+        {/* {loading && (
+          <div>Loading</div>
+        )} */}
+
+        <div className={`custom-scrollbar flex gap-3 overflow-x-auto h-[74vh] overflow-y-hidden pb-4
+          ${loading ? "opacity-50" : ""}
+          `}>
+          {sections.map((section) => (
+            <KanbanColumn
+              key={section}
+              title={section}
+              tasks={tasksBySection[section]}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

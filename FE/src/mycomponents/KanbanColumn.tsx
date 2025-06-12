@@ -1,33 +1,46 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { TaskCard } from "./TaskCard";
-import { fetchProjectTasks, Task } from "@/redux/slices/projectsTasksSlice";
+import {
+  fetchProjectTasks,
+  Task,
+  TaskStatus,
+} from "@/redux/slices/projectsTasksSlice";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store/store";
-import { DialogTrigger } from "@radix-ui/react-dialog";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store/store";
 import { NewTaskDialog } from "./NewTaskDialog";
+import {
+  fetchUserTasks,
+  updateTaskStatus,
+} from "@/redux/slices/userTasksSlice";
+import {  EditTaskDialogbox } from "./Edit_TaskCard";
 
 interface KanbanColumnProps {
-  title: string;
+  title: TaskStatus;
   tasks: Task[];
 }
 
 const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
   const { projectId } = useParams();
-  console.log(projectId);
-
   const dispatch = useDispatch<AppDispatch>();
+  const { byId, userTasks, loading, error } = useSelector(
+    (state: RootState) => state.userTasks
+  );
+  useEffect(() => {
+    dispatch(fetchUserTasks());
+  }, [dispatch]);
+  // console.log(projectId);
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [newTaskOpen, setOpenNewTask] = useState<boolean>(false);
-  const [added, setAdded] =  useState(false)
+  const [added, setAdded] = useState(false);
 
   const handleCardClick = (task: Task) => {
     setSelectedTask(task);
@@ -37,6 +50,8 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
     if (!selectedTask) return;
     setSelectedTask({ ...selectedTask, [field]: value });
   };
+
+  const navigate =  useNavigate();
   const handleSaveTask = async () => {
     if (!selectedTask) return;
     const taskId = selectedTask._id;
@@ -70,17 +85,17 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
     } finally {
       setSelectedTask(null);
       if (projectId) dispatch(fetchProjectTasks(projectId));
+      dispatch(fetchUserTasks())
     }
   };
 
-
-  const handleNewTaskSubmit =  async (formData: FormData) => {
-    console.log(formData)
+  const handleNewTaskSubmit = async (formData: FormData) => {
+    console.log(formData);
     await addTask(formData);
   };
   const addTask = async (formData: FormData) => {
     try {
-      console.log("in addTask")
+      console.log("in addTask");
       const res = await axios.post(
         `http://localhost:8200/api/v1/task/project/${projectId}/create/tasks`,
         formData,
@@ -91,21 +106,110 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
           },
         }
       );
-      setAdded(!added)
+      setAdded(!added);
       if (res.data) {
         toast.success("Task created successfully");
         setOpenNewTask(false);
       }
-      if (projectId) dispatch(fetchProjectTasks(projectId));
+      if (projectId) {
+        dispatch(fetchProjectTasks(projectId));
+        dispatch(fetchUserTasks());
+      }
     } catch (error) {
       console.log(error);
       toast.error("Failed to create task");
     }
   };
 
+  const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
+  const [dragOverStatus, setDragOverStatus] = useState<TaskStatus | null>(null);
+
+  const handleDragStart = useCallback((e: React.DragEvent, taskId: string) => {
+    console.log("drg strt");
+    setDraggedTaskId(taskId); // Store the ID of the task being dragged
+    e.dataTransfer.setData("text/plain", taskId); // Set data for the drop event
+    e.dataTransfer.effectAllowed = "move"; // Indicate a 'move' operation
+  }, []);
+  const handleDragEnd = useCallback(() => {
+    console.log("drg end");
+
+    setDraggedTaskId(null);
+    setDragOverStatus(null);
+  }, []);
+
+  const handleDragOverColumn = useCallback((e: React.DragEvent) => {
+    console.log("drg over");
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  }, []);
+  const handleDragEnterColumn = useCallback(
+    (e: React.DragEvent, status: TaskStatus) => {
+      console.log("drg enter");
+      e.preventDefault();
+      setDragOverStatus(status);
+    },
+    []
+  );
+  const handleDragLeaveColumn = useCallback((e: React.DragEvent) => {
+    console.log("drg leave");
+    setDragOverStatus(null);
+  }, []);
+
+  const handleDropColumn = useCallback(
+    async (e: React.DragEvent, targetStatus: TaskStatus) => {
+      console.log("drg drop,- ", targetStatus);
+      e.preventDefault();
+      const taskId = e.dataTransfer.getData("text/plain");
+
+      if (taskId) {
+        const task = byId[taskId];
+        console.log("task status " , task.status)
+        if (task && task.status !== targetStatus) {
+          try {
+            dispatch(fetchUserTasks())
+            await dispatch(
+              updateTaskStatus({
+                taskId,
+                newStatus: targetStatus,
+              })
+            );
+            if (projectId) {
+              await dispatch(fetchProjectTasks(projectId)); // <- Important
+            }
+          } catch (err) {
+            console.error("Failed to update task status:", err);
+            alert(
+              `Failed to update task status: ${
+                err instanceof Error ? err.message : String(err)
+              }`
+            );
+          }
+          finally{
+            dispatch(fetchUserTasks())
+          }
+        }
+      }
+      // Always reset states after a drop attempt
+      setDraggedTaskId(null);
+      setDragOverStatus(null);
+    },
+    [tasks, dispatch, projectId]
+  );
+
   return (
-    <div className="min-w-[200px] w-[80vw] sm:min-w-[300px] bg-neutral-800 mr-1 p-4 rounded-lg shadow-lg flex flex-col gap-4 transition hover:scale-[1.003]">
-      <div className="flex justify-between items-center mb-2">
+    <div
+      className={`min-w-[200px] w-[80vw]  sm:min-w-[300px] bg-neutral-800 mr-1 p-4 rounded-md shadow-lg flex flex-col gap-4 transition hover:scale-[1.003]
+        ${
+          dragOverStatus === title
+            ? " border-2 border-solid border-blue-500 bg-neutral-700"
+            : "border-2 border-transparent"
+        }`}
+      onDragOver={handleDragOverColumn}
+      onDragEnter={(e) => handleDragEnterColumn(e, title)}
+      onDragLeave={handleDragLeaveColumn}
+      onDrop={(e) => handleDropColumn(e, title)}
+    >
+      <div className="flex justify-between items-center pb-2 border-b-[1px] border-neutral-600">
         <div className="font-semibold text-sm">{title}</div>
         {title === "TODO" && projectId && (
           <div>
@@ -125,9 +229,21 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
         )}
       </div>
 
-      <div className="flex flex-col gap-2 overflow-y-auto max-h-[calc(80vh-100px)] pr-2">
+      <div className="flex flex-col gap-2 overflow-y-auto max-h-[calc(80vh-100px)] pr-2 ">
         {tasks.map((task) => (
-          <div key={task._id} onClick={() => handleCardClick(task)}>
+          <div
+            key={task._id}
+            onClick={() => handleCardClick(task)}
+            draggable
+            onDragStart={(e) => handleDragStart(e, task._id)}
+            onDragEnd={handleDragEnd}
+            className={`
+                        cursor-grab active:cursor-grabbing 
+                        transition-opacity duration-200 
+                        select-none 
+                        ${draggedTaskId === task._id ? "opacity-40 " : ""}
+                      `}
+          >
             <TaskCard {...task} />
           </div>
         ))}
@@ -141,151 +257,14 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
           if (!open) setSelectedTask(null);
         }}
       >
-        <DialogContent className=" min-w-[70vw] bg-[#1e1e1e] border border-[#333]   mx-auto rounded-lg shadow-2xl p-6 space-y-1  max-h-[63vh] overflow-y-auto">
-          {/* Tab Header */}
-
-          <div className="flex border-b border-zinc-700  text-sm font-medium text-zinc-400">
-            <button className="text-white border-b-2 border-blue-600 pb-1">
-              General
-            </button>
-          </div>
-
-          {selectedTask && (
-            <div className="flex gap-4 justify-between">
-              {/* Title & Description */}
-              <div className="w- full min-w-[45vw] justify-between space-y-3">
-                <div className="space-y-2">
-                  <h2 className="text-white text-2xl font-semibold tracking-tight">
-                    {editMode ? (
-                      <div>
-                        Edit Task
-                        <Textarea
-                          className=" mt-2 bg-zinc-800 border border-zinc-700 text-white focus:ring-2 focus:ring-blue-600 rounded-lg min-h-[30px]"
-                          value={selectedTask.title}
-                          onChange={(e) =>
-                            handleInputChange("title", e.target.value)
-                          }
-                        />
-                      </div>
-                    ) : (
-                      `${selectedTask.title}`
-                    )}
-                  </h2>
-                  {!editMode && (
-                    <p className="text-zinc-400 text-sm">
-                      Comprehensive view of your selected task
-                    </p>
-                  )}
-                </div>
-
-                {/* Description Section */}
-                <div className="space-y-2 bg-[#2a2a2a] border border-[#444] rounded-md p-4">
-                  <h3 className="text-white font-semibold text-base">
-                    Description
-                  </h3>
-                  {editMode ? (
-                    <Textarea
-                      className="bg-zinc-800 border border-zinc-700 text-white focus:ring-2 focus:ring-blue-600 rounded-lg min-h-[100px]"
-                      value={selectedTask.desc}
-                      onChange={(e) =>
-                        handleInputChange("desc", e.target.value)
-                      }
-                    />
-                  ) : (
-                    <ul className="list-disc pl-5 text-zinc-300 text-sm space-y-1">
-                      <li>{selectedTask.desc}</li>
-                    </ul>
-                  )}
-                </div>
-
-                {/* Status */}
-                <div>
-                  <label className="block mb-2 text-sm font-semibold text-zinc-400">
-                    Status
-                  </label>
-                  <p className="inline-block px-3 py-1 text-sm rounded-full bg-zinc-800 text-white border border-zinc-600">
-                    {selectedTask.status}
-                  </p>
-                </div>
-
-             
-
-                {/* Attachments */}
-                <div>
-                  <h4 className="text-white font-semibold mb-2">Attachments</h4>
-                  <div className="flex gap-3 overflow-x-auto">
-                    {selectedTask.attachments?.map((att, idx) => (
-                      <div
-                        key={idx}
-                        className="min-w-[120px] h-[70px] bg-zinc-800 rounded-md border border-zinc-600 overflow-hidden"
-                      >
-                        <img
-                          src={att.url}
-                          alt="attachment"
-                          className="object-cover w-full h-full"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Users  */}   {/* Assignee & Reporter */}
-              <div className="flex flex-col max-w-[30vw] gap-6">
-                {/* Assignee */}
-                <div className="bg-[#2a2a2a] rounded-md p-1 pl-3 pb-2 w-full min-w-[15vw] border border-[#444]">
-                  <h4 className="text-zinc-400 text-xs mb-1">Assignee  <p className="text-white text-sm font-medium">
-                      {selectedTask.assignedTo.email}
-                    </p></h4>
-                  <div className="flex items-center gap-3 pt-2">
-                    <img
-                      src={selectedTask.assignedTo.avatar}
-                      className="w-8 h-8 rounded-full border border-zinc-700"
-                    />
-                    <p className="text-white text-sm font-medium">
-                      {selectedTask.assignedTo.userName}
-                    </p>
-                  </div>
-                   
-                </div>
-                {/* Reporter */}
-                <div className="bg-[#2a2a2a] rounded-md p-1 pl-3 pb-2  w-full border border-[#444]">
-                  <h4 className="text-zinc-400 text-xs mb-1">Reporter  <p className="text-white text-sm font-medium">
-                      {selectedTask.assignedTo.email}
-                    </p></h4>
-                  <div className="flex items-center gap-3 pt-2">
-                    <img
-                      src={selectedTask.assignedBy.avatar}
-                      className="w-8 h-8 rounded-full border border-zinc-700"
-                    />
-                    <p className="text-white text-sm font-medium">
-                      {selectedTask.assignedBy.userName}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Footer */}
-          <DialogFooter className="mt-[-50px] flex flex-col-reverse sm:flex-row justify-between gap-4">
-            <Button
-              variant="secondary"
-              onClick={() => setEditMode((prev) => !prev)}
-              className="w-full sm:w-auto bg-transparent hover:bg-zinc-800 text-white border border-zinc-700"
-            >
-              {editMode ? "Cancel Edit" : "Edit"}
-            </Button>
-            {editMode && (
-              <Button
-                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium"
-                onClick={handleSaveTask}
-              >
-                Save Changes
-              </Button>
-            )}
-          </DialogFooter>
-        </DialogContent>
+        <EditTaskDialogbox
+        loading
+        selectedTask={selectedTask}
+        editMode={editMode}
+        handleInputChange={handleInputChange}
+        handleSaveTask={handleSaveTask}
+        setEditMode={setEditMode}
+        />
       </Dialog>
     </div>
   );

@@ -83,8 +83,12 @@ export default function ProjectTable() {
   };
 
   return (
-    <div className="w-full p-4 overflow-auto ">
-      <div className="overflow-x-none ">
+    <div
+      className={`w-full p-4 overflow-auto custom-scrollbar
+    ${loading ? "opacity-50" : ""}
+    `}
+    >
+      <div className="overflow-x-none custom-scrollbar">
         <table className="min-w-full table-auto text-left  ">
           <thead className="bg-black text-zinc-200 sticky top-0 z-10  ">
             <tr>
@@ -109,13 +113,11 @@ export default function ProjectTable() {
             </tr>
           </thead>
           <tbody>
-            {loading ? (
-              <div className="min-h-[20vh] min-w-[80vw] ">  </div>
-            ) : (
+            {
               projects.map((project, index) => (
                 <tr
                   key={index}
-                  className="bg-neutral-900 border-b border-zinc-800 transition-transform hover:scale-[1.002] hover:bg-neutral-800 "
+                  className="bg-neutral-800/60 border-b border-zinc-800 transition-transform hover:scale-[1.002] hover:bg-neutral-800 "
                 >
                   <td className="my-3 ml-5 flex justify-between  font-medium text-zinc-100">
                     <Link
@@ -125,8 +127,8 @@ export default function ProjectTable() {
                       {<Initials ini={project.name.charAt(0)} />} {project.name}
                     </Link>
                     <div onClick={(e) => e.stopPropagation()}>
-                      <Link to={`/${project.projectId}`} >
-                        <SquarePen className=" hover:scale-[1.1] hover:text-green-500 w-5 h-5 mx-2 text-green-700 cursor-pointer" />
+                      <Link to={`/${project.projectId}`}>
+                        <SquarePen className=" hover:scale-[1.1] hover:text-green-400 w-5 h-5 mx-2  text-green-500 cursor-pointer" />
                       </Link>
                     </div>
                   </td>
@@ -188,7 +190,7 @@ export default function ProjectTable() {
                   </td>
                 </tr>
               ))
-            )}
+            }
             <tr className=" bg-neutral-900 rounded-b-sm hover:bg-neutral-800 cursor-pointer">
               <td className=" py-3 px-5 text-center  text-cyan-400">
                 <Dialog open={open} onOpenChange={setOpen}>

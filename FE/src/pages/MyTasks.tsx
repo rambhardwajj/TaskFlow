@@ -8,6 +8,10 @@ import {
 import { AppDispatch, RootState } from "@/redux/store/store";
 import { TaskStatus } from "@/redux/slices/userTasksSlice";
 import { MyTaskCard } from "../mycomponents/MyTaskCard";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { EditTaskDialog } from "@/mycomponents/EditTaskCard";
+import { toast } from "sonner";
+import axios from "axios";
 
 const taskSections: TaskStatus[] = ["TODO", "IN_PROGRESS", "DONE"];
 
@@ -18,7 +22,53 @@ export const statusToLabel: Record<TaskStatus, string> = {
 };
 
 const MyTasks = () => {
+  const [updating, setUpdating] = useState(false);
   const [selectedTask, setSelectedTask] = useState<myTask | null>(null);
+  const [editMode, setEditMode] = useState(false);
+
+  const handleCardClick = (task: myTask) => {
+    setSelectedTask(task);
+    setEditMode(false);
+  };
+  const handleInputChange = (field: keyof myTask, value: string) => {
+    if (!selectedTask) return;
+    setSelectedTask({ ...selectedTask, [field]: value });
+  };
+  const handleSaveTask = async () => {
+    if (!selectedTask) return;
+    const taskId = selectedTask._id;
+    if (!selectedTask.title?.trim()) {
+      return toast.error("Title is required");
+    }
+
+    if (!selectedTask.assignedTo.userName) {
+      return toast.error("Assignee is missing");
+    }
+
+    try {
+      const res = await axios.patch(
+        `http://localhost:8200/api/v1/task/project/${selectedTask.project._id}/update/tasks/${taskId}`,
+        {
+          title: selectedTask.title,
+          desc: selectedTask.desc,
+          email: selectedTask.assignedTo.email,
+          status: selectedTask.status,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      if (res.data) {
+        toast.success("Task updated successfully");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to update task");
+    } finally {
+      setSelectedTask(null);
+      dispatch(fetchUserTasks());
+    }
+  };
 
   const dispatch = useDispatch<AppDispatch>();
   const { byId, userTasks, loading, error } = useSelector(
@@ -45,6 +95,7 @@ const MyTasks = () => {
   }, []);
 
   const handleDragOverColumn = useCallback((e: React.DragEvent) => {
+    console.log("drg over", e);
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
   }, []);
@@ -73,6 +124,9 @@ const MyTasks = () => {
         if (task && task.status !== targetStatus) {
           try {
             // Dispatch the async thunk to update task status
+
+            setUpdating(true);
+
             await dispatch(
               updateTaskStatus({
                 taskId,
@@ -92,30 +146,34 @@ const MyTasks = () => {
       // Always reset states after a drop attempt
       setDraggedTaskId(null);
       setDragOverStatus(null);
+      setUpdating(false);
     },
     [byId, dispatch]
   );
 
   return (
-    <div className="p-6 bg-zinc-900 h-[90vh] custom-scrollbar ">
+    <div className="p-6 bg-neutral-950 h-[90vh] custom-scrollbar ">
       {" "}
       {/* Added bg and min-h-screen for better visual */}
-      <h1 className="text-white text-sm font-bold mb-8 text-left">
+      <h1 className="text-white text-lg font-bold mb-6 ml-2 text-left">
         My Tasks Dashboard
       </h1>
-      {loading ? (
-        <p className="text-zinc-300 text-center text-lg">Loading tasks...</p>
-      ) : error ? (
+      {  error ? (
         <p className="text-red-400 text-center text-lg">Error: {error}</p>
       ) : (
-        <div className="flex gap-3 overflow-x-auto justify-start custom-scrollbar min-h-[78vh]">
+        <div
+          className={`flex gap-3 overflow-x-auto justify-start custom-scrollbar min-h-[78vh]
+          ${updating ? "opacity-40" : ""}
+          ${loading ? "opacity-40" : ""}
+        `}
+        >
           {taskSections.map((status) => (
             <div
               key={status}
               // Conditional styling for drop target feedback
               className={`
                 min-w-[280px] w-[calc(33.33%-16px)] max-w-[30vw] 
-                bg-neutral-800 p-3 rounded-sm shadow-lg 
+                bg-neutral-800/70 p-3 rounded-sm shadow-lg 
                 flex flex-col gap-4 transition-all duration-200 
                 ${
                   dragOverStatus === status
@@ -145,17 +203,33 @@ const MyTasks = () => {
                       onDragStart={(e) => handleDragStart(e, id)}
                       onDragEnd={handleDragEnd}
                       className={`
-                        cursor-grab active:cursor-grabbing 
-                        transition-opacity duration-200 
-                        select-none 
-                        ${draggedTaskId === id ? "opacity-40 " : ""}
-                      `}
+                          cursor-grab active:cursor-grabbing 
+                          transition-opacity duration-200 
+                          select-none mr-2
+                          ${draggedTaskId === id ? "opacity-30 " : ""}
+                          `}
+                      onClick={() => handleCardClick(byId[id])}
                     >
                       <MyTaskCard {...byId[id]} />
                     </div>
                   ))
                 )}
               </div>
+              <Dialog
+                open={!!selectedTask}
+                onOpenChange={(open) => {
+                  !open && setSelectedTask(null);
+                }}
+              >
+                <EditTaskDialog
+                  loading={loading}
+                  selectedTask={selectedTask}
+                  editMode={editMode}
+                  handleInputChange={handleInputChange}
+                  handleSaveTask={handleSaveTask}
+                  setEditMode={setEditMode}
+                />
+              </Dialog>
             </div>
           ))}
         </div>

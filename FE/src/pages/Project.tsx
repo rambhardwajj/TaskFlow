@@ -133,7 +133,7 @@ export default function ProjectDetailPage() {
   };
 
   return (
-    <div className="flex min-h-[90vh]  w-full  bg-neutral-900 text-neutral-200">
+    <div className="flex min-h-[90vh] custom-scrollbar  w-full  bg-neutral-900 text-neutral-200">
       {/* Project Details - 3/4 */}
       <div className="w-3/4 p-8 space-y-6 bg-neutral-900  shadow-sm">
         {project ? (
@@ -148,7 +148,7 @@ export default function ProjectDetailPage() {
                     onClick={() => setEditProjectOpen(true)}
                     className="hover:scale-[1.1]"
                   >
-                    <Edit className="text-green-700 cursor-pointer" />
+                    <Edit size={28} className="text-green-500 hover:text-green-400 cursor-pointer" /> 
                   </button>
                 </TooltipTrigger>
                 <TooltipContent className="border-1 border-neutral-600">
@@ -183,7 +183,7 @@ export default function ProjectDetailPage() {
               </div>
             </div>
 
-            <div className="p-5 max-h-[47vh] overflow-y-scroll  bg-neutral-900 shadow-sm space-y-4">
+            <div className="p-5 max-h-[47vh] overflow-y-scroll  custom-scrollbar  bg-neutral-900 shadow-sm space-y-4">
               <div>
                 {projectId && tasksByProject[projectId]?.TODO?.length ? (
                   tasksByProject[projectId].TODO.map((task) => (
@@ -236,7 +236,7 @@ export default function ProjectDetailPage() {
                           {task.title}
                         </h3>
                         <Badge
-                          className="bg-green-900 text-white "
+                          className="bg-blue-900 text-white "
                           variant="secondary"
                         >
                           In Progress
@@ -267,27 +267,35 @@ export default function ProjectDetailPage() {
               </div>
 
               <div>
-                {projectId && tasksByProject[projectId]?.IN_PROGRESS?.length ? (
+                {projectId && tasksByProject[projectId]?.DONE?.length ? (
                   tasksByProject[projectId].DONE.map((task) => (
                     <div
                       key={task._id}
-                      className="p-4 bg-[#2a2a2a] rounded-lg border border-[#333] hover:bg-[#333] transition-colors"
+                      className="px-4 py-2 m-3 flex justify-between bg-neutral-800 rounded-lg border border-[#333] hover:bg-[#333] transition-colors"
                     >
-                      <h3 className="text-lg font-medium text-white">
-                        {task.title}
-                      </h3>
-
-                      <div className="mt-2 text-sm text-neutral-400 space-y-1">
+                      <div>
+                        <h3 className="text-md font-medium text-white">
+                          {task.title}
+                        </h3>
+                        <Badge
+                          className="bg-green-900 text-white "
+                          variant="secondary"
+                        >
+                          Done
+                        </Badge>
+                      </div>
+                      
+                      <div className=" flex gap-2 mt-2 text-sm text-neutral-400 space-y-1">
                         <p>
-                          <span className="font-medium text-neutral-300">
+                          <p className="font-medium text-neutral-300">
                             Assigned To:
-                          </span>{" "}
+                          </p>{" "}
                           {task.assignedTo?.userName} ({task.assignedTo?.email})
                         </p>
                         <p>
-                          <span className="font-medium text-neutral-300">
+                          <p className="font-medium text-neutral-300">
                             Assigned By:
-                          </span>{" "}
+                          </p>{" "}
                           {task.assignedBy?.userName} ({task.assignedBy?.email})
                         </p>
                       </div>
