@@ -361,12 +361,30 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         );
 });
 
-const getUser = asyncHandler( async(req, res) => {
-    const user = req.user
-    console.log(user) 
-    
-    res.status(200).json(new ApiResponse(200, {user}, "User data retrieved successfully"));
-})
+const getUser = asyncHandler(async (req: Request, res: Response) => {
+  const { _id } = req.user as { _id: string }
+
+  const user = await User.findById(_id).select("-password");
+
+  if (!user) {
+    return res.status(404).json(new ApiResponse(404, null, "User not found"));
+  }
+
+  
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, { user: {
+        _id: user._id,
+        name: user.fullName,
+        email: user.email,
+        userName: user.userName,
+        avatar: {
+            url: user.avatar?.url,
+            loaclpath: user.avatar?.localPath
+        }
+    } }, "User data retrieved successfully"));
+});
 
 export {
     getUser,
