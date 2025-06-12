@@ -1,6 +1,7 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { TaskCard } from "./TaskCard";
+
 import {
   fetchProjectTasks,
   Task,
@@ -9,7 +10,7 @@ import {
 import { Dialog } from "@/components/ui/dialog";
 
 import axios from "axios";
-import {   useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store/store";
@@ -18,7 +19,7 @@ import {
   fetchUserTasks,
   updateTaskStatus,
 } from "@/redux/slices/userTasksSlice";
-import {  EditTaskDialogbox } from "./Edit_TaskCard";
+import { EditTaskDialogbox } from "./Edit_TaskCard";
 
 interface KanbanColumnProps {
   title: TaskStatus;
@@ -74,6 +75,8 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
           withCredentials: true,
         }
       );
+      dispatch(fetchUserTasks());
+
       if (res.data) {
         toast.success("Task updated successfully");
       }
@@ -83,7 +86,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
     } finally {
       setSelectedTask(null);
       if (projectId) dispatch(fetchProjectTasks(projectId));
-      dispatch(fetchUserTasks())
+      dispatch(fetchUserTasks());
     }
   };
 
@@ -162,11 +165,15 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
       if (taskId) {
         const task = byId[taskId];
         // console.log("target status " , task)
-      
+        console.log(task);
+        if (!task) {
+          alert("You are not a part of this project.");
+        }
+
         if (task && task.status !== targetStatus) {
-          console.log("hi")
+          console.log("hi");
           try {
-            dispatch(fetchUserTasks())
+            dispatch(fetchUserTasks());
             await dispatch(
               updateTaskStatus({
                 taskId,
@@ -183,9 +190,8 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
                 err instanceof Error ? err.message : String(err)
               }`
             );
-          }
-          finally{
-            dispatch(fetchUserTasks())
+          } finally {
+            dispatch(fetchUserTasks());
           }
         }
       }
@@ -258,12 +264,12 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
         }}
       >
         <EditTaskDialogbox
-        loading
-        selectedTask={selectedTask}
-        editMode={editMode}
-        handleInputChange={handleInputChange}
-        handleSaveTask={handleSaveTask}
-        setEditMode={setEditMode}
+          loading
+          selectedTask={selectedTask}
+          editMode={editMode}
+          handleInputChange={handleInputChange}
+          handleSaveTask={handleSaveTask}
+          setEditMode={setEditMode}
         />
       </Dialog>
     </div>

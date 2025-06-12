@@ -89,6 +89,11 @@ export const updateTaskStatus = createAsyncThunk(
   ) => {
     const state = getState() as RootState;
     const task = state.userTasks.byId[taskId];
+
+    console.log(task)
+    if( !task) {
+      console.log("The task doesnot belogs to the user")
+    }
     const projectId = task.project._id; // Get project ID from the task in state
 
     const response = await axios.patch(
