@@ -80,6 +80,8 @@ const createTask = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const updateTaskStatus = asyncHandler(async(req:Request, res: Response)=>{
+
+    console.log('inside BE updateTaskStatus')
     const {status} = req.body;
     const {taskId} = req.params
     const existingTask = await Task.findOne({ _id: taskId });
