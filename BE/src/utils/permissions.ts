@@ -40,6 +40,14 @@ export const UserRoles = {
     "assign:task",
     "unassign:task",
 
+    "view:project",
+    "delete:project",
+    "edit:project",
+    "assign:project",
+    "unassign:project",
+    "add:member",
+    "delete:member",
+
     "view:subtask",
     "create:subtask",
     "delete:subtask",
@@ -51,6 +59,8 @@ export const UserRoles = {
     "edit:note"
   ],
   member:[
+    "view:task",
+
     "view:subtask",
     "create:subtask",
     "delete:subtask",
@@ -74,7 +84,7 @@ export const hasPermission = async (  userId :string , projectId: string , permi
   try {
     
     const userProjectMember = await ProjectMember.findOne({user:userId, project:projectId })
-    console.log(userProjectMember)
+    console.log("UserProjectMember" ,userProjectMember)
 
     const userRole = userProjectMember?.role
 
@@ -85,7 +95,7 @@ export const hasPermission = async (  userId :string , projectId: string , permi
     }
     return (UserRoles[userRole] as readonly PermissionType[] ).includes(permission)
   } catch (error) {
-    console.log(error)
+    console.log("Error in has Permission", error)
   }
 }
 

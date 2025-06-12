@@ -7,26 +7,26 @@ const TaskSchema = z.object({
     email: z.string().email(),
 });
 
-const UpdateTaskSchema = z.object({
-    title: z
-        .string()
-        .trim()
-        .nonempty("Task needs to have some title")
-        .optional(),
-    desc: z
-        .string()
-        .trim()
-        .nonempty("Task needs to have some title")
-        .optional(),
-    email: z.string().email().optional(),
-    status: z
-        .enum([TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.DONE])
-        .optional(),
-});
+// const UpdateTaskSchema = z.object({
+//     title: z
+//         .string()
+//         .trim()
+//         .nonempty("Task needs to have some title")
+//         .optional(),
+//     desc: z
+//         .string()
+//         .trim()
+//         .nonempty("Task needs to have some title")
+//         .optional(),
+//     email: z.string().email().optional(),
+//     status: z
+//         .enum([TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.DONE])
+//         .optional(),
+// });
 
-// const UpdateTaskSchema = TaskSchema.extend({
-//     status: z.enum([TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.DONE]),
-// }).partial();
+const UpdateTaskSchema = TaskSchema.extend({
+    status: z.enum([TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.DONE]),
+}).partial();
 
 const subTaskSchema = z.object({
     title: z.string().trim().nonempty("Task needs to have some title"),
@@ -47,6 +47,7 @@ export const validateTask = (data: TaskData) => {
     return TaskSchema.safeParse(data);
 };
 export const validateUpdateTask = (data: UpdateTaskData) => {
+    console.log(data)
     return UpdateTaskSchema.safeParse(data);
 };
 export const validateSubTaskData = (data: SubTaskData) =>

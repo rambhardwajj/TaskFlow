@@ -43,13 +43,13 @@ router.get(
 router.patch(
   "/project/:projectId/update/tasks/:taskId",
   checkUserPermission("edit:task"),
-  uploadAttachments,
+  // uploadAttachments,
   updateTask
 );
 
 router.patch(
   "/project/:projectId/update-status/tasks/:taskId",
-  checkUserPermission("edit:task"),
+  checkUserPermission("view:task"),
   updateTaskStatus
 );
 
