@@ -226,7 +226,7 @@ export default function ProjectDetailPage() {
 
               <div>
                 {projectId && tasksByProject[projectId]?.IN_PROGRESS?.length ? (
-                  tasksByProject[projectId].TODO.map((task) => (
+                  tasksByProject[projectId].IN_PROGRESS.map((task) => (
                     <div
                       key={task._id}
                       className="px-4 py-2 m-3 flex justify-between bg-neutral-800 rounded-lg border border-[#333] hover:bg-[#333] transition-colors"

@@ -52,6 +52,26 @@ export default function Home() {
                   title: "Set up project repo",
                   desc: "Initialize GitHub repo with README and project structure",
                   updatedAt: "2025-06-10T14:00:00Z",
+                  status:"TODO",
+                  assignedTo: {
+                    userName: "Ram Bhardwaj",
+                    email: "ram@example.com",
+                    avatar:
+                      "https://api.dicebear.com/7.x/initials/svg?seed=RamB",
+                  },
+                  assignedBy: {
+                    userName: "Anita Sharma",
+                    email: "anita@example.com",
+                    avatar:
+                      "https://api.dicebear.com/7.x/initials/svg?seed=AnitaS",
+                  },
+                },
+                {
+                  _id: "task-102",
+                  title: "Set up Tasks repo",
+                  desc: "Initialize GitHub repo with README and project structure",
+                  updatedAt: "2025-06-10T14:00:00Z",
+                  status:"TODO",
                   assignedTo: {
                     userName: "Ram Bhardwaj",
                     email: "ram@example.com",
@@ -76,6 +96,7 @@ export default function Home() {
                   title: "Build login functionality",
                   desc: "Implement login with JWT, form validation, and error handling",
                   updatedAt: "2025-06-11T09:30:00Z",
+                  status:"IN_PROGRESS",
                   assignedTo: {
                     userName: "Ram Bhardwaj",
                     email: "ram@example.com",
@@ -100,6 +121,7 @@ export default function Home() {
                   title: "Design UI mockups",
                   desc: "Created UI wireframes for dashboard and sidebar using Figma",
                   updatedAt: "2025-06-09T17:45:00Z",
+                  status:"DONE",
                   assignedTo: {
                     userName: "Ram Bhardwaj",
                     email: "ram@example.com",

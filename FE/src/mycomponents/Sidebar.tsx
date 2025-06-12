@@ -8,6 +8,8 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { cn } from "../lib/utils";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store/store";
 
 const Sidebar = () => {
   const [isResizing, setIsResizing] = useState(false);
@@ -36,6 +38,9 @@ const Sidebar = () => {
       window.removeEventListener("mouseup", stopResizing);
     };
   }, [isResizing]);
+
+  const user = useSelector((state:RootState)=> state.auth.user )
+  console.log("yaha",user)
 
   return (
     <div
@@ -111,8 +116,8 @@ const Sidebar = () => {
             <span className="text-sm font-medium">Profile</span>
           ) : (
             <img
-              src="/me.jpg"
-              alt="Profile"
+              src={user.avatar.url}
+              alt="https://api.dicebear.com/7.x/initials/svg?seed=RamB"
               className="w-7 h-7 rounded-full object-cover border border-white"
             />
           )}

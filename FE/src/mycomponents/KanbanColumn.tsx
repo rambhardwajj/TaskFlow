@@ -6,11 +6,10 @@ import {
   Task,
   TaskStatus,
 } from "@/redux/slices/projectsTasksSlice";
-import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import { Dialog } from "@/components/ui/dialog";
+
 import axios from "axios";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import {   useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store/store";
@@ -51,7 +50,6 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
     setSelectedTask({ ...selectedTask, [field]: value });
   };
 
-  const navigate =  useNavigate();
   const handleSaveTask = async () => {
     if (!selectedTask) return;
     const taskId = selectedTask._id;
@@ -163,8 +161,10 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
 
       if (taskId) {
         const task = byId[taskId];
-        console.log("task status " , task.status)
+        // console.log("target status " , task)
+      
         if (task && task.status !== targetStatus) {
+          console.log("hi")
           try {
             dispatch(fetchUserTasks())
             await dispatch(

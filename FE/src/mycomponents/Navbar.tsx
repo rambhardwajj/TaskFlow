@@ -1,31 +1,48 @@
 import { Button } from "@/components/ui/button";
 import { Sun, Menu } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store/store";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store/store";
 import { AvatarDropdown } from "./AvatarDropdown";
+import { getAllProjects } from "@/redux/slices/projectSlice";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-
+  const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.auth.user);
-  // console.log(user);
+
+  const dispatch = useDispatch<AppDispatch>();
+  const { projects, loading } = useSelector(
+    (state: RootState) => state.projects
+  );
+
+  useEffect(() => {
+    dispatch(getAllProjects());
+  }, [dispatch]);
 
   const navLinks: any = [
     { label: "Home", to: "/" },
-    { label: "Projects", to: "/projects" },
+    // Projects handled separately with dropdown
     { label: "Tasks", to: "/tasks" },
   ];
 
   return (
     <nav className="w-full bg-black text-white shadow px-2 sm:px-2">
-      <div className=" mx-auto flex items-center justify-between h-16 px-4 md:px-8">
+      <div className="mx-auto flex items-center justify-between h-16 px-4 md:px-8">
         {/* Logo + Nav Links */}
         <div className="flex items-center gap-8">
           <Link to="/" className="flex items-center gap-2 text-white">
-            <img src="/logo.png" alt="Logo" className="w-7 h-7 rounded-[50%]" />
-            <span className="text-xl font-semibold hidden sm:inline font-serif text-cyan-500">TaskFlow</span>
+            <img src="/logo.png" alt="Logo" className="w-7 h-7 rounded-full" />
+            <span className="text-xl font-semibold hidden sm:inline font-serif text-cyan-500">
+              TaskFlow
+            </span>
           </Link>
 
           {/* Desktop Nav Links */}
@@ -39,6 +56,36 @@ const Navbar = () => {
                 {link.label}
               </Link>
             ))}
+
+            {/* Projects Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="text-zinc-300 hover:text-white cursor-pointer text-sm border-none "
+                >
+                  Projects
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-neutral-900 text-white border-zinc-800">
+                {loading ? (
+                  <DropdownMenuItem disabled>Loading...</DropdownMenuItem>
+                ) : projects.length === 0 ? (
+                  <DropdownMenuItem disabled>
+                    No projects found
+                  </DropdownMenuItem>
+                ) : (
+                  projects.map((project) => (
+                    <DropdownMenuItem
+                      key={project.projectId}
+                      onClick={() => navigate(`/${project.projectId}`)}
+                      className="cursor-pointer text-sm hover:bg-zinc-800"
+                    >
+                      {project.name}
+                    </DropdownMenuItem>
+                  ))
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
@@ -89,6 +136,20 @@ const Navbar = () => {
               {link.label}
             </Link>
           ))}
+          {/* Projects Dropdown (Simple for mobile) */}
+          <div className="flex flex-col gap-1">
+            <p className="text-xs font-semibold text-zinc-400">Projects</p>
+            {projects.map((project) => (
+              <Link
+                key={project.projectId}
+                to={`/${project.projectId}`}
+                onClick={() => setIsMobileOpen(false)}
+                className="pl-2 text-sm text-zinc-300 hover:text-white"
+              >
+                {project.name}
+              </Link>
+            ))}
+          </div>
         </div>
       )}
     </nav>
