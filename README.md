@@ -44,9 +44,9 @@ Pull requests are welcome! Feel free to fork the repo and submit a PR.
 ## License
 
 This project is open-source and available under the **ISC License**.
-# ProjectNest
+# TaskFlow
 
-**ProjectNest** is a **TypeScript-based** project and task management system built with **Node.js**, **Express**, and **MongoDB**. It features a clean, modular architecture with role-based access control, project collaboration, team notes, and structured logging using **Winston**.
+**TaskFlow** is a **TypeScript-based** project and task management system built with **Node.js**, **Express**, and **MongoDB**. It features a clean, modular architecture with role-based access control, project collaboration, team notes, and structured logging using **Winston**.
 
 ## Features
 
