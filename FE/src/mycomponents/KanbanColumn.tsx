@@ -20,6 +20,8 @@ import {
   updateTaskStatus,
 } from "@/redux/slices/userTasksSlice";
 import { EditTaskDialogbox } from "./Edit_TaskCard";
+import {API_BASE_URL} from "../../config"
+
 
 interface KanbanColumnProps {
   title: TaskStatus;
@@ -71,7 +73,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
 
     try {
       const res = await axios.patch(
-        `http://localhost:8200/api/v1/task/project/${projectId}/update/tasks/${taskId}`,
+        `${API_BASE_URL}/api/v1/task/project/${projectId}/update/tasks/${taskId}`,
         {
           title: selectedTask.title,
           desc: selectedTask.desc,
@@ -105,7 +107,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
     try {
       console.log("in addTask");
       const res = await axios.post(
-        `http://localhost:8200/api/v1/task/project/${projectId}/create/tasks`,
+        `${API_BASE_URL}/api/v1/task/project/${projectId}/create/tasks`,
         formData,
         {
           withCredentials: true,

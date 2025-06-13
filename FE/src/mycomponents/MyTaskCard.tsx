@@ -33,6 +33,8 @@ import AssignedUserDialog from "./AssignedUserDialog";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store/store";
 import { toast } from "sonner";
+import {API_BASE_URL} from "../../config"
+
 
 export const MyTaskCard: FC<myTask> = ({
   _id,
@@ -52,6 +54,7 @@ export const MyTaskCard: FC<myTask> = ({
   const [open, setOpen] = useState(false);
   const [subTasksOpen, setSubTasksOpen] = useState(false);
   const [delOpen, setDelOpen] = useState(false);
+  
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -60,7 +63,7 @@ export const MyTaskCard: FC<myTask> = ({
 
     try {
       const res = await axios.post(
-        `http://localhost:8200/api/v1/task/project/${project._id}/tasks/${_id}/subTasks`,
+        `${API_BASE_URL}/api/v1/task/project/${project._id}/tasks/${_id}/subTasks`,
         {
           title: subtaskTitle,
         },
@@ -81,7 +84,7 @@ export const MyTaskCard: FC<myTask> = ({
   const deleteSubTask = async (subtaskId: string) => {
     try {
       const res = await axios.delete(
-        `http://localhost:8200/api/v1/task/project/${project._id}/tasks/${_id}/delete/subTasks/${subtaskId}`,
+        `${API_BASE_URL}/api/v1/task/project/${project._id}/tasks/${_id}/delete/subTasks/${subtaskId}`,
         {
           withCredentials: true,
         }
@@ -97,7 +100,7 @@ export const MyTaskCard: FC<myTask> = ({
   const getAllSubtasks = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8200/api/v1/task/project/${project._id}/tasks/${_id}/subTasks/getAll`,
+        `${API_BASE_URL}/api/v1/task/project/${project._id}/tasks/${_id}/subTasks/getAll`,
         { withCredentials: true }
       );
 
@@ -112,7 +115,7 @@ export const MyTaskCard: FC<myTask> = ({
   const updateSubTask = async (subtask: any) => {
     try {
       const res = await axios.patch(
-        `http://localhost:8200/api/v1/task/project/${project._id}/tasks/${_id}/update/subTasks/${subtask._id}`,
+        `${API_BASE_URL}/api/v1/task/project/${project._id}/tasks/${_id}/update/subTasks/${subtask._id}`,
         {
           title: subtask.title,
           isCompleted: true,
@@ -130,7 +133,7 @@ export const MyTaskCard: FC<myTask> = ({
   const handleDeleteTask = async (taskId: string) => {
     try {
       const res = await axios.delete(
-        `http://localhost:8200/api/v1/task/project/${project._id}/delete/tasks/${taskId}`,
+        `${API_BASE_URL}/api/v1/task/project/${project._id}/delete/tasks/${taskId}`,
         { withCredentials: true }
       );
       toast.success("Task deleted successfully");
@@ -148,7 +151,7 @@ export const MyTaskCard: FC<myTask> = ({
 
   return (
     <>
-      <div className="bg-neutral-950 p-4 rounded-md border border-neutral-800 hover:border-blue-500 transition-all hover:shadow-lg group cursor-pointer space-y-1">
+      <div className="bg-neutral-800 p-4 rounded-md border border-neutral-800 hover:border-blue-500 transition-all hover:shadow-lg group cursor-pointer space-y-1">
         {/* First line  */}
         <div className="flex justify-between">
           <p className="font-semibold text-cyan-500 group-hover:text-blue-300 text-sm transition">
@@ -177,7 +180,7 @@ export const MyTaskCard: FC<myTask> = ({
                     <p> See all Subtasks</p>
                   </TooltipContent>
                 </Tooltip>
-                <DialogContent className="bg-neutral-900 border-zinc-700">
+                <DialogContent className="bg-neutral-800 border-zinc-700">
                   <DialogHeader>
                     <DialogTitle className="text-white mb-3">
                       All SubTasks
@@ -260,7 +263,7 @@ export const MyTaskCard: FC<myTask> = ({
                     <p> Create Subtask</p>
                   </TooltipContent>
                 </Tooltip>
-                <DialogContent className="bg-neutral-900 border-zinc-700">
+                <DialogContent className="bg-neutral-800 border-zinc-700">
                   <DialogHeader>
                     <DialogTitle className="text-white">
                       Create Subtask

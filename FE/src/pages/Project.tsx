@@ -14,6 +14,7 @@ import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
 import { AddMemberDialog } from "@/mycomponents/AddMemberDialog";
 import { fetchUserRole } from "@/redux/slices/userRoleSlice";
+import { API_BASE_URL } from "config";
 
 interface Member {
   _id: string;
@@ -61,7 +62,7 @@ export default function ProjectDetailPage() {
     const fetchProjectDetails = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8200/api/v1/project/${projectId}`,
+          `${API_BASE_URL}/api/v1/project/${projectId}`,
           {
             withCredentials: true,
           }
@@ -76,7 +77,7 @@ export default function ProjectDetailPage() {
     const fetchMembers = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8200/api/v1/project/${projectId}/getMembers`,
+          `${API_BASE_URL}/api/v1/project/${projectId}/getMembers`,
           {
             withCredentials: true,
           }
@@ -103,7 +104,7 @@ export default function ProjectDetailPage() {
     // Call your PATCH API here
     try {
       const res = await axios.patch(
-        `http://localhost:8200/api/v1/project/update/${projectId}`,
+        `${API_BASE_URL}/api/v1/project/update/${projectId}`,
         {
           name,
           desc,

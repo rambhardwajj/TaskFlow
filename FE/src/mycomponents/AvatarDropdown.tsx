@@ -5,6 +5,8 @@ import { RootState } from "@/redux/store/store";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
+import {API_BASE_URL} from "../../config"
+
 
 export const AvatarDropdown = () => {
   const [open, setOpen] = useState(false);
@@ -17,7 +19,7 @@ export const AvatarDropdown = () => {
   const handleLogout = async () => {
     try {
 
-      const res = await axios.get('http://localhost:8200/api/v1/user/auth/logout', {withCredentials:true})
+      const res = await axios.get(`${API_BASE_URL}/api/v1/user/auth/logout`, {withCredentials:true})
 
       dispatch(logout());
       navigate("/login");

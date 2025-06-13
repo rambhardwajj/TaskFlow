@@ -12,6 +12,7 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { EditTaskDialog } from "@/mycomponents/EditTaskCard";
 import { toast } from "sonner";
 import axios from "axios";
+import { API_BASE_URL } from "config";
 
 const taskSections: TaskStatus[] = ["TODO", "IN_PROGRESS", "DONE"];
 
@@ -54,7 +55,7 @@ const MyTasks = () => {
 
     try {
       const res = await axios.patch(
-        `http://localhost:8200/api/v1/task/project/${selectedTask.project._id}/update/tasks/${taskId}`,
+        `${API_BASE_URL}/api/v1/task/project/${selectedTask.project._id}/update/tasks/${taskId}`,
         {
           title: selectedTask.title,
           desc: selectedTask.desc,

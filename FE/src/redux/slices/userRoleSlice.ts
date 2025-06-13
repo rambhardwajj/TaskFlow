@@ -2,13 +2,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_BASE_URL } from "config";
 
 export const fetchUserRole = createAsyncThunk(
   "userRole/fetchUserRole",
   async (projectId: string, thunkAPI) => {
     try {
       const res = await axios.get(
-        `http://localhost:8200/api/v1/project/${projectId}/getRole`,
+        `${API_BASE_URL}/api/v1/project/${projectId}/getRole`,
         { withCredentials: true }
       );
       return res.data.data.projectMember; 

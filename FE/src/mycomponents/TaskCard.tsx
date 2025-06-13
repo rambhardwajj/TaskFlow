@@ -30,6 +30,7 @@ import AssignedUserDialog from "./AssignedUserDialog";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store/store";
 import { toast } from "sonner";
+import { API_BASE_URL } from "config";
 
 export const TaskCard: FC<Task> = ({
   _id,
@@ -56,7 +57,7 @@ export const TaskCard: FC<Task> = ({
 
     try {
       const res = await axios.post(
-        `http://localhost:8200/api/v1/task/project/${projectId}/tasks/${_id}/subTasks`,
+        `${API_BASE_URL}/api/v1/task/project/${projectId}/tasks/${_id}/subTasks`,
         { title: subtaskTitle },
         {
           withCredentials: true,
@@ -76,7 +77,7 @@ export const TaskCard: FC<Task> = ({
   const deleteSubTask = async (subtaskId: string) => {
     try {
       const res = await axios.delete(
-        `http://localhost:8200/api/v1/task/project/${projectId}/tasks/${_id}/delete/subTasks/${subtaskId}`,
+        `${API_BASE_URL}/api/v1/task/project/${projectId}/tasks/${_id}/delete/subTasks/${subtaskId}`,
         {
           withCredentials: true,
         }
@@ -93,7 +94,7 @@ export const TaskCard: FC<Task> = ({
   const getAllSubtasks = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8200/api/v1/task/project/${projectId}/tasks/${_id}/subTasks/getAll`,
+        `${API_BASE_URL}/api/v1/task/project/${projectId}/tasks/${_id}/subTasks/getAll`,
         { withCredentials: true }
       );
 
@@ -109,7 +110,7 @@ export const TaskCard: FC<Task> = ({
   const updateSubTask = async (subtask: any) => {
     try {
       const res = await axios.patch(
-        `http://localhost:8200/api/v1/task/project/${projectId}/tasks/${_id}/update/subTasks/${subtask._id}`,
+        `${API_BASE_URL}/api/v1/task/project/${projectId}/tasks/${_id}/update/subTasks/${subtask._id}`,
         {
           title: subtask.title,
           isCompleted: true,
@@ -128,7 +129,7 @@ export const TaskCard: FC<Task> = ({
   const handleDeleteTask = async (taskId: string) => {
     try {
       const res = await axios.delete(
-        `http://localhost:8200/api/v1/task/project/${projectId}/delete/tasks/${taskId}`,
+        `${API_BASE_URL}/api/v1/task/project/${projectId}/delete/tasks/${taskId}`,
         { withCredentials: true }
       );
       toast.success("Task deleted successfully");

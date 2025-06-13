@@ -17,6 +17,8 @@ import {
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
+import {API_BASE_URL} from "../../config"
+
 
 export const EditMemberDialog = ({
   open,
@@ -38,7 +40,7 @@ export const EditMemberDialog = ({
     try {
       setLoading(true);
       await axios.patch(
-        `http://localhost:8200/api/v1/project/${projectId}/update/${member._id}`,
+        `${API_BASE_URL}/api/v1/project/${projectId}/update/${member._id}`,
         { role },
 
         { withCredentials: true }

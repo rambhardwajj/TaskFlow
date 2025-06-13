@@ -2,6 +2,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { toast } from "sonner";
+import {API_BASE_URL} from "../../config"
+
 
 interface DeleteMemberDialogProps {
   open: boolean;
@@ -14,7 +16,7 @@ interface DeleteMemberDialogProps {
 export const DeleteMemberDialog = ({ open, onOpenChange, memberId, projectId, onSuccess }: DeleteMemberDialogProps) => {
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8200/api/v1/project/${projectId}/remove/${memberId}`, {
+      await axios.delete(`${API_BASE_URL}/api/v1/project/${projectId}/remove/${memberId}`, {
         withCredentials: true,
       });
       onSuccess();

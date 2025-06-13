@@ -37,7 +37,7 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
   const [editStatus, setEditStatus] = useState<TaskStatus>(selectedTask.status);
 
   return (
-    <DialogContent className="custom-scrollbar min-w-[50vw] bg-black border border-[#333] mx-auto rounded-lg shadow-2xl p-6 space-y-1 max-h-[67vh] overflow-y-auto">
+    <DialogContent className="custom-scrollbar min-w-[50vw] bg-neutral-800 border border-[#333] mx-auto rounded-lg shadow-2xl p-6 space-y-1 max-h-[67vh] overflow-y-auto">
       <div className="flex border-b border-zinc-700 text-sm font-medium text-zinc-400">
         <button className="text-white border-b-2 border-blue-600 pb-1">
           General
@@ -69,7 +69,7 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
               )}
             </div>
 
-            <div className="space-y-2 bg-neutral-950 border border-[#444] rounded-md p-4">
+            <div className="space-y-2 bg-neutral-800 border border-[#444] rounded-md p-4">
               <h3 className="text-white font-semibold text-base">
                 Description
               </h3>

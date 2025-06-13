@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { AppWindowMac, SquarePen, Trash } from "lucide-react";
+import { API_BASE_URL } from "config";
 
 export interface Project {
   role: string;
@@ -54,7 +55,7 @@ export default function ProjectTable() {
   const handleCreateProject = async () => {
     try {
       await axios.post(
-        "http://localhost:8200/api/v1/project/create",
+        `${API_BASE_URL}/api/v1/project/create`,
         {
           name: projectName,
           desc: projectDesc,
@@ -73,7 +74,7 @@ export default function ProjectTable() {
   const [delOpen, setDelOpen] = useState(false);
   const handleDeleteProject = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:8200/api/v1/project/delete/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/v1/project/delete/${id}`, {
         withCredentials: true,
       });
       toast.success("Project deleted successfully!");

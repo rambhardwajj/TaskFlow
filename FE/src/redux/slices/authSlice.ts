@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_BASE_URL } from "config";
 import { toast } from "sonner";
 
 interface AuthState {
@@ -22,7 +23,7 @@ export const loginUser = createAsyncThunk(
     try {
       // console.log(credentials)
       const res = await axios.post(
-        "http://localhost:8200/api/v1/user/auth/login",
+        `${API_BASE_URL}/api/v1/user/auth/login`,
         credentials,
         { withCredentials: true }
       );
@@ -53,7 +54,7 @@ export const registerUser = createAsyncThunk(
       const isFormData = credentials instanceof FormData;
 
       const res = await axios.post(
-        "http://localhost:8200/api/v1/user/auth/register",
+        `${API_BASE_URL}/api/v1/user/auth/register`,
         credentials,
         {
           headers: isFormData
@@ -73,7 +74,7 @@ export const registerUser = createAsyncThunk(
 
 export const getUser = createAsyncThunk("auth/getUser", async (_, thunkAPI) => {
   try {
-    const res = await axios.get("http://localhost:8200/api/v1/user/auth/me", {
+    const res = await axios.get(`${API_BASE_URL}/api/v1/user/auth/me`, {
       withCredentials: true,
     });
     console.log("getUser data ", res.data);

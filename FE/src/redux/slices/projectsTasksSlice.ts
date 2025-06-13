@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_BASE_URL } from "config";
 
 export type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
 
@@ -41,7 +42,7 @@ export const fetchProjectTasks = createAsyncThunk<
 >("projectTasks/getAllProjectTasks", async (projectId, thunkAPI) => {
   try {
     const response = await axios.get(
-      `http://localhost:8200/api/v1/task/project/${projectId}/tasks`,
+      `${API_BASE_URL}/api/v1/task/project/${projectId}/tasks`,
       { withCredentials: true }
     );
     return { projectId, tasks: response.data.data };

@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
+import {API_BASE_URL} from "../../config"
 
 export const AddMemberDialog = ({
   open,
@@ -38,7 +39,7 @@ export const AddMemberDialog = ({
     try {
       setLoading(true);
       const res = await axios.post(
-        `http://localhost:8200/api/v1/project/${projectId}/add`,
+        `${API_BASE_URL}/api/v1/project/${projectId}/add`,
         { email, role },
         {
           withCredentials: true,

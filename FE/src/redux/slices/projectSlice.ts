@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_BASE_URL } from "config";
 
 export interface Project {
   role: string;
@@ -30,7 +31,7 @@ export const getAllProjects = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await axios.get(
-        "http://localhost:8200/api/v1/project/",
+        `${API_BASE_URL}/api/v1/project/`,
         { withCredentials: true }
       );
       return response.data.data; 
