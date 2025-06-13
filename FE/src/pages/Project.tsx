@@ -13,6 +13,7 @@ import { DeleteMemberDialog } from "@/mycomponents/DeleteMemberDialog";
 import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
 import { AddMemberDialog } from "@/mycomponents/AddMemberDialog";
+import { fetchUserRole } from "@/redux/slices/userRoleSlice";
 
 interface Member {
   _id: string;
@@ -48,6 +49,7 @@ export default function ProjectDetailPage() {
   const { tasksByProject, loading } = useSelector(
     (state: RootState) => state.projectTasks
   );
+
   // if (projectId) console.log("tbp", tasksByProject[projectId]);
   // console.log("loading", loading);
 
@@ -114,6 +116,7 @@ export default function ProjectDetailPage() {
       console.log("project updated", res.data.data);
       setEdited(!edited);
     } catch (error) {
+      toast.error("Error is updating the project ")
       console.log("Error in handleProjectEdit", error);
     }
 
@@ -121,7 +124,7 @@ export default function ProjectDetailPage() {
   };
   const handleAddMember = async () => {
     setAddMemberOpen(false);
-    setEdited(!edited)
+    setEdited(!edited);
   };
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -131,6 +134,17 @@ export default function ProjectDetailPage() {
   const fetchMembersAgain = () => {
     setEdited(!edited);
   };
+
+  
+  const { role } = useSelector(
+    (state: RootState) => state.userRole
+  );
+
+  useEffect(() => {
+    if (projectId) {
+      dispatch(fetchUserRole(projectId));
+    }
+  }, [projectId, dispatch]);
 
   return (
     <div className="flex min-h-[90vh] custom-scrollbar  w-full  bg-neutral-900 text-neutral-200">
@@ -142,19 +156,23 @@ export default function ProjectDetailPage() {
               <h1 className="text-3xl font-bold text-white">
                 {project.projectName}
               </h1>
-              <Tooltip>
+
+              {role!=="member" && <Tooltip>
                 <TooltipTrigger>
                   <button
                     onClick={() => setEditProjectOpen(true)}
                     className="hover:scale-[1.1]"
                   >
-                    <Edit size={28} className="text-green-500 hover:text-green-400 cursor-pointer" /> 
+                    <Edit
+                      size={28}
+                      className="text-green-500 hover:text-green-400 cursor-pointer"
+                    />
                   </button>
                 </TooltipTrigger>
                 <TooltipContent className="border-1 border-neutral-600">
                   <p> Edit Project </p>
                 </TooltipContent>
-              </Tooltip>
+              </Tooltip>}
               <EditProjectDialog
                 open={editProjectOpen}
                 onOpenChange={setEditProjectOpen}
@@ -284,7 +302,7 @@ export default function ProjectDetailPage() {
                           Done
                         </Badge>
                       </div>
-                      
+
                       <div className=" flex gap-2 mt-2 text-sm text-neutral-400 space-y-1">
                         <p>
                           <p className="font-medium text-neutral-300">
@@ -316,12 +334,11 @@ export default function ProjectDetailPage() {
       <div className="w-1/4 p-6 bg-neutral-900 mr-1 shadow-lg border-l border-[#333] overflow-y-auto ">
         <div className="flex justify-between ">
           <div className="text-xl font-semibold mb-6 text-white">Members</div>
-          <Tooltip>
+          { role!== "member" &&  <Tooltip>
             <TooltipTrigger>
               <button
                 onClick={() => {
                   setAddMemberOpen(true);
-
                 }}
                 className="mt-[-25px] text-amber-500 cursor-pointer hover:scale-[1.1]"
               >
@@ -331,7 +348,7 @@ export default function ProjectDetailPage() {
             <TooltipContent>
               <p>Add member in the project</p>
             </TooltipContent>
-          </Tooltip>
+          </Tooltip>}
 
           {projectId && (
             <AddMemberDialog
@@ -366,39 +383,43 @@ export default function ProjectDetailPage() {
                   </div>
                 </div>
                 <div className=" mt-5">
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <button
-                        onClick={() => {
-                          setSelectedMember(member);
-                          setEditDialogOpen(true);
-                        }}
-                        className="hover:scale-[1.1] hover:text-cyan-500 cursor-pointer text-cyan-900 space-x-3 p-1"
-                      >
-                        <Pencil size={18} />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent className="border-1 border-neutral-800">
-                      <p> Edit Member Role</p>
-                    </TooltipContent>
-                  </Tooltip>
+                  {member.role !== "owner" && (role!=='member') && (
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <button
+                          onClick={() => {
+                            setSelectedMember(member);
+                            setEditDialogOpen(true);
+                          }}
+                          className="hover:scale-[1.1] hover:text-cyan-500 cursor-pointer text-cyan-900 space-x-3 p-1"
+                        >
+                          <Pencil size={18} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent className="border-1 border-neutral-800">
+                        <p> Edit Member Role</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
 
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <button
-                        onClick={() => {
-                          setSelectedMember(member);
-                          setDeleteDialogOpen(true);
-                        }}
-                        className="hover:scale-[1.1] hover:text-red-500 cursor-pointer text-red-900 space-x-3 p-1"
-                      >
-                        <Trash size={18} />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent className="border-1 border-neutral-800">
-                      <p> Delete Member from Project</p>
-                    </TooltipContent>
-                  </Tooltip>
+                  {member.role !== "owner" && (role!=='member') && (
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <button
+                          onClick={() => {
+                            setSelectedMember(member);
+                            setDeleteDialogOpen(true);
+                          }}
+                          className="hover:scale-[1.1] hover:text-red-500 cursor-pointer text-red-900 space-x-3 p-1"
+                        >
+                          <Trash size={18} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent className="border-1 border-neutral-800">
+                        <p> Delete Member from Project</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
 
                   {projectId && selectedMember && (
                     <EditMemberDialog

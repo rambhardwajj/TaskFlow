@@ -46,8 +46,15 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
     setSelectedTask(task);
     setEditMode(false);
   };
-  const handleInputChange = (field: keyof Task, value: string) => {
+  const handleInputChange = (field: keyof Task, value: any) => {
     if (!selectedTask) return;
+    if (field === "assignedTo") {
+      value = {
+        userName: selectedTask.assignedTo.userName,
+        avatar: selectedTask.assignedTo.avatar,
+        email: value,
+      };
+    }
     setSelectedTask({ ...selectedTask, [field]: value });
   };
 
@@ -167,7 +174,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
         // console.log("target status " , task)
         console.log(task);
         if (!task) {
-          alert("You are not a part of this project.");
+          toast.error("You are not a part of this task.");
         }
 
         if (task && task.status !== targetStatus) {
@@ -185,7 +192,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
             }
           } catch (err) {
             console.error("Failed to update task status:", err);
-            alert(
+            toast.error(
               `Failed to update task status: ${
                 err instanceof Error ? err.message : String(err)
               }`

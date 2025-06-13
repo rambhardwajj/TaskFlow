@@ -1,18 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "sonner";
 
 interface AuthState {
   user: any;
   loading: boolean;
   error: string | null;
-  userLoading: boolean
+  userLoading: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
   loading: false,
   error: null,
-  userLoading: true
+  userLoading: true,
 };
 
 export const loginUser = createAsyncThunk(
@@ -29,49 +30,58 @@ export const loginUser = createAsyncThunk(
       return res.data.data;
     } catch (err: any) {
       console.log(err);
+      toast.error("Error in logging user")
       return thunkAPI.rejectWithValue(err.response.data.message);
     }
   }
 );
 
-export const signupUser = createAsyncThunk(
+export const registerUser = createAsyncThunk(
   "auth/signup",
   async (
-    credentials: {
-      userName: string;
-      email: string;
-      password: string;
-      fullName: string;
-    },
+    credentials:
+      | FormData
+      | {
+          userName: string;
+          email: string;
+          password: string;
+          fullName: string;
+        },
     thunkAPI
   ) => {
     try {
+      const isFormData = credentials instanceof FormData;
+
       const res = await axios.post(
         "http://localhost:8200/api/v1/user/auth/register",
         credentials,
-        { withCredentials: true }
+        {
+          headers: isFormData
+            ? { "Content-Type": "multipart/form-data" }
+            : { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
       );
-      // console.log(res.data.data)
+
+
       return res.data.data;
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data.message);
+      return thunkAPI.rejectWithValue(err.response.data.message || "Signup Failed" );
     }
   }
 );
 
 export const getUser = createAsyncThunk("auth/getUser", async (_, thunkAPI) => {
   try {
-    const res = await axios.get(
-      "http://localhost:8200/api/v1/user/auth/me",
-      { withCredentials: true }
-    );
+    const res = await axios.get("http://localhost:8200/api/v1/user/auth/me", {
+      withCredentials: true,
+    });
     console.log("getUser data ", res.data);
     return res.data.data;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response.data.message);
   }
 });
-
 
 const authSlice = createSlice({
   name: "auth",
@@ -98,15 +108,15 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
       // Signup
-      .addCase(signupUser.pending, (state) => {
+      .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(signupUser.fulfilled, (state, action) => {
+      .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
       })
-      .addCase(signupUser.rejected, (state, action) => {
+      .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

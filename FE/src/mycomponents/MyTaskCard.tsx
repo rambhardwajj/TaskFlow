@@ -74,6 +74,7 @@ export const MyTaskCard: FC<myTask> = ({
       setOpen(false);
       // optionally trigger refetch/subtask update
     } catch (error) {
+      toast.error("Error submitting subtask. Make sure you are logged in.");
       console.error("Error submitting subtask:", error);
     }
   };
@@ -89,6 +90,7 @@ export const MyTaskCard: FC<myTask> = ({
       getAllSubtasks();
       setOpen(false);
     } catch (error) {
+      toast.error("Error in deleting.");
       console.error("Error is delting , ", error);
     }
   };
@@ -103,6 +105,7 @@ export const MyTaskCard: FC<myTask> = ({
 
       setSubTasks(res.data.data);
     } catch (error) {
+      toast.error("Error in getting subTasks. Make sure You are signed In ")
       console.log(error);
     }
   };
@@ -120,6 +123,7 @@ export const MyTaskCard: FC<myTask> = ({
       console.log(res.data);
       getAllSubtasks();
     } catch (error) {
+      toast.error("Error in updating subtask");
       console.log(error);
     }
   };

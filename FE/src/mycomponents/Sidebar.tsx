@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   ListChecks,
   Menu,
+  User,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "../lib/utils";
@@ -16,7 +17,7 @@ const Sidebar = () => {
   const [width, setWidth] = useState(250); // initial width in px
   const sidebarRef = useRef<HTMLDivElement | null>(null);
 
-  const minWidth = 150;
+  const minWidth = 10;
   const maxWidth = 300;
 
   useEffect(() => {
@@ -43,7 +44,7 @@ const Sidebar = () => {
   console.log("yaha",user)
 
   return (
-    <div
+   user &&  <div
       ref={sidebarRef}
       style={{ width }}
       className={cn(
@@ -102,7 +103,7 @@ const Sidebar = () => {
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-zinc-800">
+     {user && <div className="p-4 border-t border-zinc-800">
         <Link
           to="/me"
           className={cn(
@@ -112,17 +113,17 @@ const Sidebar = () => {
               : "bg-cyan-800 hover:bg-cyan-700 text-white"
           )}
         >
-          {width > 150 ? (
-            <span className="text-sm font-medium">Profile</span>
+          {  width > 150 ? (
+            <span className="text-sm font-medium"><User /></span>
           ) : (
-            <img
+           <img
               src={user.avatar.url}
               alt="https://api.dicebear.com/7.x/initials/svg?seed=RamB"
               className="w-7 h-7 rounded-full object-cover border border-white"
             />
           )}
         </Link>
-      </div>
+      </div>}
 
       {/* Resize Handle */}
       <div

@@ -160,8 +160,7 @@ const userTasksSlice = createSlice({
             console.log(oldStatus)
             // @ts-ignore 
             state.userTasks[oldStatus] = state.userTasks[oldStatus].filter(
-              // @ts-ignore 
-              (id) => id !== taskId
+              (id: string) => id !== taskId
             );
           }
           // Add to new status array

@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { toast } from "sonner";
 
 interface DeleteMemberDialogProps {
   open: boolean;
@@ -19,6 +20,7 @@ export const DeleteMemberDialog = ({ open, onOpenChange, memberId, projectId, on
       onSuccess();
       onOpenChange(false);
     } catch (error) {
+      toast.error("Failed to delete member")
       console.error("Failed to delete member", error);
     }
   };

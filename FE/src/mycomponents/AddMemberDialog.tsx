@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import axios from "axios";
+import { toast } from "sonner";
 
 export const AddMemberDialog = ({
   open,
@@ -49,6 +50,7 @@ export const AddMemberDialog = ({
       setEmail("");
       setRole("member");
     } catch (error) {
+      toast.error("Error is adding the user")
       console.error("Add member error:", error);
     } finally {
       setLoading(false);

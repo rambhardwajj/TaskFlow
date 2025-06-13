@@ -1,6 +1,7 @@
 import { KanbanColumn } from "@/mycomponents/KanbanColumn";
 import MyTasks from "./MyTasks";
 import { Link } from "react-router-dom";
+import FooterComponent from "@/mycomponents/FooterComponente";
 
 export default function Home() {
   return (
@@ -8,7 +9,7 @@ export default function Home() {
       {/* Top Banner */}
       <div className="text-center mb-8">
         <div className="inline-block bg-zinc-800 px-4 py-1 text-xs text-zinc-300 rounded-full shadow-sm">
-          Built for seamless project execution
+          Built for seamless project execution 🔵
         </div>
       </div>
 
@@ -26,19 +27,29 @@ export default function Home() {
           project success.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Link to={"/projects"} >
+          <Link to={"/projects"}>
             <button className=" cursor-pointer bg-cyan-600 hover:bg-cyan-700 transition text-white px-6 py-2 rounded-md text-sm font-medium">
               Get Started
             </button>
           </Link>
-          <button className=" cursor-pointer border border-zinc-600 hover:bg-zinc-800 transition text-white px-6 py-2 rounded-md text-sm font-medium">
+          <button
+            onClick={() => {
+              document
+                .getElementById("demo-section")
+                ?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className=" cursor-pointer border border-zinc-600 hover:bg-zinc-800 transition text-white px-6 py-2 rounded-md text-sm font-medium"
+          >
             Live Demo
           </button>
         </div>
       </section>
 
       {/* PMS Preview Box */}
-      <section className="bg-zinc-900/40 border border-zinc-700 rounded-md p-6 max-w-6xl mx-auto shadow-md mb-20">
+      <section
+        id="demo-section"
+        className="bg-zinc-900/40 border border-zinc-700 rounded-md p-6 max-w-6xl mx-auto shadow-md mb-20"
+      >
         <h2 className="text-sm font-semibold text-zinc-400 mb-4">
           Dashboard Preview
         </h2>
@@ -52,7 +63,7 @@ export default function Home() {
                   title: "Set up project repo",
                   desc: "Initialize GitHub repo with README and project structure",
                   updatedAt: "2025-06-10T14:00:00Z",
-                  status:"TODO",
+                  status: "TODO",
                   assignedTo: {
                     userName: "Ram Bhardwaj",
                     email: "ram@example.com",
@@ -71,7 +82,7 @@ export default function Home() {
                   title: "Set up Tasks repo",
                   desc: "Initialize GitHub repo with README and project structure",
                   updatedAt: "2025-06-10T14:00:00Z",
-                  status:"TODO",
+                  status: "TODO",
                   assignedTo: {
                     userName: "Ram Bhardwaj",
                     email: "ram@example.com",
@@ -96,7 +107,7 @@ export default function Home() {
                   title: "Build login functionality",
                   desc: "Implement login with JWT, form validation, and error handling",
                   updatedAt: "2025-06-11T09:30:00Z",
-                  status:"IN_PROGRESS",
+                  status: "IN_PROGRESS",
                   assignedTo: {
                     userName: "Ram Bhardwaj",
                     email: "ram@example.com",
@@ -121,7 +132,7 @@ export default function Home() {
                   title: "Design UI mockups",
                   desc: "Created UI wireframes for dashboard and sidebar using Figma",
                   updatedAt: "2025-06-09T17:45:00Z",
-                  status:"DONE",
+                  status: "DONE",
                   assignedTo: {
                     userName: "Ram Bhardwaj",
                     email: "ram@example.com",
@@ -168,6 +179,8 @@ export default function Home() {
           />
         </div>
       </section>
+
+      <FooterComponent />
     </main>
   );
 }

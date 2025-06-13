@@ -30,8 +30,15 @@ const MyTasks = () => {
     setSelectedTask(task);
     setEditMode(false);
   };
-  const handleInputChange = (field: keyof myTask, value: string) => {
+  const handleInputChange = (field: keyof myTask, value: any) => {
     if (!selectedTask) return;
+    if (field === "assignedTo") {
+      value = {
+        userName: selectedTask.assignedTo.userName,
+        avatar: selectedTask.assignedTo.avatar,
+        email: value,
+      };
+    }
     setSelectedTask({ ...selectedTask, [field]: value });
   };
   const handleSaveTask = async () => {
@@ -135,7 +142,7 @@ const MyTasks = () => {
             );
           } catch (err) {
             console.error("Failed to update task status:", err);
-            alert(
+            toast.error(
               `Failed to update task status: ${
                 err instanceof Error ? err.message : String(err)
               }`
@@ -158,7 +165,7 @@ const MyTasks = () => {
       <h1 className="text-white text-lg font-bold mb-6 ml-2 text-left">
         My Tasks Dashboard
       </h1>
-      {  error ? (
+      {error ? (
         <p className="text-red-400 text-center text-lg">Error: {error}</p>
       ) : (
         <div

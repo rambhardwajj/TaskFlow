@@ -10,8 +10,12 @@ import {
 } from "@/components/ui/dropdown-menu"; // Update this path based on your project structure
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Task } from "@/redux/slices/projectsTasksSlice";
+import { Task, TaskStatus } from "@/redux/slices/projectsTasksSlice";
 import { DialogContent, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Edit } from "lucide-react";
+
+
 
 interface EditTaskDialogProps {
   loading: boolean;
@@ -34,7 +38,7 @@ export const EditTaskDialogbox: React.FC<EditTaskDialogProps> = ({
   const [editStatus, setEditStatus] = useState(selectedTask.status);
 
   return (
-    <DialogContent className="custom-scrollbar min-w-[66vw] bg-[#1e1e1e] border border-[#333] mx-auto rounded-lg shadow-2xl p-6 space-y-1 max-h-[67vh] overflow-y-auto">
+    <DialogContent className="custom-scrollbar min-w-[50vw] bg-black border border-[#333] mx-auto rounded-lg shadow-2xl p-6 space-y-1 max-h-[67vh] overflow-y-auto">
       <div className="flex border-b border-zinc-700 text-sm font-medium text-zinc-400">
         <button className="text-white border-b-2 border-blue-600 pb-1">
           General
@@ -43,14 +47,14 @@ export const EditTaskDialogbox: React.FC<EditTaskDialogProps> = ({
 
       {selectedTask && (
         <div className="flex gap-4 justify-between">
-          <div className="w-full min-w-[45vw] justify-between space-y-3">
+          <div className="w-full min-w-[30vw] justify-between space-y-3">
             <div className="space-y-2">
-              <h2 className="text-white text-2xl font-semibold tracking-tight">
+              <h2 className="text-cyan-600 text-2xl font-semibold tracking-tight">
                 {editMode ? (
                   <div>
                     Edit Task
                     <Textarea
-                      className="mt-2 bg-zinc-800 border border-zinc-700 text-white focus:ring-2 focus:ring-blue-600 rounded-lg min-h-[30px]"
+                      className="mt-2 bg-neutral-800 border  text-white focus:ring-2 focus:ring-blue-600 rounded-lg min-h-[30px]"
                       value={selectedTask.title}
                       onChange={(e) =>
                         handleInputChange("title", e.target.value)
@@ -68,13 +72,13 @@ export const EditTaskDialogbox: React.FC<EditTaskDialogProps> = ({
               )}
             </div>
 
-            <div className="space-y-2 bg-[#2a2a2a] border border-[#444] rounded-md p-4">
-              <h3 className="text-white font-semibold text-base">
+            <div className="space-y-2 bg-black/50 border border-[#444] rounded-md p-4">
+              <h3 className="text-cyan-600 font-semibold text-base ">
                 Description
               </h3>
               {editMode ? (
                 <Textarea
-                  className="bg-zinc-800 border border-zinc-700 text-white focus:ring-2 focus:ring-blue-600 rounded-lg min-h-[100px]"
+                  className="bg-neutral-800 border  text-white focus:ring-2 focus:ring-blue-600 rounded-lg min-h-[100px]"
                   value={selectedTask.desc}
                   onChange={(e) => handleInputChange("desc", e.target.value)}
                 />
@@ -92,7 +96,7 @@ export const EditTaskDialogbox: React.FC<EditTaskDialogProps> = ({
               {editMode ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline">Status</Button>
+                    <Button className="cursor-pointer hover:scale-[1.1]" >{editStatus} <Edit className="hover:scale-[1.1] text-green-500" /> </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56">
                     <DropdownMenuLabel>Task Status</DropdownMenuLabel>
@@ -118,14 +122,14 @@ export const EditTaskDialogbox: React.FC<EditTaskDialogProps> = ({
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <p className="inline-block px-3 py-1 text-sm rounded-full bg-zinc-800 text-white border border-zinc-600">
+                <p className="inline-block px-3 py-1 text-sm rounded-full bg-neutral-800 text-white border border-zinc-600">
                   {selectedTask.status}
                 </p>
               )}
             </div>
 
             <div>
-              <h4 className="text-white font-semibold mb-2">Attachments</h4>
+            {!editMode &&  <h4 className="text-white font-semibold mb-2">Attachments</h4>}
               <div className="flex gap-3 overflow-x-auto">
                 {selectedTask.attachments?.map((att, idx) => (
                   <div
@@ -144,12 +148,22 @@ export const EditTaskDialogbox: React.FC<EditTaskDialogProps> = ({
           </div>
 
           <div className="flex flex-col max-w-[30vw] gap-6">
-            <div className="bg-[#2a2a2a] rounded-md p-1 pl-3 pb-2 w-full min-w-[15vw] border border-[#444]">
+            <div className="bg-neutral-950 rounded-md p-1 pl-3 pb-2 w-full min-w-[15vw] border border-[#444]">
               <h4 className="text-zinc-400 text-xs mb-1">Assignee</h4>
-              <p className="text-white text-sm font-medium">
-                {selectedTask.assignedTo.email}
-              </p>
-              <div className="flex items-center gap-3 pt-2">
+              {editMode ? (
+                <div>
+                  <Input
+                    className="bg-neutral-800 text-white"
+                    value={selectedTask.assignedTo.email}
+                    onChange={(e) => handleInputChange("assignedTo", e.target.value)}
+                  />
+                </div>
+              ) : (
+                <p className="text-white text-sm font-medium">
+                  {selectedTask.assignedTo.email}
+                </p>
+              )}
+             {!editMode &&  <div className="flex items-center gap-3 pt-2">
                 <img
                   src={selectedTask.assignedTo.avatar}
                   className="w-8 h-8 rounded-full border border-zinc-700"
@@ -157,10 +171,10 @@ export const EditTaskDialogbox: React.FC<EditTaskDialogProps> = ({
                 <p className="text-white text-sm font-medium">
                   {selectedTask.assignedTo.userName}
                 </p>
-              </div>
+              </div>}
             </div>
 
-            <div className="bg-[#2a2a2a] rounded-md p-1 pl-3 pb-2 w-full border border-[#444]">
+           {!editMode &&  <div className="bg-neutral-950 rounded-md p-1 pl-3 pb-2 w-full border border-[#444]">
               <h4 className="text-zinc-400 text-xs mb-1">Reporter</h4>
               <p className="text-white text-sm font-medium">
                 {selectedTask.assignedBy.email}
@@ -174,7 +188,8 @@ export const EditTaskDialogbox: React.FC<EditTaskDialogProps> = ({
                   {selectedTask.assignedBy.userName}
                 </p>
               </div>
-            </div>
+            </div>}
+
           </div>
         </div>
       )}

@@ -33,7 +33,7 @@ export const getAllProjects = createAsyncThunk(
         "http://localhost:8200/api/v1/project/",
         { withCredentials: true }
       );
-      return response.data.data; // Should be Project[]
+      return response.data.data; 
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response.data.message);
     }

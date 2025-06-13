@@ -57,9 +57,7 @@ export const TaskCard: FC<Task> = ({
     try {
       const res = await axios.post(
         `http://localhost:8200/api/v1/task/project/${projectId}/tasks/${_id}/subTasks`,
-        {
-          title: subtaskTitle,
-        },
+        { title: subtaskTitle },
         {
           withCredentials: true,
         }
@@ -70,6 +68,7 @@ export const TaskCard: FC<Task> = ({
       setOpen(false);
       // optionally trigger refetch/subtask update
     } catch (error) {
+      toast.error("Error creating subTasks");
       console.error("Error submitting subtask:", error);
     }
   };
@@ -86,6 +85,7 @@ export const TaskCard: FC<Task> = ({
       getAllSubtasks();
       setOpen(false);
     } catch (error) {
+      toast.error("Error in deleting");
       console.error("Error is delting , ", error);
     }
   };
@@ -101,6 +101,7 @@ export const TaskCard: FC<Task> = ({
 
       setSubTasks(res.data.data);
     } catch (error) {
+      toast.error("error in getting all Subtasks");
       console.log(error);
     }
   };
@@ -119,6 +120,7 @@ export const TaskCard: FC<Task> = ({
       console.log(res.data);
       getAllSubtasks();
     } catch (error) {
+      toast.error("Error in updating subtask");
       console.log(error);
     }
   };

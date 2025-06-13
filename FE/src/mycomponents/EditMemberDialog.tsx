@@ -15,6 +15,8 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { useState } from "react";
+import axios from "axios";
+import { toast } from "sonner";
 
 export const EditMemberDialog = ({
   open,
@@ -35,18 +37,16 @@ export const EditMemberDialog = ({
   const handleUpdateRole = async () => {
     try {
       setLoading(true);
-      await fetch(
-        `http://localhost:8200/api/v1/project/${projectId}/update/${member.userInfo._id}`,
-        {
-          method: "PATCH",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ role }),
-        }
+      await axios.patch(
+        `http://localhost:8200/api/v1/project/${projectId}/update/${member._id}`,
+        { role },
+
+        { withCredentials: true }
       );
       onSuccess();
       onOpenChange(false);
     } catch (err) {
+      toast.error("Update failed ");
       console.error("Update failed", err);
     } finally {
       setLoading(false);

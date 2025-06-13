@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { SquarePen, Trash } from "lucide-react";
+import { AppWindowMac, SquarePen, Trash } from "lucide-react";
 
 export interface Project {
   role: string;
@@ -32,6 +32,9 @@ export default function ProjectTable() {
   const { projects, loading } = useSelector(
     (state: RootState) => state.projects
   );
+
+  // const {role} = useSelector((state: RootState)=> state.userRole.role)
+
   const [open, setOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
   const [projectDesc, setProjectDesc] = useState("");
@@ -128,7 +131,7 @@ export default function ProjectTable() {
                     </Link>
                     <div onClick={(e) => e.stopPropagation()}>
                       <Link to={`/${project.projectId}`}>
-                        <SquarePen className=" hover:scale-[1.1] hover:text-green-400 w-5 h-5 mx-2  text-green-500 cursor-pointer" />
+                        <AppWindowMac  className="animate-pulse  hover:scale-[1.1] hover:text-green-400 w-6 h-6 mx-2  text-green-300 cursor-pointer" />
                       </Link>
                     </div>
                   </td>
@@ -149,9 +152,9 @@ export default function ProjectTable() {
                     onClick={(e) => e.stopPropagation()}
                   >
                     {/* Delete  */}
-                    <Dialog open={delOpen} onOpenChange={setDelOpen}>
+                    {project.role !== "member" && <Dialog open={delOpen} onOpenChange={setDelOpen}>
                       <DialogTrigger asChild>
-                        <button
+                       <button
                           className="cursor-pointer "
                           onClick={(e) => {
                             e.stopPropagation();
@@ -161,6 +164,8 @@ export default function ProjectTable() {
                           <Trash className=" w-5 hover:scale-[1.2] hover:text-red-500" />
                         </button>
                       </DialogTrigger>
+
+
                       <DialogContent className="bg-neutral-900 rounded-b-sm hover:bg-neutral-800 text-white">
                         <div className="space-y-4">
                           <DialogTitle>
@@ -186,7 +191,7 @@ export default function ProjectTable() {
                           </div>
                         </div>
                       </DialogContent>
-                    </Dialog>
+                    </Dialog>}
                   </td>
                 </tr>
               ))

@@ -386,6 +386,8 @@ const getUser = asyncHandler(async (req: Request, res: Response) => {
     } }, "User data retrieved successfully"));
 });
 
+// const changePassword = asyncHandler( )
+
 export {
     getUser,
     registerUser,

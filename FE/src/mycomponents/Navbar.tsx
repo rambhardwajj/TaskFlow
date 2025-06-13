@@ -25,7 +25,7 @@ const Navbar = () => {
 
   useEffect(() => {
     dispatch(getAllProjects());
-  }, [dispatch]);
+  }, [dispatch ]);
 
   const navLinks: any = [
     { label: "Home", to: "/" },
@@ -91,9 +91,7 @@ const Navbar = () => {
 
         {/* Right Section */}
         <div className="flex items-center gap-4">
-          {/* Theme Toggle */}
-          <Sun className="w-5 h-5 hover:text-yellow-400 text-zinc-300 cursor-pointer transition-colors duration-200" />
-
+        
           {/* Mobile Menu Button */}
           <button
             className="md:hidden text-zinc-300 hover:text-white transition"
@@ -107,12 +105,12 @@ const Navbar = () => {
           {!user ? (
             <>
               <Link to="/login">
-                <Button className="px-4 py-2 text-sm font-medium bg-zinc-800 text-white border border-zinc-700 hover:bg-zinc-700 rounded-lg shadow-sm transition-all duration-200">
+                <Button className="cursor-pointer px-4 py-2 text-sm font-medium bg-zinc-800 text-white border border-zinc-700 hover:bg-zinc-700 rounded-lg shadow-sm transition-all duration-200">
                   Login
                 </Button>
               </Link>
               <Link to="/signup">
-                <Button className="px-4 py-2 text-sm font-medium bg-cyan-600 text-white hover:bg-cyan-700 rounded-lg shadow-sm transition-all duration-200">
+                <Button className=" cursor-pointer px-4 py-2 text-sm font-medium bg-cyan-600 text-white hover:bg-cyan-700 rounded-lg shadow-sm transition-all duration-200">
                   Signup
                 </Button>
               </Link>
