@@ -1,4 +1,4 @@
-Project Management System is a TypeScript-powered backend built with Express.js and MongoDB, designed to handle robust project management workflows. It features JWT-based authentication, role-based access control, rate-limited API endpoints, and supports file uploads using Cloudinary.
+TaskFlow is a TypeScript-powered backend built with Express.js and MongoDB, designed to handle robust project management workflows. It features JWT-based authentication, role-based access control, rate-limited API endpoints, and supports file uploads using Cloudinary.
 
 This backend serves as the core engine for managing users, projects, tasks, subtasks, and file attachments in a scalable and modular fashion. With clear separation of concerns, reusable middlewares, and Zod validation, TS-MEGA is ideal for enterprise-grade applications and modern full-stack projects.
 
@@ -44,9 +44,9 @@ Pull requests are welcome! Feel free to fork the repo and submit a PR.
 ## License
 
 This project is open-source and available under the **ISC License**.
-# ProjectNest
+# TaskFlow
 
-**ProjectNest** is a **TypeScript-based** project and task management system built with **Node.js**, **Express**, and **MongoDB**. It features a clean, modular architecture with role-based access control, project collaboration, team notes, and structured logging using **Winston**.
+**TaskFlow** is a **TypeScript-based** project and task management system built with **Node.js**, **Express**, and **MongoDB**. It features a clean, modular architecture with role-based access control, project collaboration, team notes, and structured logging using **Winston**.
 
 ## Features
 
