@@ -30,7 +30,7 @@ import AssignedUserDialog from "./AssignedUserDialog";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store/store";
 import { toast } from "sonner";
-import { API_BASE_URL } from "config";
+import { API_BASE_URL } from "../../config";
 
 export const TaskCard: FC<Task> = ({
   _id,

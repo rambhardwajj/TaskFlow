@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { API_BASE_URL } from "config";
+import { API_BASE_URL } from "../../../config";
 
 export type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
 

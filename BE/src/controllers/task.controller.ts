@@ -79,11 +79,10 @@ const createTask = asyncHandler(async (req: Request, res: Response) => {
     );
 });
 
-const updateTaskStatus = asyncHandler(async(req:Request, res: Response)=>{
-
-    console.log('inside BE updateTaskStatus')
-    const {status} = req.body;
-    const {taskId} = req.params
+const updateTaskStatus = asyncHandler(async (req: Request, res: Response) => {
+    console.log("inside BE updateTaskStatus");
+    const { status } = req.body;
+    const { taskId } = req.params;
     const existingTask = await Task.findOne({ _id: taskId });
     if (!existingTask) {
         throw new CustomError(
@@ -107,8 +106,7 @@ const updateTaskStatus = asyncHandler(async(req:Request, res: Response)=>{
     res.status(200).json(
         new ApiResponse(ResponseStatus.Success, taskUpdation, "status updated")
     );
-
-})
+});
 
 const updateTask = asyncHandler(async (req: Request, res: Response) => {
     const { title, email, desc, status } = handleZodError(
@@ -125,7 +123,6 @@ const updateTask = asyncHandler(async (req: Request, res: Response) => {
         );
     }
 
-    
     const assignedTo = await User.findOne({ email });
     if (!assignedTo) {
         throw new CustomError(ResponseStatus.NotFound, "user email not found");
@@ -176,6 +173,8 @@ const updateTask = asyncHandler(async (req: Request, res: Response) => {
         new ApiResponse(ResponseStatus.Success, null, "task updated")
     );
 });
+
+
 
 const createSubTask = asyncHandler(async (req: Request, res: Response) => {
     const { taskId, projectId } = req.params;
@@ -531,26 +530,24 @@ const getSubTasks = asyncHandler(async (req, res) => {
 });
 
 const getUserTasks = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user._id
+    const userId = req.user._id;
 
-//   if (!mongoose.Types.ObjectId.isValid(userId)) {
-//     throw new CustomError(400, "Invalid user ID");
-//   }
+    //   if (!mongoose.Types.ObjectId.isValid(userId)) {
+    //     throw new CustomError(400, "Invalid user ID");
+    //   }
 
-  const tasks = await Task.find({
-    $or: [
-      { assignedTo: userId },
-      { assignedBy: userId }
-    ]
-  })
-  .populate("assignedTo", "userName email avatar")
-  .populate("assignedBy", "userName email avatar")
-  .populate("project", "projectName") 
-  .sort({ updatedAt: -1 });
+    const tasks = await Task.find({
+        $or: [{ assignedTo: userId }, { assignedBy: userId }],
+    })
+        .populate("assignedTo", "userName email avatar")
+        .populate("assignedBy", "userName email avatar")
+        .populate("project", "projectName")
+        .sort({ updatedAt: -1 });
 
-  res.status(200).json(new ApiResponse(200, tasks, "Tasks retrieved successfully"));
+    res.status(200).json(
+        new ApiResponse(200, tasks, "Tasks retrieved successfully")
+    );
 });
-
 
 export {
     createTask,

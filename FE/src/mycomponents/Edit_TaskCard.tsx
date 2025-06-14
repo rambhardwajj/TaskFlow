@@ -13,9 +13,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Task, TaskStatus } from "@/redux/slices/projectsTasksSlice";
 import { DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Edit } from "lucide-react";
-
-
+import { Edit, Plus } from "lucide-react";
+// import { AttachmentSection } from "./Attachments";
+import { useParams } from "react-router-dom";
+import { AttachmentSection } from "./Attachments";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 interface EditTaskDialogProps {
   loading: boolean;
@@ -35,13 +37,15 @@ export const EditTaskDialogbox: React.FC<EditTaskDialogProps> = ({
   setEditMode,
 }) => {
   if (!selectedTask) return;
+  const {projectId} = useParams()
+  if(!projectId) return ;
   const [editStatus, setEditStatus] = useState(selectedTask.status);
 
   return (
-    <DialogContent className="custom-scrollbar min-w-[50vw] bg-black border border-[#333] mx-auto rounded-lg shadow-2xl p-6 space-y-1 max-h-[67vh] overflow-y-auto">
+    <DialogContent className="custom-scrollbar min-w-[60vw] bg-black border border-[#333] mx-auto rounded-lg shadow-2xl p-6 space-y-1 max-h-[67vh] overflow-y-auto">
       <div className="flex border-b border-zinc-700 text-sm font-medium text-zinc-400">
         <button className="text-white border-b-2 border-blue-600 pb-1">
-          General
+         <DialogTitle>General</DialogTitle> 
         </button>
       </div>
 
@@ -96,7 +100,10 @@ export const EditTaskDialogbox: React.FC<EditTaskDialogProps> = ({
               {editMode ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button className="cursor-pointer hover:scale-[1.1]" >{editStatus} <Edit className="hover:scale-[1.1] text-green-500" /> </Button>
+                    <Button className="cursor-pointer hover:scale-[1.1]">
+                      {editStatus}{" "}
+                      <Edit className="hover:scale-[1.1] text-green-500" />{" "}
+                    </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56">
                     <DropdownMenuLabel>Task Status</DropdownMenuLabel>
@@ -128,22 +135,12 @@ export const EditTaskDialogbox: React.FC<EditTaskDialogProps> = ({
               )}
             </div>
 
+            {/* Attachments  */}
             <div>
-            {!editMode &&  <h4 className="text-white font-semibold mb-2">Attachments</h4>}
-              <div className="flex gap-3 overflow-x-auto">
-                {selectedTask.attachments?.map((att, idx) => (
-                  <div
-                    key={idx}
-                    className="min-w-[120px] h-[70px] bg-zinc-800 rounded-md border border-zinc-600 overflow-hidden"
-                  >
-                    <img
-                      src={att.url}
-                      alt="attachment"
-                      className="object-cover w-full h-full"
-                    />
-                  </div>
-                ))}
-              </div>
+              <label className="text-neutral-500 text-sm font-semibold mb-3">Attachments</label>
+              <AttachmentSection
+              selectedTask={selectedTask}
+              projectId={projectId} />
             </div>
           </div>
 
@@ -155,7 +152,9 @@ export const EditTaskDialogbox: React.FC<EditTaskDialogProps> = ({
                   <Input
                     className="bg-neutral-800 text-white"
                     value={selectedTask.assignedTo.email}
-                    onChange={(e) => handleInputChange("assignedTo", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("assignedTo", e.target.value)
+                    }
                   />
                 </div>
               ) : (
@@ -163,33 +162,36 @@ export const EditTaskDialogbox: React.FC<EditTaskDialogProps> = ({
                   {selectedTask.assignedTo.email}
                 </p>
               )}
-             {!editMode &&  <div className="flex items-center gap-3 pt-2">
-                <img
-                  src={selectedTask.assignedTo.avatar}
-                  className="w-8 h-8 rounded-full border border-zinc-700"
-                />
-                <p className="text-white text-sm font-medium">
-                  {selectedTask.assignedTo.userName}
-                </p>
-              </div>}
+              {!editMode && (
+                <div className="flex items-center gap-3 pt-2">
+                  <img
+                    src={selectedTask.assignedTo.avatar}
+                    className="w-8 h-8 rounded-full border border-zinc-700"
+                  />
+                  <p className="text-white text-sm font-medium">
+                    {selectedTask.assignedTo.userName}
+                  </p>
+                </div>
+              )}
             </div>
 
-           {!editMode &&  <div className="bg-neutral-950 rounded-md p-1 pl-3 pb-2 w-full border border-[#444]">
-              <h4 className="text-zinc-400 text-xs mb-1">Reporter</h4>
-              <p className="text-white text-sm font-medium">
-                {selectedTask.assignedBy.email}
-              </p>
-              <div className="flex items-center gap-3 pt-2">
-                <img
-                  src={selectedTask.assignedBy.avatar}
-                  className="w-8 h-8 rounded-full border border-zinc-700"
-                />
+            {!editMode && (
+              <div className="bg-neutral-950 rounded-md p-1 pl-3 pb-2 w-full border border-[#444]">
+                <h4 className="text-zinc-400 text-xs mb-1">Reporter</h4>
                 <p className="text-white text-sm font-medium">
-                  {selectedTask.assignedBy.userName}
+                  {selectedTask.assignedBy.email}
                 </p>
+                <div className="flex items-center gap-3 pt-2">
+                  <img
+                    src={selectedTask.assignedBy.avatar}
+                    className="w-8 h-8 rounded-full border border-zinc-700"
+                  />
+                  <p className="text-white text-sm font-medium">
+                    {selectedTask.assignedBy.userName}
+                  </p>
+                </div>
               </div>
-            </div>}
-
+            )}
           </div>
         </div>
       )}

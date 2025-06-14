@@ -3,9 +3,7 @@ import { AppDispatch, RootState } from "@/redux/store/store";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
-  DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import axios from "axios";
@@ -13,8 +11,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { AppWindowMac, SquarePen, Trash } from "lucide-react";
-import { API_BASE_URL } from "config";
+import { AppWindowMac, Trash } from "lucide-react";
+import { API_BASE_URL } from "../../config";
 
 export interface Project {
   role: string;

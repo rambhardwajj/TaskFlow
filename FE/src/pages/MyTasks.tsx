@@ -8,11 +8,11 @@ import {
 import { AppDispatch, RootState } from "@/redux/store/store";
 import { TaskStatus } from "@/redux/slices/userTasksSlice";
 import { MyTaskCard } from "../mycomponents/MyTaskCard";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog } from "@/components/ui/dialog";
 import { EditTaskDialog } from "@/mycomponents/EditTaskCard";
 import { toast } from "sonner";
 import axios from "axios";
-import { API_BASE_URL } from "config";
+import { API_BASE_URL } from "../../config";
 
 const taskSections: TaskStatus[] = ["TODO", "IN_PROGRESS", "DONE"];
 
@@ -117,6 +117,7 @@ const MyTasks = () => {
   );
 
   const handleDragLeaveColumn = useCallback((e: React.DragEvent) => {
+    console.log(e)
     setDragOverStatus(null); // Clear the drag over status
   }, []);
 

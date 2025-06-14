@@ -14,7 +14,7 @@ import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
 import { AddMemberDialog } from "@/mycomponents/AddMemberDialog";
 import { fetchUserRole } from "@/redux/slices/userRoleSlice";
-import { API_BASE_URL } from "config";
+import { API_BASE_URL } from "../../config";
 
 interface Member {
   _id: string;
@@ -47,7 +47,7 @@ export default function ProjectDetailPage() {
   const [project, setProject] = useState<ProjectInfo | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const dispatch = useDispatch<AppDispatch>();
-  const { tasksByProject, loading } = useSelector(
+  const { tasksByProject } = useSelector(
     (state: RootState) => state.projectTasks
   );
 

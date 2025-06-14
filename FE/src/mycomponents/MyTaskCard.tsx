@@ -151,7 +151,7 @@ export const MyTaskCard: FC<myTask> = ({
 
   return (
     <>
-      <div className="bg-neutral-800 p-4 rounded-md border border-neutral-800 hover:border-blue-500 transition-all hover:shadow-lg group cursor-pointer space-y-1">
+      <div className="bg-neutral-950 p-4 rounded-md border border-neutral-800 hover:border-blue-500 transition-all hover:shadow-lg group cursor-pointer space-y-1">
         {/* First line  */}
         <div className="flex justify-between">
           <p className="font-semibold text-cyan-500 group-hover:text-blue-300 text-sm transition">
