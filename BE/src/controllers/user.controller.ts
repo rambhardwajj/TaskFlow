@@ -193,13 +193,13 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
         .cookie("accessToken", accessToken, {
             httpOnly: true,
             secure: true,
-            sameSite: "strict",
+            sameSite: "none",
             maxAge: 30 * 24 * 60 * 60 * 1000,
         })
         .cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: true,
-            sameSite: "strict",
+            sameSite: "none",
             maxAge: 30 * 24 * 60 * 60 * 1000,
         })
         .json(
@@ -232,13 +232,13 @@ const logOutUser = asyncHandler(async (req: Request, res: Response) => {
     res.clearCookie("accessToken", {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: "none",
         maxAge: 30 * 24 * 60 * 60 * 1000,
     })
         .clearCookie("refreshToken", {
             httpOnly: true,
             secure: true,
-            sameSite: "strict",
+            sameSite: "none",
             maxAge: 30 * 24 * 60 * 60 * 1000,
         })
         .status(ResponseStatus.Success)
