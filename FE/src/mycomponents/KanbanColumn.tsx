@@ -31,7 +31,7 @@ interface KanbanColumnProps {
 const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
   const { projectId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const { byId, userTasks, loading, error } = useSelector(
+  const { byId } = useSelector(
     (state: RootState) => state.userTasks
   );
   useEffect(() => {
@@ -161,7 +161,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
     []
   );
   const handleDragLeaveColumn = useCallback((e: React.DragEvent) => {
-    console.log("drg leave");
+    console.log(e);
     setDragOverStatus(null);
   }, []);
 

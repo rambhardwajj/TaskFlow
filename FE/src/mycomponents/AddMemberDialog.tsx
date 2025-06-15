@@ -38,7 +38,7 @@ export const AddMemberDialog = ({
   const handleAddMember = async () => {
     try {
       setLoading(true);
-      const res = await axios.post(
+       await axios.post(
         `${API_BASE_URL}/api/v1/project/${projectId}/add`,
         { email, role },
         {

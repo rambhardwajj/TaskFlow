@@ -14,7 +14,7 @@ import {
   Shield,
   Calendar,
   Mail,
-  Edit3,
+  
   Lock,
   Eye,
   EyeOff,

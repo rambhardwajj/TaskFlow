@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import { TasksNavigation } from "../mycomponents/TasksNavigation";
 import { KanbanColumn } from "../mycomponents/KanbanColumn";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +9,6 @@ import {
 } from "@/redux/slices/projectsTasksSlice";
 import { AppDispatch, RootState } from "@/redux/store/store";
 import { getAllProjects } from "@/redux/slices/projectSlice";
-import { statusToLabel } from "./MyTasks";
 
 const sections: TaskStatus[] = ["TODO", "IN_PROGRESS", "DONE"];
 

@@ -97,7 +97,7 @@ export const updateTaskStatus = createAsyncThunk(
     }
     const projectId = task.project._id; // Get project ID from the task in state
 
-    const response = await axios.patch(
+    await axios.patch(
       `${API_BASE_URL}/api/v1/task/project/${projectId}/update-status/tasks/${taskId}`,
       { status: newStatus },
       { withCredentials: true }

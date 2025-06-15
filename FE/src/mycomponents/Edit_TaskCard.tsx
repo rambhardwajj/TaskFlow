@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/dropdown-menu"; // Update this path based on your project structure
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Task, TaskStatus } from "@/redux/slices/projectsTasksSlice";
+import { Task } from "@/redux/slices/projectsTasksSlice";
 import { DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Edit, Plus } from "lucide-react";
+import { Edit } from "lucide-react";
 // import { AttachmentSection } from "./Attachments";
 import { useParams } from "react-router-dom";
 import { AttachmentSection } from "./Attachments";
@@ -29,7 +29,7 @@ interface EditTaskDialogProps {
 }
 
 export const EditTaskDialogbox: React.FC<EditTaskDialogProps> = ({
-  loading,
+  loading: _,
   selectedTask,
   editMode,
   handleInputChange,

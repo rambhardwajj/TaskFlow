@@ -25,7 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { Navigate, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import AssignedUserDialog from "./AssignedUserDialog";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store/store";

@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Projects from "./pages/Projects";
 import { Layout } from "./pages/Layout";
 import TasksOfProject from "./pages/TasksOfProject";
-import { Dashboard } from "./pages/Dashboard";
 import MyTasks from "./pages/MyTasks";
 import Login from "./mycomponents/Login";
 import Signup from "./mycomponents/Signup";

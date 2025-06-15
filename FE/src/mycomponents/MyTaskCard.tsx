@@ -11,7 +11,6 @@ import {
 import {
   fetchUserTasks,
   myTask,
-  TaskStatus,
 } from "@/redux/slices/userTasksSlice";
 import {
   Dialog,
@@ -39,11 +38,11 @@ import {API_BASE_URL} from "../../config"
 export const MyTaskCard: FC<myTask> = ({
   _id,
   title,
-  desc,
+  desc : __,
   project,
   assignedTo,
   assignedBy,
-  status,
+  status: _,
   attachments,
   updatedAt,
 }) => {

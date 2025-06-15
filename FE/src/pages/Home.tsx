@@ -1,5 +1,4 @@
 import { KanbanColumn } from "@/mycomponents/KanbanColumn";
-import MyTasks from "./MyTasks";
 import { Link } from "react-router-dom";
 import FooterComponent from "@/mycomponents/FooterComponente";
 
