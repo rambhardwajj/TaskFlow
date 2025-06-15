@@ -15,6 +15,7 @@ const createEnv = (envConfig: NodeJS.ProcessEnv) => {
     MAILTRAP_SENDERMAIL: z.string().nonempty(),
 
     APP_URL: z.string(),
+    DOMAIN_URL: z.string(),
 
     ACCESS_TOKEN_SECRET: z.string().nonempty(),
     ACCESS_TOKEN_EXPIRY: z.string().default("5m"),
