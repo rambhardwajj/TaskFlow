@@ -193,13 +193,13 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
         .cookie("accessToken", accessToken, {
             httpOnly: true,
             secure: true,
-            sameSite: "none",
+            sameSite: "strict",
             maxAge: 30 * 24 * 60 * 60 * 1000,
         })
         .cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: true,
-            sameSite: "none",
+            sameSite: "strict",
             maxAge: 30 * 24 * 60 * 60 * 1000,
         })
         .json(
@@ -211,8 +211,8 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
                         fullName: user.fullName,
                         email: user.email,
                         userName: user.userName,
-                        avatar: user.avatar
-                    }
+                        avatar: user.avatar,
+                    },
                 },
                 "Login successful"
             )
@@ -229,8 +229,18 @@ const logOutUser = asyncHandler(async (req: Request, res: Response) => {
         }
     );
 
-    res.clearCookie("accessToken")
-        .clearCookie("refreshToken")
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+    })
+        .clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+        })
         .status(ResponseStatus.Success)
         .json(
             new ApiResponse(
@@ -362,28 +372,34 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 });
 
 const getUser = asyncHandler(async (req: Request, res: Response) => {
-  const { _id } = req.user as { _id: string }
+    const { _id } = req.user as { _id: string };
 
-  const user = await User.findById(_id).select("-password");
+    const user = await User.findById(_id).select("-password");
 
-  if (!user) {
-    return res.status(404).json(new ApiResponse(404, null, "User not found"));
-  }
+    if (!user) {
+        return res
+            .status(404)
+            .json(new ApiResponse(404, null, "User not found"));
+    }
 
-  
-
-  res
-    .status(200)
-    .json(new ApiResponse(200, { user: {
-        _id: user._id,
-        name: user.fullName,
-        email: user.email,
-        userName: user.userName,
-        avatar: {
-            url: user.avatar?.url,
-            loaclpath: user.avatar?.localPath
-        }
-    } }, "User data retrieved successfully"));
+    res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                user: {
+                    _id: user._id,
+                    name: user.fullName,
+                    email: user.email,
+                    userName: user.userName,
+                    avatar: {
+                        url: user.avatar?.url,
+                        loaclpath: user.avatar?.localPath,
+                    },
+                },
+            },
+            "User data retrieved successfully"
+        )
+    );
 });
 
 // const changePassword = asyncHandler( )

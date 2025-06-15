@@ -113,7 +113,7 @@ const Navbar = () => {
                 <Button className=" cursor-pointer px-4 py-2 text-sm font-medium bg-cyan-600 text-white hover:bg-cyan-700 rounded-lg shadow-sm transition-all duration-200">
                   Signup
                 </Button>
-              </Link>
+              </Link>  
             </>
           ) : (
             <AvatarDropdown />

@@ -18,7 +18,6 @@ export const AvatarDropdown = () => {
 
   const handleLogout = async () => {
     try {
-
       const res = await axios.get(`${API_BASE_URL}/api/v1/user/auth/logout`, {withCredentials:true})
 
       dispatch(logout());
