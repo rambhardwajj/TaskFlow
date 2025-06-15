@@ -10,7 +10,7 @@ var mailGenerator = new Mailgen({
   product: {
     // Appears in header & footer of e-mails
     name: "PMS",
-    link: envConfig.APP_URL,
+    link: envConfig.DOMAIN_URL,
   },
 });
 
@@ -111,7 +111,7 @@ const sendResetPasswordMail = async (
   email: string,
   token: string
 ) => {
-  const link = `${envConfig.APP_URL}/api/v1/user/auth/reset-password/${token}`;
+  const link = `${envConfig.DOMAIN_URL}/api/v1/user/auth/reset-password/${token}`;
 
   await sendMail(
     email,
