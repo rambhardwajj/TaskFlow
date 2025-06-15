@@ -293,7 +293,7 @@ const deleteProject = asyncHandler(async (req: Request, res: Response) => {
         new ApiResponse(
             ResponseStatus.Success,
             { project, projectMemberships },
-            "Project created successfully. User is the owner of the created Project"
+            "Project deleted successfully."
         )
     );
 });
