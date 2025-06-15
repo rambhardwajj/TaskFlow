@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { AppWindowMac, Trash } from "lucide-react";
 import { API_BASE_URL } from "../../config";
+import { fetchUserTasks } from "@/redux/slices/userTasksSlice";
 
 export interface Project {
   role: string;
@@ -32,6 +33,7 @@ export default function ProjectTable() {
     (state: RootState) => state.projects
   );
 
+  
   // const {role} = useSelector((state: RootState)=> state.userRole.role)
 
   const [open, setOpen] = useState(false);
@@ -40,6 +42,7 @@ export default function ProjectTable() {
 
   useEffect(() => {
     dispatch(getAllProjects());
+    dispatch(fetchUserTasks())
   }, [dispatch]);
 
   const Initials = (props: { ini: string }) => {
