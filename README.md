@@ -79,7 +79,7 @@ This project is open-source and available under the **ISC License**.
 ### Steps
 
 1. Clone the repository:
-   git clone https://github.com/rambhardwajj/project-management-system
+   git clone https://github.com/rambhardwajj/TaskFlow
    cd project-nest
    
 2. Install dependencies:
