@@ -11,7 +11,7 @@ import {
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store/store";
-import { API_BASE_URL } from "config";
+import { API_BASE_URL } from "../../config";
 
 export const AttachmentSection = ({
   selectedTask,
@@ -56,6 +56,7 @@ export const AttachmentSection = ({
         "Upload attachment successful, please refresh the page to see the changes"
       );
     } catch (err) {
+      toast.dismiss()
       toast.error("Upload failed");
     }
   };
@@ -79,6 +80,7 @@ export const AttachmentSection = ({
         "Attachment deleted, please refresh the page to see the changes"
       );
     } catch (error) {
+      toast.dismiss()
       toast.error("Delete attachment failed");
     }
   };
