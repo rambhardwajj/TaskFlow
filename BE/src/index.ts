@@ -6,7 +6,7 @@ import {logger} from "./utils/logger"
 
 
 
-const PORT = envConfig.PORT ||  8080
+const PORT = envConfig.PORT 
 
 dbConnect()
 

@@ -100,7 +100,7 @@ const sendVerificationMail = async (
 ) => {
 
   // email ke button pe ye link hogi 
-  const link = `${envConfig.DOMAIN_URL}/api/v1/user/auth/verify/${token}`;
+  const link = `${envConfig.APP_URL}/api/v1/user/auth/verify/${token}`;
   const content = constructVerifcationEmailContent(userName, link)
 
   await sendMail( email, "Verify email", content );
@@ -111,7 +111,7 @@ const sendResetPasswordMail = async (
   email: string,
   token: string
 ) => {
-  const link = `${envConfig.DOMAIN_URL}/api/v1/user/auth/reset-password/${token}`;
+  const link = `${envConfig.APP_URL}/api/v1/user/auth/reset-password/${token}`;
 
   await sendMail(
     email,
