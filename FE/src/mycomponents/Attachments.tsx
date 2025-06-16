@@ -11,6 +11,7 @@ import {
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store/store";
+import { API_BASE_URL } from "config";
 
 export const AttachmentSection = ({
   selectedTask,
@@ -37,7 +38,7 @@ export const AttachmentSection = ({
     try {
       toast.loading("wait");
       await axios.post(
-        `http://localhost:8200/api/v1/task/project/${projectId}/tasks/${selectedTask._id}/attachments`,
+        `${API_BASE_URL}/api/v1/task/project/${projectId}/tasks/${selectedTask._id}/attachments`,
         formData,
         {
           headers: {
@@ -68,7 +69,7 @@ export const AttachmentSection = ({
       toast.loading("wait");
 
       await axios.delete(
-        `http://localhost:8200/api/v1/task/project/${projectId}/tasks/${taskId}/attachments/${attachmentId}`,
+        `${API_BASE_URL}/api/v1/task/project/${projectId}/tasks/${taskId}/attachments/${attachmentId}`,
         { withCredentials: true }
       );
 
