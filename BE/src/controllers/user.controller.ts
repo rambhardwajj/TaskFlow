@@ -112,7 +112,7 @@ const verifyUser = asyncHandler(async (req: Request, res: Response) => {
     res.status(ResponseStatus.Success).json(
         new ApiResponse(
             ResponseStatus.Success,
-            {},
+            user,
             "Email verified successfully"
         )
     );

@@ -59,7 +59,7 @@ const constructVerifcationEmailContent = (username: string, link: string) => {
   return {
     body: {
       name: username,
-      intro: "Welcome to Task Manager! We're thrilled to have you.",
+      intro: "Welcome to TaskFlow! We're thrilled to have you.",
       action: {
         instructions: "Click below to verify your email:",
         button: {
@@ -100,7 +100,7 @@ const sendVerificationMail = async (
 ) => {
 
   // email ke button pe ye link hogi 
-  const link = `${envConfig.APP_URL}/api/v1/user/auth/verify/${token}`;
+  const link = `${envConfig.DOMAIN_URL}/verify/${token}`;
   const content = constructVerifcationEmailContent(userName, link)
 
   await sendMail( email, "Verify email", content );
@@ -111,7 +111,7 @@ const sendResetPasswordMail = async (
   email: string,
   token: string
 ) => {
-  const link = `${envConfig.APP_URL}/api/v1/user/auth/reset-password/${token}`;
+  const link = `${envConfig.DOMAIN_URL}/api/v1/user/auth/reset-password/${token}`;
 
   await sendMail(
     email,

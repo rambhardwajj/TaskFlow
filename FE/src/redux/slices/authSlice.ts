@@ -28,11 +28,11 @@ export const loginUser = createAsyncThunk(
         { withCredentials: true }
       );
       // console.log(res.data.data);
-      toast.success("Logged in successfully ")
+      toast.success("Logged in successfully ");
       return res.data.data;
     } catch (err: any) {
       console.log(err);
-      toast.error(err.response.data.message)
+      toast.error(err.response.data.message);
       return thunkAPI.rejectWithValue(err.response.data.message);
     }
   }
@@ -65,10 +65,15 @@ export const registerUser = createAsyncThunk(
         }
       );
 
-
+      console.log(res);
+      console.log("res.data", res.data)
+      toast.success(res.data.message);
+      
       return res.data.data;
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data.message || "Signup Failed" );
+      return thunkAPI.rejectWithValue(
+        err.response.data.message || "Signup Failed"
+      );
     }
   }
 );
@@ -102,7 +107,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        // console.log(action.payload)
+        // console.log("act" , action.payload);
         state.user = action.payload.user;
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -116,7 +121,7 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;
+        console.log("act", action.payload);
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
