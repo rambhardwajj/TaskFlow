@@ -34,7 +34,7 @@ export default function AssignedUserDialog({
           </div>
 
           <div className="flex justify-center gap-3 mt-6">
-            <Button
+            {/* <Button
               variant="secondary"
               className="bg-zinc-800 text-white border border-zinc-700 hover:bg-zinc-700 text-sm"
             >
@@ -44,7 +44,7 @@ export default function AssignedUserDialog({
               className="bg-blue-600 text-white hover:bg-blue-700 text-sm"
             >
               Assigned issues
-            </Button>
+            </Button> */}
           </div>
         </div>
       </DialogContent>
