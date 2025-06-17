@@ -73,7 +73,7 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
     res.status(200).json(
         new ApiResponse(
             ResponseStatus.Success,
-            null,
+            user,
             "User registered successfully. Please verify your email"
         )
     );
@@ -112,7 +112,7 @@ const verifyUser = asyncHandler(async (req: Request, res: Response) => {
     res.status(ResponseStatus.Success).json(
         new ApiResponse(
             ResponseStatus.Success,
-            user,
+            user.isEmailVerified,
             "Email verified successfully"
         )
     );
