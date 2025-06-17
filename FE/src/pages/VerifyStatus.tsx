@@ -1,20 +1,20 @@
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { API_BASE_URL } from "../../config";
 
 export default function VerifyStatus() {
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
-  const [searchParams] = useSearchParams();
+  const {token} = useParams();
 
   useEffect(() => {
     const verifyEmail = async () => {
-      const token = searchParams.get("token");
 
       if (!token) {
         setStatus("error");
+        console.log("token is null")
         return;
       }
 
@@ -28,7 +28,7 @@ export default function VerifyStatus() {
     };
 
     verifyEmail();
-  }, [searchParams]);
+  }, [token]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-neutral-950 text-white">

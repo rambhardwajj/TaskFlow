@@ -24,11 +24,11 @@ export default function App() {
             <Route path="tasks" element={<MyTasks />} />
             <Route path="me" element={<ProfilePage />} />
           </Route>
-        <Route path="login" element={<Login />} />
-        <Route path="signup" element={<Signup />} />
-        <Route path="verify/:token" element={<VerifyStatus />} />
-        <Route index element={<Home />} />
+          <Route path="login" element={<Login />} />
+          <Route path="signup" element={<Signup />} />
+          <Route index element={<Home />} />
         </Route>
+        <Route path="verify/:token" element={<VerifyStatus />} />
       </Routes>
     </Router>
   );
