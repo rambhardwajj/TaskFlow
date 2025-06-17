@@ -50,8 +50,8 @@ export const AddMemberDialog = ({
       onOpenChange(false);
       setEmail("");
       setRole("member");
-    } catch (error) {
-      toast.error("Error is adding the user")
+    } catch (error: any) {
+      toast.error(error.response.data.message)
       console.error("Add member error:", error);
     } finally {
       setLoading(false);

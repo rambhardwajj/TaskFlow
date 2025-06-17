@@ -28,10 +28,11 @@ export const loginUser = createAsyncThunk(
         { withCredentials: true }
       );
       // console.log(res.data.data);
+      toast.success("Logged in successfully ")
       return res.data.data;
     } catch (err: any) {
       console.log(err);
-      toast.error("Error in logging user")
+      toast.error(err.response.data.message)
       return thunkAPI.rejectWithValue(err.response.data.message);
     }
   }

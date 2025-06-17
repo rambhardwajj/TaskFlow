@@ -69,9 +69,9 @@ const MyTasks = () => {
       if (res.data) {
         toast.success("Task updated successfully");
       }
-    } catch (error) {
+    } catch (error:any) {
       console.log(error);
-      toast.error("Failed to update task");
+      toast.error(error.response.data.message);
     } finally {
       setSelectedTask(null);
       dispatch(fetchUserTasks());
@@ -142,12 +142,11 @@ const MyTasks = () => {
                 newStatus: targetStatus,
               })
             );
-          } catch (err) {
-            console.error("Failed to update task status:", err);
+          } catch (error:any) {
+            console.error("Failed to update task status:", error);
             toast.error(
-              `Failed to update task status: ${
-                err instanceof Error ? err.message : String(err)
-              }`
+             
+          error.response.data.message
             );
           }
         }

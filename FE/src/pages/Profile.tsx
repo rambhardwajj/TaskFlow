@@ -9,16 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import {
-  User,
-  Shield,
-  Calendar,
-  Mail,
-  
-  Lock,
-  Eye,
-  EyeOff,
-} from "lucide-react";
+import { User, Shield, Calendar, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import axios from "axios";
+import { API_BASE_URL } from "../../config";
+import { toast } from "sonner";
 
 export default function ProfilePage() {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -30,6 +24,31 @@ export default function ProfilePage() {
   useEffect(() => {
     dispatch(fetchUserTasks());
   }, [dispatch]);
+
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const handleChangePassword = async () => {
+    try {
+      if (!currentPassword || !newPassword) {
+        return toast.error("Please fill in all password fields.");
+      }
+      console.log("hfds");
+      await axios.post(
+        `${API_BASE_URL}/api/v1/user/auth/update-password`,
+        {
+          oldPassword: currentPassword,
+          newPassword: newPassword,
+        },
+        { withCredentials: true }
+      );
+
+      toast.success("password changed.");
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message || "Failed to change password"
+      );
+    }
+  };
 
   const getTaskStatusColor = (status: string) => {
     const colors = {
@@ -46,7 +65,7 @@ export default function ProfilePage() {
   const taskItems = Object.entries(userTasks.userTasks).flatMap(
     ([status, ids]) =>
       ids.map((id) => {
-        const task = userTasks.byId[id]
+        const task = userTasks.byId[id];
         return (
           <div
             key={task._id}
@@ -254,6 +273,9 @@ export default function ProfilePage() {
                               type={showPassword ? "text" : "password"}
                               placeholder="Enter current password"
                               className="bg-neutral-700/50 border-neutral-600/50 text-neutral-200 focus:border-cyan-500/50 transition-colors pr-10"
+                              onChange={(e) =>
+                                setCurrentPassword(e.target.value)
+                              }
                             />
                             <button
                               type="button"
@@ -277,6 +299,7 @@ export default function ProfilePage() {
                               type={showNewPassword ? "text" : "password"}
                               placeholder="Enter new password"
                               className="bg-neutral-700/50 border-neutral-600/50 text-neutral-200 focus:border-cyan-500/50 transition-colors pr-10"
+                              onChange={(e) => setNewPassword(e.target.value)}
                             />
                             <button
                               type="button"
@@ -295,7 +318,10 @@ export default function ProfilePage() {
                         </div>
                       </div>
                       <div className="flex justify-end pt-4">
-                        <Button className="bg-cyan-900  hover:bg-cyan-600 text-white  ">
+                        <Button
+                          className="bg-cyan-900  hover:bg-cyan-600 text-white  "
+                          onClick={handleChangePassword}
+                        >
                           <Lock className="w-4 h-4 mr-2" />
                           Update Password
                         </Button>
@@ -328,7 +354,8 @@ export default function ProfilePage() {
                       </div>
                       <div className="text-center p-2 rounded-lg bg-neutral-700/30">
                         <div className="text-xl font-bold text-green-400">
-                          {userTasks.userTasks.TODO.length + userTasks.userTasks.IN_PROGRESS.length}
+                          {userTasks.userTasks.TODO.length +
+                            userTasks.userTasks.IN_PROGRESS.length}
                         </div>
                         <div className="text-xs text-neutral-400">Pending</div>
                       </div>

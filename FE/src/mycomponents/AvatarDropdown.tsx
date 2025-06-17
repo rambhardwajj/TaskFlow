@@ -24,8 +24,8 @@ export const AvatarDropdown = () => {
       navigate("/login");
       window.location.href = window.location.href
       console.log(res);
-    } catch (error) {
-      toast.error('logout failed');
+    } catch (error:any) {
+      toast.error(error.response.data.message);
       console.log(error)
     }
   };

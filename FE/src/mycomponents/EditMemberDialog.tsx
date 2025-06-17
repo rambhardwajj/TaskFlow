@@ -47,8 +47,8 @@ export const EditMemberDialog = ({
       );
       onSuccess();
       onOpenChange(false);
-    } catch (err) {
-      toast.error("Update failed ");
+    } catch (err:any) {
+      toast.error(err.response.data.message);
       console.error("Update failed", err);
     } finally {
       setLoading(false);

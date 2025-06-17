@@ -68,8 +68,8 @@ export const TaskCard: FC<Task> = ({
       setSubtaskTitle("");
       setOpen(false);
       // optionally trigger refetch/subtask update
-    } catch (error) {
-      toast.error("Error creating subTasks");
+    } catch (error:any) {
+      toast.error(error.response.data.message);
       console.error("Error submitting subtask:", error);
     }
   };
@@ -85,8 +85,8 @@ export const TaskCard: FC<Task> = ({
       console.log("Subtask deleted:", res.data);
       getAllSubtasks();
       setOpen(false);
-    } catch (error) {
-      toast.error("Error in deleting");
+    } catch (error:any) {
+      toast.error(error.response.data.message);
       console.error("Error is delting , ", error);
     }
   };
@@ -101,8 +101,8 @@ export const TaskCard: FC<Task> = ({
       console.log("Retrieved Subtasks", res.data.data);
 
       setSubTasks(res.data.data);
-    } catch (error) {
-      toast.error("error in getting all Subtasks");
+    } catch (error:any) {
+      toast.error(error.response.data.message);
       console.log(error);
     }
   };
@@ -120,8 +120,8 @@ export const TaskCard: FC<Task> = ({
 
       console.log(res.data);
       getAllSubtasks();
-    } catch (error) {
-      toast.error("Error in updating subtask");
+    } catch (error:any) {
+      toast.error(error.response.data.message);
       console.log(error);
     }
   };
@@ -139,8 +139,8 @@ export const TaskCard: FC<Task> = ({
         dispatch(fetchProjectTasks(projectId));
       }
       setDelOpen(false);
-    } catch (error) {
-      toast.error("Failed to delete task");
+    } catch (error:any) {
+      toast.error(error.response.data.message);
 
       console.log("Error in deleting the task", error);
     }

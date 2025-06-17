@@ -55,9 +55,9 @@ export const AttachmentSection = ({
       toast.success(
         "Upload attachment successful, please refresh the page to see the changes"
       );
-    } catch (err) {
+    } catch (err:any) {
       toast.dismiss()
-      toast.error("Upload failed");
+      toast.error(err.response.data.message);
     }
   };
 
@@ -79,9 +79,9 @@ export const AttachmentSection = ({
       toast.success(
         "Attachment deleted, please refresh the page to see the changes"
       );
-    } catch (error) {
+    } catch (error:any) {
       toast.dismiss()
-      toast.error("Delete attachment failed");
+      toast.error(error.response.data.message);
     }
   };
 

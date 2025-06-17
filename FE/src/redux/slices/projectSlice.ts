@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { API_BASE_URL } from "../../../config";
+import { toast } from "sonner";
 
 export interface Project {
   role: string;
@@ -36,6 +37,7 @@ export const getAllProjects = createAsyncThunk(
       );
       return response.data.data; 
     } catch (error: any) {
+      toast.error(error.response.data.message)
       return thunkAPI.rejectWithValue(error.response.data.message);
     }
   }

@@ -69,8 +69,8 @@ export default function ProjectDetailPage() {
         );
         console.log("projectInfo", res.data.data[0]);
         setProject(res.data.data[0]);
-      } catch (error) {
-        toast.error("Failed to load project");
+      } catch (error:any) {
+        toast.error(error.response.data.message);
       }
     };
 
@@ -84,8 +84,8 @@ export default function ProjectDetailPage() {
         );
         console.log("members", res.data.data);
         setMembers(res.data.data);
-      } catch (error) {
-        toast.error("Failed to load members");
+      } catch (error:any) {
+        toast.error(error.response.data.message);
       }
     };
 

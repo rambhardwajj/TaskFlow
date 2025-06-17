@@ -89,9 +89,9 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
       if (res.data) {
         toast.success("Task updated successfully");
       }
-    } catch (error) {
-      console.log(error);
-      toast.error("Failed to update task");
+    } catch (error:any) {
+      // console.log(error);
+      toast.error(error.response.data.message);
     } finally {
       setSelectedTask(null);
       if (projectId) dispatch(fetchProjectTasks(projectId));
@@ -125,9 +125,9 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
         dispatch(fetchProjectTasks(projectId));
         dispatch(fetchUserTasks());
       }
-    } catch (error) {
+    } catch (error:any) {
       console.log(error);
-      toast.error("Failed to create task");
+      toast.error(error.response.data.message);
     }
   };
 
@@ -192,12 +192,10 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
             if (projectId) {
               await dispatch(fetchProjectTasks(projectId)); // <- Important
             }
-          } catch (err) {
+          } catch (err:any) {
             console.error("Failed to update task status:", err);
             toast.error(
-              `Failed to update task status: ${
-                err instanceof Error ? err.message : String(err)
-              }`
+            err.response.data.message
             );
           } finally {
             dispatch(fetchUserTasks());

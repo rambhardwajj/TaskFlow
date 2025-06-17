@@ -75,8 +75,8 @@ export const MyTaskCard: FC<myTask> = ({
       setSubtaskTitle("");
       setOpen(false);
       // optionally trigger refetch/subtask update
-    } catch (error) {
-      toast.error("Error submitting subtask. Make sure you are logged in.");
+    } catch (error:any) {
+      toast.error(" Make sure you are logged in. " + error.response.data.message);
       console.error("Error submitting subtask:", error);
     }
   };
@@ -91,8 +91,8 @@ export const MyTaskCard: FC<myTask> = ({
       console.log("Subtask deleted:", res.data);
       getAllSubtasks();
       setOpen(false);
-    } catch (error) {
-      toast.error("Error in deleting.");
+    } catch (error:any) {
+      toast.error( error.response.data.message);
       console.error("Error is delting , ", error);
     }
   };
@@ -106,8 +106,8 @@ export const MyTaskCard: FC<myTask> = ({
       console.log("Retrieved Subtasks", res.data.data);
 
       setSubTasks(res.data.data);
-    } catch (error) {
-      toast.error("Error in getting subTasks. Make sure You are signed In ")
+    } catch (error:any) {
+      toast.error(error.response.data.message)
       console.log(error);
     }
   };
@@ -124,8 +124,8 @@ export const MyTaskCard: FC<myTask> = ({
 
       console.log(res.data);
       getAllSubtasks();
-    } catch (error) {
-      toast.error("Error in updating subtask");
+    } catch (error:any) {
+      toast.error(error.response.data.message);
       console.log(error);
     }
   };
@@ -141,8 +141,8 @@ export const MyTaskCard: FC<myTask> = ({
       dispatch(fetchUserTasks());
 
       setDelOpen(false);
-    } catch (error) {
-      toast.error("Failed to delete task");
+    } catch (error:any) {
+      toast.error(error.response.data.message);
 
       console.log("Error in deleting the task", error);
     }

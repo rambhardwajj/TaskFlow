@@ -21,8 +21,8 @@ export const DeleteMemberDialog = ({ open, onOpenChange, memberId, projectId, on
       });
       onSuccess();
       onOpenChange(false);
-    } catch (error) {
-      toast.error("Failed to delete member")
+    } catch (error:any) {
+      toast.error(error.response.data.message)
       console.error("Failed to delete member", error);
     }
   };

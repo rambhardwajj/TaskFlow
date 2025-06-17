@@ -17,6 +17,7 @@ import jwt from "jsonwebtoken";
 import { logger } from "../utils/logger";
 import mongoose from "mongoose";
 import { validateObjectId } from "../utils/helper";
+import bcrypt from "bcryptjs"
 
 const registerUser = asyncHandler(async (req: Request, res: Response) => {
     // const userNamme = req.body.userName;
@@ -163,6 +164,8 @@ const resendVerificationEmail = asyncHandler(
 );
 
 const loginUser = asyncHandler(async (req: Request, res: Response) => {
+    console.log('inside login be')
+
     const { email, password } = handleZodError(validateLoginData(req.body));
 
     const user = await User.findOne({ email });
@@ -318,6 +321,27 @@ const resetPassword = asyncHandler(async (req: Request, res: Response) => {
     );
 });
 
+const updatePassword = asyncHandler(async (req: Request, res: Response) => {
+    console.log("in update password be")
+    const { oldPassword, newPassword } = req.body;
+    const {_id} = req.user 
+    const user = await User.findById(_id);
+    if (!user) {
+        throw new CustomError(400, "User not found" )
+    }
+
+    const isPasswordCorrect = await user.isPasswordCorrect(oldPassword)
+
+    if(!isPasswordCorrect){
+        throw new CustomError(400, "Old password is incorrect")
+    }
+    
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json(new ApiResponse(200,  null,  "Password Changed Successfully"))
+})
+
 const refreshAccessToken = asyncHandler(async (req, res) => {
     const incomingRefreshToken = req.cookies.refreshToken;
 
@@ -414,4 +438,5 @@ export {
     forgotPassword,
     resetPassword,
     refreshAccessToken,
+    updatePassword
 };

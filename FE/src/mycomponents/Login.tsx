@@ -9,7 +9,7 @@ import { FiArrowRight } from "react-icons/fi";
 
 export default function Login() {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error, user } = useSelector((state: RootState) => state.auth);
+  const { loading,  user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -70,7 +70,7 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            {error && <p className="text-red-500 text-sm">{error !=='Unauthorised request' && error}</p>}
+            {/* {error && <p className="text-red-500 text-sm">{error !=='Unauthorised request' && error}</p>} */}
             <Button
               type="submit"
               className="w-full bg-cyan-600 hover:bg-cyan-500 cursor-pointer text-white"

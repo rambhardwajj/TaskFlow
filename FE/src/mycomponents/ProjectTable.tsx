@@ -66,8 +66,8 @@ export default function ProjectTable() {
       toast.success("Project created successfully!");
       dispatch(getAllProjects());
       setOpen(false);
-    } catch (error) {
-      toast.error("Failed to create project.");
+    } catch (error:any) {
+      toast.error(error.response.data.message);
       console.error(error);
     }
   };
@@ -81,8 +81,8 @@ export default function ProjectTable() {
       toast.success("Project deleted successfully!");
       dispatch(getAllProjects());
       setDelOpen(false);
-    } catch (error) {
-      toast.error("Failed to delete project.");
+    } catch (error:any) {
+      toast.error(error.response.data.message);
       console.error(error);
     }
   };
