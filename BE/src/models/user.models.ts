@@ -76,6 +76,10 @@ const userSchema = new mongoose.Schema<IUser>(
         localPath: ""
       }
     },
+    isEmailVerified:{
+      type: Boolean,
+      default: false
+    },
     emailVerificationToken: String,
     emailVerificationExpiry: Date,
 
