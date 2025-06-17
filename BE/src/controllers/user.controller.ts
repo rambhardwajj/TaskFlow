@@ -47,8 +47,9 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
     // in our interface the user already have generateToken function which generates
     const { hashedToken, tokenExpiry, unHashedToken } = user.generateToken();
     // emailverification token and expiry have to be set on user's document as it is important
-    user.emailVerificationToken = hashedToken;
+    user.emailVerificationToken = hashedToken; 
     user.emailVerificationExpiry = tokenExpiry;
+    user.isEmailVerified = false
 
     // req.file mai se avatar ka local path nikalo , req.file hame multer se milega
     const avatarLocalPath = req.file?.path;
