@@ -8,7 +8,6 @@ import { registerUser } from "@/redux/slices/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Feature } from "./Login";
-import { toast } from "sonner";
 
 export default function Signup() {
   const dispatch = useDispatch<AppDispatch>();
