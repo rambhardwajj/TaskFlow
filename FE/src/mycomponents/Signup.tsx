@@ -33,6 +33,8 @@ export default function Signup() {
     if (avatar) formData.append("avatar", avatar);
 
     dispatch(registerUser(formData));
+
+    navigate("/login")
   };
 
   useEffect(() => {

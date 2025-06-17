@@ -173,6 +173,10 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
         throw new CustomError(ResponseStatus.NotFound, "User does not exist");
     }
 
+    if(!user.isEmailVerified){
+        throw new CustomError(ResponseStatus.Unauthorized, "Email is not verified");
+    }
+
     const isPasswordCorrect = await user.isPasswordCorrect(password);
     if (!isPasswordCorrect) {
         throw new CustomError(
@@ -185,8 +189,6 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
     const accessToken = await user.generateAccessToken();
     const refreshToken = await user.generateRefreshToken();
 
-    // console.log("at ", accessToken);
-    // console.log("rt ", refreshToken);
 
     user.refreshToken = refreshToken;
 
