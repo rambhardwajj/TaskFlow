@@ -16,6 +16,5 @@ router.post('/auth/update-password',isLoggedIn,  updatePassword)
 router.get('/auth/reset-password/:resetToken', resetPassword)
 router.get('/auth/refresh-token', refreshAccessToken)
 router.get('/auth/me', isLoggedIn , getUser )
-router.get('/auth/update', ()=>{console.log('first')} )
 
 export default router 
