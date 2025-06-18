@@ -12,6 +12,7 @@ import Home from "./pages/Home";
 import ProfilePage from "./pages/Profile";
 import VerifyStatus from "./pages/VerifyStatus";
 import Guidelines from "./pages/Guidelines";
+import { ResetPassword } from "./pages/ResetPassword";
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="Guidelines" element={<Guidelines />} />
         </Route>
         <Route path="verify/:token" element={<VerifyStatus />} />
+        <Route path="/reset-password/:resetToken" element={<ResetPassword />} />
       </Routes>
     </Router>
   );

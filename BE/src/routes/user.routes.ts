@@ -13,7 +13,7 @@ router.get('/auth/resend-verification',emailsLimiter, resendVerificationEmail)
 router.get('/auth/logout', isLoggedIn,  logOutUser)
 router.post('/auth/forgot-password',emailsLimiter, forgotPassword)
 router.post('/auth/update-password',isLoggedIn,  updatePassword)
-router.get('/auth/reset-password/:resetToken', resetPassword)
+router.post('/auth/reset-password/:resetToken', resetPassword)
 router.get('/auth/refresh-token', refreshAccessToken)
 router.get('/auth/me', isLoggedIn , getUser )
 
