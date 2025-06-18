@@ -194,7 +194,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex mt-20 ml-16 justify-center border-t border-neutral-800 ">
+      <section className="flex mt-20 justify-center border-t border-neutral-800 ">
         <FAQ />
       </section>
 

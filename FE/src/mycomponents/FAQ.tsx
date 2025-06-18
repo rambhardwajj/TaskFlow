@@ -129,7 +129,7 @@ const faqData = [
 
 export const FAQ = () => {
   return (
-    <section className="mb-8 w-[71vw]  flex-col justify-center ">
+    <section className="mb-8 w-[71vw] p-2 flex-col justify-center ">
       <h2 className="text-xl font-semibold mb-4 bg-cyan-950 py-3 rounded-xs text-neutral-100 text-center">
         Frequently Asked <span className="text--500">Questions</span> ❓
       </h2>

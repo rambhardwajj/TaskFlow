@@ -13,6 +13,8 @@ import { EditTaskDialog } from "@/mycomponents/EditTaskCard";
 import { toast } from "sonner";
 import axios from "axios";
 import { API_BASE_URL } from "../../config";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const taskSections: TaskStatus[] = ["TODO", "IN_PROGRESS", "DONE"];
 
@@ -69,7 +71,7 @@ const MyTasks = () => {
       if (res.data) {
         toast.success("Task updated successfully");
       }
-    } catch (error:any) {
+    } catch (error: any) {
       console.log(error);
       toast.error(error.response.data.message);
     } finally {
@@ -117,7 +119,7 @@ const MyTasks = () => {
   );
 
   const handleDragLeaveColumn = useCallback((e: React.DragEvent) => {
-    console.log(e)
+    console.log(e);
     setDragOverStatus(null); // Clear the drag over status
   }, []);
 
@@ -142,12 +144,9 @@ const MyTasks = () => {
                 newStatus: targetStatus,
               })
             );
-          } catch (error:any) {
+          } catch (error: any) {
             console.error("Failed to update task status:", error);
-            toast.error(
-             
-          error.response.data.message
-            );
+            toast.error(error.response.data.message);
           }
         }
       }
@@ -163,9 +162,14 @@ const MyTasks = () => {
     <div className="p-6 bg-neutral-950 h-[90vh] custom-scrollbar ">
       {" "}
       {/* Added bg and min-h-screen for better visual */}
-      <h1 className="text-white text-lg font-bold mb-6 ml-2 text-left">
-        My Tasks Dashboard
-      </h1>
+      <div className="flex justify-between">
+        <h1 className="text-white text-lg font-bold mb-6 ml-2 text-left">
+          My Tasks Dashboard
+        </h1>
+        <Link to="/projects">
+          <Button className="bg-cyan-700">Create New Project</Button>
+        </Link>
+      </div>
       {error ? (
         <p className="text-red-400 text-center text-lg">Error: {error}</p>
       ) : (
