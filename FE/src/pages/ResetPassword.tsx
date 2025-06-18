@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { API_BASE_URL } from "config";
+import { API_BASE_URL } from "../../config";
 import { toast } from "sonner";
 
 export const ResetPassword = () => {
