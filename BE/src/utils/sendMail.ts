@@ -111,7 +111,7 @@ const sendResetPasswordMail = async (
   email: string,
   token: string
 ) => {
-  const link = `${envConfig.DOMAIN_URL}/api/v1/user/auth/reset-password/${token}`;
+  const link = `${envConfig.DOMAIN_URL}/reset-password/${token}`;
 
   await sendMail(
     email,

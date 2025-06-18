@@ -6,18 +6,38 @@ import { Button } from "@/components/ui/button";
 import { loginUser } from "@/redux/slices/authSlice";
 import { AppDispatch, RootState } from "@/redux/store/store";
 import { FiArrowRight } from "react-icons/fi";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import axios from "axios";
+import { API_BASE_URL } from "../../config";
+import { toast } from "sonner";
 
 export default function Login() {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading,  user } = useSelector((state: RootState) => state.auth);
+  const { loading, user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [forgetEmail, setForgetEmail] = useState("");
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(loginUser({ email, password }));
+  };
+
+  const handleForgetPassword = async () => {
+    try {
+      const res = await axios.post(
+        `${API_BASE_URL}/api/v1/user/auth/forgot-password`,
+        { email: forgetEmail }
+      );
+      if (res)
+        toast.success(
+          "Reset Password link send to your email. Please reset your password"
+        );
+    } catch (error:any) {
+      toast.error(error.response.data.message)
+    }
   };
 
   useEffect(() => {
@@ -33,8 +53,8 @@ export default function Login() {
             Welcome back to <span className="text-cyan-400">TaskFlow</span>
           </h1>
           <p className="mt-4 text-lg text-neutral-400 max-w-md">
-            Organize your tasks, boost your productivity, and stay on top of everything—
-            one flow at a time.
+            Organize your tasks, boost your productivity, and stay on top of
+            everything— one flow at a time.
           </p>
         </div>
 
@@ -48,7 +68,10 @@ export default function Login() {
       {/* Right Login Form */}
       <div className="flex items-center justify-center w-full max-w-[48vw] p-8">
         <div className="w-full max-w-md">
-          <h2 className="text-2xl font-bold mb-6"> <span className="text-cyan-400" >  Sign In</span>  to TaskFlow</h2>
+          <h2 className="text-2xl font-bold mb-6">
+            {" "}
+            <span className="text-cyan-400"> Sign In</span> to TaskFlow
+          </h2>
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-sm mb-1">Email</label>
@@ -70,14 +93,37 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+
+            <div>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="text-sm cursor-pointer hover:text-blue-300 text-blue-400">
+                    forget password?{" "}
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="bg-neutral-200 ">
+                  <Input
+                    placeholder="write your email"
+                    value={forgetEmail}
+                    onChange={(e) => setForgetEmail(e.target.value)}
+                  />
+                  <Button onClick={handleForgetPassword}>
+                    Send Reset Password Email
+                  </Button>
+                </DialogContent>
+              </Dialog>
+            </div>
+
             {/* {error && <p className="text-red-500 text-sm">{error !=='Unauthorised request' && error}</p>} */}
             <Button
               type="submit"
               className="w-full bg-cyan-600 hover:bg-cyan-500 cursor-pointer text-white"
               disabled={loading}
             >
-              {loading ? "Logging in..." : (
-                <span className="flex items-center justify-center gap-2">
+              {loading ? (
+                "Logging in..."
+              ) : (
+                <span className="flex items-center justify-center gap-2  ">
                   Access Your Workspace <FiArrowRight className="text-lg" />
                 </span>
               )}
@@ -86,7 +132,10 @@ export default function Login() {
 
           <div className="mt-4 text-sm text-center text-neutral-400">
             Don’t have an account?{" "}
-            <Link to="/signup" className="text-cyan-400 cursor-pointer hover:underline">
+            <Link
+              to="/signup"
+              className="text-cyan-400 cursor-pointer hover:underline"
+            >
               Join TaskFlow
             </Link>
           </div>

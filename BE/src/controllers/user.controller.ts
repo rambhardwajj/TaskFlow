@@ -284,7 +284,7 @@ const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
         new ApiResponse(
             ResponseStatus.Success,
             null,
-            "Rest link is sent to the provided email"
+            "Reset link is sent to the provided email"
         )
     );
 });

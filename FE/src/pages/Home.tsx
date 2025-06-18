@@ -97,6 +97,25 @@ export default function Home() {
                       "https://api.dicebear.com/7.x/initials/svg?seed=AnitaS",
                   },
                 },
+                {
+                  _id: "task-103",
+                  title: "Set up Tasks repo",
+                  desc: "Initialize GitHub repo with README and project structure",
+                  updatedAt: "2025-06-10T14:00:00Z",
+                  status: "TODO",
+                  assignedTo: {
+                    userName: "Ram Bhardwaj",
+                    email: "ram@example.com",
+                    avatar:
+                      "https://api.dicebear.com/7.x/initials/svg?seed=RamB",
+                  },
+                  assignedBy: {
+                    userName: "Anita Sharma",
+                    email: "anita@example.com",
+                    avatar:
+                      "https://api.dicebear.com/7.x/initials/svg?seed=AnitaS",
+                  },
+                },
               ]}
             />
 
@@ -184,7 +203,7 @@ export default function Home() {
       <section>
         <div className="max-w-7xl mx-auto mt-40 px-4">
           <h2 className="text-4xl font-bold mb-12 text-center text-white">
-            Key Features of {" "}
+            Key Features of{" "}
             <span className="bg-gradient-to-r from-cyan-800 via-blue-500 to-cyan-800 text-transparent bg-clip-text">
               Task Flow
             </span>
