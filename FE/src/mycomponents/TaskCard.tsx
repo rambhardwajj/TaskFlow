@@ -25,7 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import {  useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AssignedUserDialog from "./AssignedUserDialog";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store/store";
@@ -68,7 +68,7 @@ export const TaskCard: FC<Task> = ({
       setSubtaskTitle("");
       setOpen(false);
       // optionally trigger refetch/subtask update
-    } catch (error:any) {
+    } catch (error: any) {
       toast.error(error.response.data.message);
       console.error("Error submitting subtask:", error);
     }
@@ -85,7 +85,7 @@ export const TaskCard: FC<Task> = ({
       console.log("Subtask deleted:", res.data);
       getAllSubtasks();
       setOpen(false);
-    } catch (error:any) {
+    } catch (error: any) {
       toast.error(error.response.data.message);
       console.error("Error is delting , ", error);
     }
@@ -101,7 +101,7 @@ export const TaskCard: FC<Task> = ({
       console.log("Retrieved Subtasks", res.data.data);
 
       setSubTasks(res.data.data);
-    } catch (error:any) {
+    } catch (error: any) {
       toast.error(error.response.data.message);
       console.log(error);
     }
@@ -120,7 +120,7 @@ export const TaskCard: FC<Task> = ({
 
       console.log(res.data);
       getAllSubtasks();
-    } catch (error:any) {
+    } catch (error: any) {
       toast.error(error.response.data.message);
       console.log(error);
     }
@@ -139,7 +139,7 @@ export const TaskCard: FC<Task> = ({
         dispatch(fetchProjectTasks(projectId));
       }
       setDelOpen(false);
-    } catch (error:any) {
+    } catch (error: any) {
       toast.error(error.response.data.message);
 
       console.log("Error in deleting the task", error);
@@ -148,10 +148,10 @@ export const TaskCard: FC<Task> = ({
 
   return (
     <>
-      <div className="bg-neutral-950 p-4 rounded-md border border-neutral-800 hover:border-blue-500 transition-all hover:shadow-lg group cursor-pointer space-y-1">
+      <div className="max-w-[29vw] bg-neutral-950 p-4 rounded-md border border-neutral-800 hover:border-blue-500 transition-all hover:shadow-lg group cursor-pointer space-y-1">
         {/* First line  */}
         <div className="flex justify-between">
-          <p className="font-semibold text-cyan-500 group-hover:text-blue-300 text-sm transition">
+          <p className="font-semibold text-cyan-500 group-hover:text-blue-300 text-sm transition truncate overflow-hidden whitespace-nowrap">
             {title}
           </p>
           <div className="flex gap-2 items-center ">
@@ -267,7 +267,7 @@ export const TaskCard: FC<Task> = ({
                   <div className="space-y-3">
                     <Input
                       placeholder="Subtask Title"
-                      className="bg-zinc-800 text-white"
+                      className="bg-zinc-800 text-white max-w-[30vw] "
                       value={subtaskTitle}
                       onChange={(e) => setSubtaskTitle(e.target.value)}
                     />
@@ -349,7 +349,7 @@ export const TaskCard: FC<Task> = ({
 
         {/* 2nd Line  */}
         {desc && (
-          <div className="inline-block bg-zinc-800 text-zinc-300 px-2 py-1 rounded-md text-[10px] font-medium">
+          <div className="inline-block bg-zinc-800 text-zinc-300 px-2 py-1 rounded-md text-[10px] font-medium truncate overflow-hidden whitespace-nowrap max-w-[300px]">
             {desc}
           </div>
         )}

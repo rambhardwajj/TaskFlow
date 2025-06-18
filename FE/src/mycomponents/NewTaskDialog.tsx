@@ -31,7 +31,7 @@ export const NewTaskDialog = ({ open, onOpenChange, onSubmit }: {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-[#1a1a1a] border border-zinc-700 max-w-xl mx-auto rounded-xl p-6 shadow-lg">
         <DialogHeader>
-          <DialogTitle className="text-white text-2xl font-semibold">Create New Task</DialogTitle>
+          <DialogTitle className="max-w-[30vw] text-white text-2xl font-semibold">Create New Task</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 mt-4">
@@ -42,7 +42,7 @@ export const NewTaskDialog = ({ open, onOpenChange, onSubmit }: {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter task title"
-              className="bg-zinc-900 text-white border-zinc-700"
+              className="max-w-[30vw] bg-zinc-900 text-white border-zinc-700"
             />
           </div>
 
@@ -65,7 +65,7 @@ export const NewTaskDialog = ({ open, onOpenChange, onSubmit }: {
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
               placeholder="Describe the task"
-              className="bg-zinc-900 text-white border-zinc-700 min-h-[100px]"
+              className="max-w-[30vw] bg-zinc-900 text-white border-zinc-700 min-h-[100px]"
             />
           </div>
 

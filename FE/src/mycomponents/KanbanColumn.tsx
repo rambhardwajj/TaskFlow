@@ -16,12 +16,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store/store";
 import { NewTaskDialog } from "./NewTaskDialog";
 import {
+  addTaskManually,
   fetchUserTasks,
   updateTaskStatus,
 } from "@/redux/slices/userTasksSlice";
 import { EditTaskDialogbox } from "./Edit_TaskCard";
-import {API_BASE_URL} from "../../config"
-
+import { API_BASE_URL } from "../../config";
 
 interface KanbanColumnProps {
   title: TaskStatus;
@@ -31,13 +31,10 @@ interface KanbanColumnProps {
 const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
   const { projectId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const { byId } = useSelector(
-    (state: RootState) => state.userTasks
-  );
+  const { byId } = useSelector((state: RootState) => state.userTasks);
   useEffect(() => {
     dispatch(fetchUserTasks());
   }, [dispatch]);
-  // console.log(projectId);
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [editMode, setEditMode] = useState(false);
@@ -84,12 +81,11 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
           withCredentials: true,
         }
       );
-      dispatch(fetchUserTasks());
 
       if (res.data) {
         toast.success("Task updated successfully");
       }
-    } catch (error:any) {
+    } catch (error: any) {
       // console.log(error);
       toast.error(error.response.data.message);
     } finally {
@@ -120,14 +116,17 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
       if (res.data) {
         toast.success("Task created successfully");
         setOpenNewTask(false);
+        const createdTask = res.data.data.task;
+        console.log("res.data ",res.data.data.task)
+        dispatch(addTaskManually(createdTask));
       }
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    } finally {
       if (projectId) {
         dispatch(fetchProjectTasks(projectId));
-        dispatch(fetchUserTasks());
       }
-    } catch (error:any) {
-      console.log(error);
-      toast.error(error.response.data.message);
+      dispatch(fetchUserTasks());
     }
   };
 
@@ -140,6 +139,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
     e.dataTransfer.setData("text/plain", taskId); // Set data for the drop event
     e.dataTransfer.effectAllowed = "move"; // Indicate a 'move' operation
   }, []);
+
   const handleDragEnd = useCallback(() => {
     console.log("drg end");
 
@@ -174,13 +174,12 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
       if (taskId) {
         const task = byId[taskId];
         // console.log("target status " , task)
-        console.log(task);
+        console.log("task",task);
         if (!task) {
           toast.error("You are not a part of this task.");
         }
 
         if (task && task.status !== targetStatus) {
-          console.log("hi");
           try {
             dispatch(fetchUserTasks());
             await dispatch(
@@ -192,11 +191,9 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
             if (projectId) {
               await dispatch(fetchProjectTasks(projectId)); // <- Important
             }
-          } catch (err:any) {
+          } catch (err: any) {
             console.error("Failed to update task status:", err);
-            toast.error(
-            err.response.data.message
-            );
+            toast.error(err.response.data.message);
           } finally {
             dispatch(fetchUserTasks());
           }

@@ -112,7 +112,18 @@ export const updateTaskStatus = createAsyncThunk(
 const userTasksSlice = createSlice({
   name: "userTasks",
   initialState,
-  reducers: {},
+  reducers: {
+    addTaskManually: (state, action) => {
+    const task = action.payload;
+    const status = (task.status.toUpperCase() || "TODO") as TaskStatus;
+
+    // Agar task already nahi hai to hi add karo
+    if (!state.byId[task._id]) {
+      state.byId[task._id] = task;
+      state.userTasks[status].push(task._id);
+    }
+  },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserTasks.pending, (state) => {
@@ -175,4 +186,5 @@ const userTasksSlice = createSlice({
   },
 });
 
+export const { addTaskManually } = userTasksSlice.actions;
 export default userTasksSlice.reducer;

@@ -272,7 +272,7 @@ export const MyTaskCard: FC<myTask> = ({
                   <div className="space-y-3">
                     <Input
                       placeholder="Subtask Title"
-                      className="bg-zinc-800 text-white"
+                      className="bg-zinc-800 text-white max-w-[30vw]"
                       value={subtaskTitle}
                       onChange={(e) => setSubtaskTitle(e.target.value)}
                     />
