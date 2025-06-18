@@ -11,6 +11,7 @@ import Project from "./pages/Project";
 import Home from "./pages/Home";
 import ProfilePage from "./pages/Profile";
 import VerifyStatus from "./pages/VerifyStatus";
+import Guidelines from "./pages/Guidelines";
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
           <Route index element={<Home />} />
+          <Route path="Guidelines" element={<Guidelines />} />
         </Route>
         <Route path="verify/:token" element={<VerifyStatus />} />
       </Routes>

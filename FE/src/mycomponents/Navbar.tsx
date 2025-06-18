@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {  Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,10 +25,11 @@ const Navbar = () => {
 
   useEffect(() => {
     dispatch(getAllProjects());
-  }, [dispatch ]);
+  }, [dispatch]);
 
   const navLinks: any = [
     { label: "Home", to: "/" },
+    { label: "Guidelines", to: "/guidelines" },
     // Projects handled separately with dropdown
     { label: "Tasks", to: "/tasks" },
   ];
@@ -60,9 +61,7 @@ const Navbar = () => {
             {/* Projects Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button
-                  className="text-zinc-300 hover:text-white cursor-pointer text-sm border-none "
-                >
+                <button className="text-zinc-300 hover:text-white cursor-pointer text-sm border-none ">
                   Projects
                 </button>
               </DropdownMenuTrigger>
@@ -91,7 +90,6 @@ const Navbar = () => {
 
         {/* Right Section */}
         <div className="flex items-center gap-4">
-        
           {/* Mobile Menu Button */}
           <button
             className="md:hidden text-zinc-300 hover:text-white transition"
@@ -113,7 +111,7 @@ const Navbar = () => {
                 <Button className=" cursor-pointer px-4 py-2 text-sm font-medium bg-cyan-600 text-white hover:bg-cyan-700 rounded-lg shadow-sm transition-all duration-200">
                   Signup
                 </Button>
-              </Link>  
+              </Link>
             </>
           ) : (
             <AvatarDropdown />

@@ -5,6 +5,7 @@ import {
   ListChecks,
   Menu,
   User,
+  MessageCircleQuestion 
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "../lib/utils";
@@ -74,6 +75,11 @@ const Sidebar = () => {
               to: "/",
               label: "Home",
               icon: <Home size={20} className="text-cyan-500" />,
+            },
+            {
+              to: "/guidelines",
+              label: "Guidelines",
+              icon: <MessageCircleQuestion size={20} className="text-cyan-500"/>,
             },
             {
               to: "/tasks",
