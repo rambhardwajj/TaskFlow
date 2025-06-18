@@ -2,10 +2,11 @@ import { KanbanColumn } from "@/mycomponents/KanbanColumn";
 import { Link } from "react-router-dom";
 import FooterComponent from "@/mycomponents/FooterComponente";
 import { FAQ } from "@/mycomponents/FAQ";
+import Features from "@/mycomponents/Features";
 
 export default function Home() {
   return (
-    <main className="bg-zinc-950 text-white min-h-screen px-6 md:px-16 py-16">
+    <main className="bg-zinc-950 text-white min-h-screen px-6 md:px-16 py-10">
       {/* Top Banner */}
       <div className="text-center mb-8">
         <div className="inline-block bg-zinc-800 px-4 py-1 text-xs text-zinc-300 rounded-full shadow-sm">
@@ -27,7 +28,7 @@ export default function Home() {
           project success.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Link to={"/projects"}>
+          <Link to={"/guidelines"}>
             <button className=" cursor-pointer bg-cyan-600 hover:bg-cyan-700 transition text-white px-6 py-2 rounded-md text-sm font-medium">
               Get Started
             </button>
@@ -180,7 +181,20 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex mt-20 ml-16 justify-start ">
+      <section>
+        <div className="max-w-7xl mx-auto mt-40 px-4">
+          <h2 className="text-4xl font-bold mb-12 text-center text-white">
+            Key Features of {" "}
+            <span className="bg-gradient-to-r from-cyan-800 via-blue-500 to-cyan-800 text-transparent bg-clip-text">
+              Task Flow
+            </span>
+          </h2>
+
+          <Features />
+        </div>
+      </section>
+
+      <section className="flex mt-20 ml-16 justify-center border-t border-neutral-800 ">
         <FAQ />
       </section>
 

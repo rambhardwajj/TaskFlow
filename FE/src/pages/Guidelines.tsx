@@ -8,9 +8,9 @@ export default function Guidelines() {
       </h1>
 
       {/* 1. Create Project */}
-      <section className="border border-cyan-700 p-10 rounded-sm">
+      <section className="border bg-black border-cyan-700 p-10 rounded-sm">
         <div>
-          <h2 className="text-xl font-semibold mb-3">
+          <h2 className="text-xl text-amber-600 font-semibold mb-3">
             1️⃣ How to Create a Project
           </h2>
           <ul className="list-decimal pl-6 space-y-1 text-xs">
@@ -38,8 +38,8 @@ export default function Guidelines() {
       </section>
 
       {/* 2. Add Task */}
-      <section className="border border-cyan-700 p-6 rounded-sm">
-        <h2 className="text-xl font-semibold mb-3">2️⃣ How to Add a Task</h2>
+      <section className="border bg-black border-cyan-700 p-6 rounded-sm">
+        <h2 className="text-xl text-amber-600 font-semibold mb-3">2️⃣ How to Add a Task</h2>
         <ul className="list-decimal pl-6 space-y-1 text-xs">
           <li>
             From <strong>My Projects</strong>, select your project.
@@ -73,8 +73,8 @@ export default function Guidelines() {
       </section>
 
       {/* 3. Add Members */}
-      <section className="border border-cyan-700 p-6 rounded-sm">
-        <h2 className="text-xl font-semibold mb-3">3️⃣ How to Add a Member</h2>
+      <section className="border bg-black border-cyan-700 p-6 rounded-sm">
+        <h2 className="text-xl text-amber-600 font-semibold mb-3">3️⃣ How to Add a Member</h2>
         <ul className="list-decimal pl-6 space-y-1 text-sm ">
           <li>
             Go to <strong>My Projects</strong> and click the{" "}
@@ -107,8 +107,8 @@ export default function Guidelines() {
       </section>
 
       {/* 4. User Roles */}
-      <section className="border border-cyan-700 p-6 rounded-sm">
-        <h2 className="text-xl font-semibold mb-3">
+      <section className="border bg-black border-cyan-700 p-6 rounded-sm">
+        <h2 className="text-xl text-amber-600 font-semibold mb-3">
           4️⃣ Understanding Roles & Permissions
         </h2>
         <p className="mb-2">There are three roles with varying permissions:</p>
@@ -141,8 +141,8 @@ export default function Guidelines() {
       </section>
 
       {/* 5. Change Password */}
-      <section className="border border-cyan-700 p-6 rounded-sm">
-        <h2 className="text-xl font-semibold mb-3">
+      <section className="border bg-black border-cyan-700 p-6 rounded-sm">
+        <h2 className="text-xl text-amber-600 font-semibold mb-3">
           5️⃣ How to Change Your Password
         </h2>
         <ul className="list-decimal pl-6 space-y-1 text-sm">
