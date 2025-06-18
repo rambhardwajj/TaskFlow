@@ -9,23 +9,29 @@ import { toast } from "sonner";
 
 export const ResetPassword = () => {
   const [password, setPassword] = useState("");
+  const { resetToken } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+
+
   const handleResetPassword = async () => {
-    const { resetToken } = useParams();
-    try {
-      const res = await axios.post(
-        `${API_BASE_URL}/api/v1/user/auth/reset-password/${resetToken}`,
-        { password }
-      );
-      if (res) {
-        toast.success("Reset Password successfull");
-      }
-    } catch (error: any) {
-      toast.error(error.response.data.message);
-    }
-  };
+  if (!password) return toast.error("Password cannot be empty");
+  setIsLoading(true);
+  try {
+    const res = await axios.post(
+      `${API_BASE_URL}/api/v1/user/auth/reset-password/${resetToken}`,
+      { password }
+    );
+    if( res)
+    toast.success("Reset password successful");
+  } catch (error: any) {
+    toast.error(error?.response?.data?.message || "Reset failed");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
-    <div className="w-full max-w-md mx-auto bg-neutral-900/40 p-6 rounded-xl border border-neutral-800 shadow-md space-y-5">
+    <div className="w-full m-10 max-w-md mx-auto bg-neutral-900/40 p-6 rounded-xl border border-neutral-800 shadow-md space-y-5">
       <div className="space-y-2">
         <Label htmlFor="new-password" className="text-sm text-gray-300">
           Enter New Password
@@ -39,11 +45,12 @@ export const ResetPassword = () => {
       </div>
 
       <Button
-        className="w-full bg-cyan-800 hover:bg-cyan-600 text-white"
-        onClick={handleResetPassword}
-      >
-        Update Password
-      </Button>
+  disabled={isLoading}
+  className="w-full bg-cyan-800 hover:bg-cyan-600 text-white disabled:opacity-50"
+  onClick={handleResetPassword}
+>
+  {isLoading ? "Updating..." : "Update Password"}
+</Button>
     </div>
   );
 };
