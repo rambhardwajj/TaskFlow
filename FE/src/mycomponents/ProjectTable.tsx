@@ -14,6 +14,11 @@ import { toast } from "sonner";
 import { AppWindowMac, Trash } from "lucide-react";
 import { API_BASE_URL } from "../../config";
 import { fetchUserTasks } from "@/redux/slices/userTasksSlice";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export interface Project {
   role: string;
@@ -33,7 +38,6 @@ export default function ProjectTable() {
     (state: RootState) => state.projects
   );
 
-  
   // const {role} = useSelector((state: RootState)=> state.userRole.role)
 
   const [open, setOpen] = useState(false);
@@ -42,7 +46,7 @@ export default function ProjectTable() {
 
   useEffect(() => {
     dispatch(getAllProjects());
-    dispatch(fetchUserTasks())
+    dispatch(fetchUserTasks());
   }, [dispatch]);
 
   const Initials = (props: { ini: string }) => {
@@ -66,7 +70,7 @@ export default function ProjectTable() {
       toast.success("Project created successfully!");
       dispatch(getAllProjects());
       setOpen(false);
-    } catch (error:any) {
+    } catch (error: any) {
       toast.error(error.response.data.message);
       console.error(error);
     }
@@ -81,7 +85,7 @@ export default function ProjectTable() {
       toast.success("Project deleted successfully!");
       dispatch(getAllProjects());
       setDelOpen(false);
-    } catch (error:any) {
+    } catch (error: any) {
       toast.error(error.response.data.message);
       console.error(error);
     }
@@ -118,55 +122,75 @@ export default function ProjectTable() {
             </tr>
           </thead>
           <tbody>
-            {
-              projects.map((project, index) => (
-                <tr
-                  key={index}
-                  className="bg-neutral-800/60 border-b border-zinc-800 transition-transform hover:scale-[1.002] hover:bg-neutral-800 "
-                >
-                  <td className="my-3 ml-5 flex justify-between  font-medium text-zinc-100">
-                    <Link
-                      className=" text-sm hover:scale-[1.08] hover:text-blue-600 cursor-pointer"
-                      to={`/${project.projectId}/tasks`}
-                    >
-                      {<Initials ini={project.name.charAt(0)} />} {project.name}
-                    </Link>
-                    <div onClick={(e) => e.stopPropagation()}>
-                      <Link to={`/${project.projectId}`}>
-                        <AppWindowMac  className="animate-pulse  hover:scale-[1.1] hover:text-green-400 w-6 h-6 mx-2  text-green-300 cursor-pointer" />
+            {projects.map((project, index) => (
+              <tr
+                key={index}
+                className="bg-neutral-800/60 border-b border-zinc-800 transition-transform hover:scale-[1.002] hover:bg-neutral-800 "
+              >
+                <td className="my-3 ml-5 flex justify-between  font-medium text-zinc-100">
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Link
+                        className=" text-sm hover:scale-[1.08] hover:text-blue-600 cursor-pointer"
+                        to={`/${project.projectId}/tasks`}
+                      >
+                        {<Initials ini={project.name.charAt(0)} />}{" "}
+                        {project.name}
                       </Link>
-                    </div>
-                  </td>
-                  <td className="py-3 px-5 text-zinc-400 text-xs">
-                    {project.createdAt}
-                  </td>
-                  <td className="py-3 px-5 text-zinc-400 text-xs">
-                    {project.createdBy.username}
-                  </td>
-                  <td className="py-3 px-5 text-zinc-400 text-xs">
-                    {project.memberCount}
-                  </td>
-                  <td className="py-3 px-5 text-zinc-300 text-xs">
-                    {project.role}
-                  </td>
-                  <td
-                    className="py-3 px-5 text-red-600  "
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {/* Delete  */}
-                    {project.role !== "member" && <Dialog open={delOpen} onOpenChange={setDelOpen}>
+                    </TooltipTrigger>
+                    <TooltipContent className="text-md">
+                      Kanban View
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <Link to={`/${project.projectId}`}>
+                          <AppWindowMac className="animate-pulse  hover:scale-[1.1] hover:text-green-400 w-6 h-6 mx-2  text-green-300 cursor-pointer" />
+                        </Link>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className="text-md">
+                      Project Details
+                    </TooltipContent>
+                  </Tooltip>
+                </td>
+                <td className="py-3 px-5 text-zinc-400 text-xs">
+                  {project.createdAt}
+                </td>
+                <td className="py-3 px-5 text-zinc-400 text-xs">
+                  {project.createdBy.username}
+                </td>
+                <td className="py-3 px-5 text-zinc-400 text-xs">
+                  {project.memberCount}
+                </td>
+                <td className="py-3 px-5 text-zinc-300 text-xs">
+                  {project.role}
+                </td>
+                <td
+                  className="py-3 px-5 text-red-600  "
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Delete  */}
+                  {project.role !== "member" && (
+                    <Dialog open={delOpen} onOpenChange={setDelOpen}>
                       <DialogTrigger asChild>
-                       <button
+                        <button
                           className="cursor-pointer "
                           onClick={(e) => {
                             e.stopPropagation();
                             setDelOpen(true);
                           }}
                         >
-                          <Trash className=" w-5 hover:scale-[1.2] hover:text-red-500" />
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Trash className=" w-5 hover:scale-[1.2] hover:text-red-500" />
+                            </TooltipTrigger>
+                            <TooltipContent>Delete Project</TooltipContent>
+                          </Tooltip>
                         </button>
                       </DialogTrigger>
-
 
                       <DialogContent className="bg-neutral-900 rounded-b-sm hover:bg-neutral-800 text-white">
                         <div className="space-y-4">
@@ -181,6 +205,7 @@ export default function ProjectTable() {
                             >
                               Cancel
                             </button>
+
                             <button
                               onClick={() => {
                                 setDelOpen(true);
@@ -193,17 +218,17 @@ export default function ProjectTable() {
                           </div>
                         </div>
                       </DialogContent>
-                    </Dialog>}
-                  </td>
-                </tr>
-              ))
-            }
-            <tr className=" bg-neutral-900 rounded-b-sm hover:bg-neutral-800 cursor-pointer">
+                    </Dialog>
+                  )}
+                </td>
+              </tr>
+            ))}
+            <tr className=" bg-neutral-900  hover:bg-neutral-800 cursor-pointer">
               <td className=" py-3 px-5 text-center  text-cyan-400">
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>
                     <button
-                      className="cursor-pointer "
+                      className="cursor-pointer text-xs "
                       onClick={() => setOpen(true)}
                     >
                       Create Project +

@@ -1,6 +1,7 @@
 import { KanbanColumn } from "@/mycomponents/KanbanColumn";
 import { Link } from "react-router-dom";
 import FooterComponent from "@/mycomponents/FooterComponente";
+import { FAQ } from "@/mycomponents/FAQ";
 
 export default function Home() {
   return (
@@ -177,6 +178,10 @@ export default function Home() {
             className="animate-pulse transition-transform duration-300 hover:rotate-6"
           />
         </div>
+      </section>
+
+      <section className="flex mt-20 ml-16 justify-start ">
+        <FAQ />
       </section>
 
       <FooterComponent />

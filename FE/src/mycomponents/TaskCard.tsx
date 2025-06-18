@@ -349,7 +349,7 @@ export const TaskCard: FC<Task> = ({
 
         {/* 2nd Line  */}
         {desc && (
-          <div className="inline-block bg-zinc-800 text-zinc-300 px-2 py-1 rounded-md text-[10px] font-medium truncate overflow-hidden whitespace-nowrap max-w-[300px]">
+          <div className="inline-block bg-zinc-800 text-zinc-300 px-2 py-1 rounded-md text-[10px] font-medium truncate overflow-hidden whitespace-nowrap max-w-[200px]">
             {desc}
           </div>
         )}
