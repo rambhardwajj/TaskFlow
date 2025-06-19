@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store/store";
-import { registerUser } from "@/redux/slices/authSlice";
+import { googleAuthLoginUser, registerUser } from "@/redux/slices/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Feature } from "./Login";
+import { GoogleLogin } from "@react-oauth/google";
+import { toast } from "sonner";
 
 export default function Signup() {
   const dispatch = useDispatch<AppDispatch>();
@@ -49,8 +51,8 @@ export default function Signup() {
             Welcome back to <span className="text-cyan-400">TaskFlow</span>
           </h1>
           <p className="mt-4 text-lg text-neutral-400 max-w-md">
-            Organize your tasks, boost your productivity, and stay on top of everything—
-            one flow at a time.
+            Organize your tasks, boost your productivity, and stay on top of
+            everything— one flow at a time.
           </p>
         </div>
 
@@ -62,7 +64,7 @@ export default function Signup() {
       </div>
       <div className="flex items-center justify-center bg-neutral-950 p-4">
         <Card className=" w-[45vw] bg-neutral-950 text-white border-none ">
-          <CardContent className="p-6 space-y-6">
+          <CardContent className="p-6 space-y-2">
             <h2 className="text-2xl font-bold text-cyan-400">Create Account</h2>
             <form
               onSubmit={handleSignup}
@@ -74,7 +76,7 @@ export default function Signup() {
                 <Input
                   type="text"
                   placeholder="taskflowdev"
-                  className="bg-neutral-800 border-zinc-600"
+                  className="bg-neutral-800 rounded-[4px] border-zinc-600"
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
                 />
@@ -84,7 +86,7 @@ export default function Signup() {
                 <Input
                   type="text"
                   placeholder="John Doe"
-                  className="bg-neutral-800 border-zinc-600"
+                  className="bg-neutral-800 rounded-[4px] border-zinc-600"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                 />
@@ -94,7 +96,7 @@ export default function Signup() {
                 <Input
                   type="email"
                   placeholder="you@example.com"
-                  className="bg-neutral-800 border-zinc-600"
+                  className="bg-neutral-800 rounded-[4px] border-zinc-600"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -104,7 +106,7 @@ export default function Signup() {
                 <Input
                   type="password"
                   placeholder="••••••••"
-                  className="bg-neutral-800 border-zinc-600"
+                  className="bg-neutral-800 rounded-[4px] border-zinc-600"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -114,26 +116,61 @@ export default function Signup() {
                 <Input
                   type="file"
                   accept="image/*"
-                  className="bg-neutral-800 border-zinc-600"
+                  className="bg-neutral-800 rounded-[4px] border-zinc-600"
                   onChange={(e) => setAvatar(e.target.files?.[0] || null)}
                 />
               </div>
-                <Link to={'/resendVerifyEmail'} className="text-blue-400 text-sm cursor-pointer">
-                  Resend verification email
-                </Link>
+              <Link
+                to={"/resendVerifyEmail"}
+                className="text-blue-400 text-sm cursor-pointer"
+              >
+                Resend verification email
+              </Link>
 
-              {error && <p className="text-red-500 text-sm">{error !=='Unauthorised request' && error}</p>}
+              {error && (
+                <p className="text-red-500 text-sm">
+                  {error !== "Unauthorised request" && error}
+                </p>
+              )}
               <Button
                 type="submit"
-                className="w-full cursor-pointer bg-cyan-600 hover:bg-cyan-500 text-white"
+                className="w-full cursor-pointer rounded-[4px] bg-cyan-600 hover:bg-cyan-500 text-white"
                 disabled={loading}
               >
                 {loading ? "Creating Account..." : "Sign Up"}
               </Button>
             </form>
+
+            <br />
+
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                console.log(credentialResponse);
+                try {
+                  if (credentialResponse.credential) {
+                    const res = await dispatch(
+                      googleAuthLoginUser({
+                        credential: credentialResponse.credential,
+                      })
+                    ).unwrap();
+                    if( res) toast.success("login successful");
+                  }
+                } catch (error) {
+                  toast.error("Error signing up with Google")
+                }
+              }}
+              onError={() => {
+                toast.error("Login with Google failed");
+                console.log("Login Failed");
+              }}
+            />
+
             <p className="text-sm text-center text-muted-foreground">
               Already have an account?{" "}
-              <Link to="/login" className="text-cyan-400 cursor-pointer hover:underline">
+              <Link
+                to="/login"
+                className="text-cyan-400 cursor-pointer hover:underline"
+              >
                 Sign In
               </Link>
             </p>

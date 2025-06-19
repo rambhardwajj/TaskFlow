@@ -3,13 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { loginUser } from "@/redux/slices/authSlice";
+import { googleAuthLoginUser, loginUser } from "@/redux/slices/authSlice";
 import { AppDispatch, RootState } from "@/redux/store/store";
 import { FiArrowRight } from "react-icons/fi";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import axios from "axios";
 import { API_BASE_URL } from "../../config";
 import { toast } from "sonner";
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function Login() {
   const dispatch = useDispatch<AppDispatch>();
@@ -39,7 +40,7 @@ export default function Login() {
           "Reset Password link send to your email. Please reset your password"
         );
       }
-      setForgetOpen(false)
+      setForgetOpen(false);
     } catch (error: any) {
       toast.dismiss();
       toast.error(error.response.data.message);
@@ -84,7 +85,7 @@ export default function Login() {
               <Input
                 type="email"
                 placeholder="you@example.com"
-                className="bg-neutral-800 border-zinc-600"
+                className="bg-neutral-800 border-zinc-600 rounded-[4px]"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -94,7 +95,7 @@ export default function Login() {
               <Input
                 type="password"
                 placeholder="••••••••"
-                className="bg-neutral-800 border-zinc-600"
+                className="bg-neutral-800 border-zinc-600 rounded-[4px]"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -107,7 +108,7 @@ export default function Login() {
                     forget password?{" "}
                   </button>
                 </DialogTrigger>
-                <DialogContent className="bg-neutral-200 ">
+                <DialogContent className="bg-neutral-200 rounded-[4px] ">
                   <Input
                     placeholder="write your email"
                     value={forgetEmail}
@@ -123,7 +124,7 @@ export default function Login() {
             {/* {error && <p className="text-red-500 text-sm">{error !=='Unauthorised request' && error}</p>} */}
             <Button
               type="submit"
-              className="w-full bg-cyan-600 hover:bg-cyan-500 cursor-pointer text-white"
+              className="w-full bg-cyan-600 rounded-[4px] hover:bg-cyan-500 cursor-pointer text-white"
               disabled={loading}
             >
               {loading ? (
@@ -135,6 +136,30 @@ export default function Login() {
               )}
             </Button>
           </form>
+
+          <br />
+
+          <GoogleLogin
+            onSuccess={async (credentialResponse) => {
+              console.log(credentialResponse);
+              try {
+                if (credentialResponse.credential) {
+                  const res = await dispatch(
+                    googleAuthLoginUser({
+                      credential: credentialResponse.credential,
+                    })
+                  ).unwrap();
+                  if (res) toast.success("login successful");
+                }
+              } catch (error) {
+                toast.error("Error signing up with Google");
+              }
+            }}
+            onError={() => {
+              toast.error("Login with Google failed");
+              console.log("Login Failed");
+            }}
+          />
 
           <div className="mt-4 text-sm text-center text-neutral-400">
             Don’t have an account?{" "}

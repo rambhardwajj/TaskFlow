@@ -66,9 +66,9 @@ export const registerUser = createAsyncThunk(
       );
 
       console.log(res);
-      console.log("res.data", res.data)
+      console.log("res.data", res.data);
       toast.success(res.data.message);
-      
+
       return res.data.data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(
@@ -89,6 +89,25 @@ export const getUser = createAsyncThunk("auth/getUser", async (_, thunkAPI) => {
     return thunkAPI.rejectWithValue(error.response.data.message);
   }
 });
+
+export const googleAuthLoginUser = createAsyncThunk(
+  "auth/google-auth",
+  async (userData: { credential: string }, { rejectWithValue }) => {
+    try {
+      const res = await axios.post(
+        `${API_BASE_URL}/user/auth/google-auth`,
+        {
+          userData,
+        },
+        { withCredentials: true }
+      );
+
+      return res.data.data;
+    } catch (error:any) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -142,6 +161,18 @@ const authSlice = createSlice({
         state.user = null;
         state.error = action.payload as string;
       });
+
+    builder.addCase(googleAuthLoginUser.pending, (state, _) => {
+      state.loading = true;
+    });
+    builder.addCase(googleAuthLoginUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload;
+    });
+    builder.addCase(googleAuthLoginUser.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
   },
 });
 
