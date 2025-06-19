@@ -96,14 +96,12 @@ export const googleAuthLoginUser = createAsyncThunk(
     try {
       const res = await axios.post(
         `${API_BASE_URL}/user/auth/google-auth`,
-        {
-          userData,
-        },
+        { userData },
         { withCredentials: true }
       );
 
       return res.data.data;
-    } catch (error:any) {
+    } catch (error: any) {
       return rejectWithValue(error.response.data.message);
     }
   }
@@ -160,19 +158,19 @@ const authSlice = createSlice({
         state.userLoading = false;
         state.user = null;
         state.error = action.payload as string;
-      });
+      })
 
-    builder.addCase(googleAuthLoginUser.pending, (state, _) => {
-      state.loading = true;
-    });
-    builder.addCase(googleAuthLoginUser.fulfilled, (state, action) => {
-      state.loading = false;
-      state.user = action.payload;
-    });
-    builder.addCase(googleAuthLoginUser.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-    });
+      .addCase(googleAuthLoginUser.pending, (state, _) => {
+        state.loading = true;
+      })
+      .addCase(googleAuthLoginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(googleAuthLoginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 
