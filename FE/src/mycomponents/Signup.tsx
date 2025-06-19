@@ -118,6 +118,10 @@ export default function Signup() {
                   onChange={(e) => setAvatar(e.target.files?.[0] || null)}
                 />
               </div>
+                <Link to={'/resendVerifyEmail'} className="text-blue-400 text-sm cursor-pointer">
+                  Resend verification email
+                </Link>
+
               {error && <p className="text-red-500 text-sm">{error !=='Unauthorised request' && error}</p>}
               <Button
                 type="submit"

@@ -19,6 +19,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [forgetEmail, setForgetEmail] = useState("");
+  const [forgetOpen, setForgetOpen] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,16 +28,21 @@ export default function Login() {
 
   const handleForgetPassword = async () => {
     try {
+      toast.loading("wait");
       const res = await axios.post(
         `${API_BASE_URL}/api/v1/user/auth/forgot-password`,
         { email: forgetEmail }
       );
-      if (res)
+      toast.dismiss();
+      if (res) {
         toast.success(
           "Reset Password link send to your email. Please reset your password"
         );
-    } catch (error:any) {
-      toast.error(error.response.data.message)
+      }
+      setForgetOpen(false)
+    } catch (error: any) {
+      toast.dismiss();
+      toast.error(error.response.data.message);
     }
   };
 
@@ -95,7 +101,7 @@ export default function Login() {
             </div>
 
             <div>
-              <Dialog>
+              <Dialog open={forgetOpen} onOpenChange={setForgetOpen}>
                 <DialogTrigger asChild>
                   <button className="text-sm cursor-pointer hover:text-blue-300 text-blue-400">
                     forget password?{" "}

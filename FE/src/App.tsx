@@ -13,6 +13,7 @@ import ProfilePage from "./pages/Profile";
 import VerifyStatus from "./pages/VerifyStatus";
 import Guidelines from "./pages/Guidelines";
 import { ResetPassword } from "./pages/ResetPassword";
+import { ResendVerifyEmail } from "./pages/ResendVerifyEmail";
 
 export default function App() {
   return (
@@ -33,6 +34,7 @@ export default function App() {
         </Route>
         <Route path="verify/:token" element={<VerifyStatus />} />
         <Route path="/reset-password/:resetToken" element={<ResetPassword />} />
+        <Route path="/resendVerifyEmail" element={<ResendVerifyEmail />} />
       </Routes>
     </Router>
   );
