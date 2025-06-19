@@ -17,6 +17,6 @@ router.post('/auth/update-password',isLoggedIn,  updatePassword)
 router.post('/auth/reset-password/:resetToken', resetPassword)
 router.get('/auth/refresh-token', refreshAccessToken)
 router.get('/auth/me', isLoggedIn , getUser ) 
-router.post("auth/google-auth", googleLogin)
+router.post("/auth/google-auth", googleLogin)
 
 export default router 
