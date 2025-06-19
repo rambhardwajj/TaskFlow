@@ -1,5 +1,5 @@
 import {Router} from "express"
-import {forgotPassword, getUser, loginUser, logOutUser, refreshAccessToken, registerUser, resendVerificationEmail, resetPassword, updatePassword, verifyUser} from "../controllers/user.controller"
+import {forgotPassword, getUser, googleLogin, loginUser, logOutUser, refreshAccessToken, registerUser, resendVerificationEmail, resetPassword, updatePassword, verifyUser} from "../controllers/user.controller"
 import {upload} from "../middlewares/multer.middleware"
 import { isLoggedIn } from "../middlewares/auth.middleware"
 import { authLimiter, emailsLimiter } from "../middlewares/ratelimitter.middleware"
@@ -17,5 +17,6 @@ router.post('/auth/update-password',isLoggedIn,  updatePassword)
 router.post('/auth/reset-password/:resetToken', resetPassword)
 router.get('/auth/refresh-token', refreshAccessToken)
 router.get('/auth/me', isLoggedIn , getUser ) 
+router.post("auth/google-auth", googleLogin)
 
 export default router 

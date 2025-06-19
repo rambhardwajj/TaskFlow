@@ -20,6 +20,7 @@ export interface IUser extends Document {
   fullName?: string;
   avatar?: Avatar;
   isEmailVerified?: boolean;
+  provider?: string;
 
   // feilds related to email and password verification and reset
   // these are also stord in DB
@@ -80,6 +81,11 @@ const userSchema = new mongoose.Schema<IUser>(
       type: Boolean,
       default: false
     },
+    provider:{
+      type: String, 
+      default: "local"
+    },
+
     emailVerificationToken: String,
     emailVerificationExpiry: Date,
 
