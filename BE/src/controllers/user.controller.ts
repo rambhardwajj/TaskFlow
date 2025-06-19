@@ -465,6 +465,7 @@ const googleLogin = asyncHandler(async (req: Request, res: Response) => {
             provider: "google",
         });
     }
+    console.log(user)
 
     const accessToken = await user.generateAccessToken();
     const refreshToken = await user.generateRefreshToken();
