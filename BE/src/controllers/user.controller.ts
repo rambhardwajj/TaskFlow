@@ -460,7 +460,6 @@ const googleLogin = asyncHandler(async (req: Request, res: Response) => {
             email,
             fullName: name,
             isEmailVerified: email_verified,
-            avatar: picture,
             userName: username,
             provider: "google",
         });
