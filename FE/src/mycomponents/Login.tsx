@@ -139,26 +139,27 @@ export default function Login() {
 
           <br />
 
-          <GoogleLogin
-            onSuccess={async (credentialResponse) => {
-              try {
-                if (credentialResponse.credential) {
-                  const res = await dispatch(
-                    googleAuthLoginUser({
-                      credential: credentialResponse.credential,
-                    })
-                  ).unwrap();
-                  if (res) 
-                    toast.success("login successful");
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  if (credentialResponse.credential) {
+                    const res = await dispatch(
+                      googleAuthLoginUser({
+                        credential: credentialResponse.credential,
+                      })
+                    ).unwrap();
+                    if (res) toast.success("login successful");
+                  }
+                } catch (error) {
+                  toast.error("Error signing up with Google");
                 }
-              } catch (error) {
-                toast.error("Error signing up with Google");
-              }
-            }}
-            onError={() => {
-              toast.error("Login with Google failed");
-            }}
-          />
+              }}
+              onError={() => {
+                toast.error("Login with Google failed");
+              }}
+            />
+          </div>
 
           <div className="mt-4 text-sm text-center text-neutral-400">
             Don’t have an account?{" "}

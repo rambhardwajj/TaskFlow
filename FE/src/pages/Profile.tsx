@@ -206,7 +206,7 @@ export default function ProfilePage() {
                           </Label>
                           <Input
                             disabled
-                            value={user?.userName || ""}
+                            value={user?.userName ||  ""}
                             className="bg-neutral-700/50 border-neutral-600/50 text-neutral-200 disabled:opacity-70 focus:border-cyan-500/50 transition-colors"
                           />
                         </div>

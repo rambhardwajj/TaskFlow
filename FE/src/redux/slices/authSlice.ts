@@ -131,6 +131,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+
       // Signup
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
@@ -160,12 +161,13 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
 
+      // google signup 
       .addCase(googleAuthLoginUser.pending, (state, _) => {
         state.loading = true;
       })
       .addCase(googleAuthLoginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = action.payload.user;
       })
       .addCase(googleAuthLoginUser.rejected, (state, action) => {
         state.loading = false;

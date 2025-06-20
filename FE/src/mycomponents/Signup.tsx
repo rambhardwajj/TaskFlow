@@ -143,27 +143,29 @@ export default function Signup() {
 
             <br />
 
-            <GoogleLogin
-              onSuccess={async (credentialResponse) => {
-                console.log(credentialResponse);
-                try {
-                  if (credentialResponse.credential) {
-                    const res = await dispatch(
-                      googleAuthLoginUser({
-                        credential: credentialResponse.credential,
-                      })
-                    ).unwrap();
-                    if( res) toast.success("login successful");
+            <div className="flex justify-center" >
+              <GoogleLogin
+                onSuccess={async (credentialResponse) => {
+                  console.log(credentialResponse);
+                  try {
+                    if (credentialResponse.credential) {
+                      const res = await dispatch(
+                        googleAuthLoginUser({
+                          credential: credentialResponse.credential,
+                        })
+                      ).unwrap();
+                      if (res) toast.success("login successful");
+                    }
+                  } catch (error) {
+                    toast.error("Error signing up with Google");
                   }
-                } catch (error) {
-                  toast.error("Error signing up with Google")
-                }
-              }}
-              onError={() => {
-                toast.error("Login with Google failed");
-                console.log("Login Failed");
-              }}
-            />
+                }}
+                onError={() => {
+                  toast.error("Login with Google failed");
+                  console.log("Login Failed");
+                }}
+              />
+            </div>
 
             <p className="text-sm text-center text-muted-foreground">
               Already have an account?{" "}
