@@ -50,7 +50,7 @@ export const AvatarDropdown = () => {
     <div className="relative z-100 " ref={dropdownRef}>
       <button onClick={() => setOpen(!open)}>
         <img
-          src={user.avatar?.url || "/me.jpg"}
+          src={user.avatar?.url || "https://api.dicebear.com/8.x/pixel-art/svg?seed=Ram123"}
           alt="avatar"
           className="cursor-pointer rounded-full w-8 h-8 object-cover"
         />

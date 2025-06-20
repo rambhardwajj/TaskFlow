@@ -129,7 +129,7 @@ export default function ProfilePage() {
                     <div className="relative">
                       <Avatar className="w-20 h-20 border-4 border-neutral-600/50 shadow-2xl">
                         <AvatarImage
-                          src={user?.avatar || "/me.jpg"}
+                          src={user?.avatar || "https://api.dicebear.com/8.x/pixel-art/svg?seed=Ram123"}
                           alt={user?.name}
                         />
                         <AvatarFallback className="text-2xl font-bold bg-gradient-to-r from-cyan-500 to-neutral-500 text-white">
