@@ -141,7 +141,6 @@ export default function Login() {
 
           <GoogleLogin
             onSuccess={async (credentialResponse) => {
-              console.log(credentialResponse);
               try {
                 if (credentialResponse.credential) {
                   const res = await dispatch(
@@ -149,7 +148,8 @@ export default function Login() {
                       credential: credentialResponse.credential,
                     })
                   ).unwrap();
-                  if (res) toast.success("login successful");
+                  if (res) 
+                    toast.success("login successful");
                 }
               } catch (error) {
                 toast.error("Error signing up with Google");
@@ -157,7 +157,6 @@ export default function Login() {
             }}
             onError={() => {
               toast.error("Login with Google failed");
-              console.log("Login Failed");
             }}
           />
 

@@ -96,7 +96,7 @@ export const googleAuthLoginUser = createAsyncThunk(
     try {
       const res = await axios.post(
         `${API_BASE_URL}/api/v1/user/auth/google-auth`,
-        { userData },
+        userData ,
         { withCredentials: true }
       );
 
