@@ -1,28 +1,32 @@
-
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { API_BASE_URL } from "../../config";
+import { toast } from "sonner";
 
 export default function VerifyStatus() {
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
-  const {token} = useParams();
+  const [status, setStatus] = useState<"loading" | "success" | "error">(
+    "loading"
+  );
+  const { token } = useParams();
 
   useEffect(() => {
     const verifyEmail = async () => {
-
       if (!token) {
         setStatus("error");
-        console.log("token is null")
+        console.log("token is null");
         return;
       }
 
       try {
+        toast.loading("wait");
         await axios.get(`${API_BASE_URL}/api/v1/user/auth/verify/${token}`);
+        
+        toast.dismiss();
         setStatus("success");
       } catch (error) {
-        console.error("Verification failed", error);
+        toast.dismiss();
         setStatus("error");
       }
     };
@@ -43,14 +47,18 @@ export default function VerifyStatus() {
           <>
             <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
             <h1 className="text-2xl font-bold mb-2">Email Verified!</h1>
-            <p className="text-zinc-400">Your email has been successfully verified.</p>
+            <p className="text-zinc-400">
+              Your email has been successfully verified.
+            </p>
           </>
         )}
         {status === "error" && (
           <>
             <XCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
             <h1 className="text-2xl font-bold mb-2">Verification Failed</h1>
-            <p className="text-zinc-400">The verification link is invalid or expired.</p>
+            <p className="text-zinc-400">
+              The verification link is invalid or expired.
+            </p>
           </>
         )}
       </div>

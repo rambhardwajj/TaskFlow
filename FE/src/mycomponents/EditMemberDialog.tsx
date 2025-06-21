@@ -38,18 +38,20 @@ export const EditMemberDialog = ({
 
   const handleUpdateRole = async () => {
     try {
+      toast.loading("wait")
       setLoading(true);
       await axios.patch(
         `${API_BASE_URL}/api/v1/project/${projectId}/update/${member._id}`,
         { role },
-
         { withCredentials: true }
       );
+      toast.dismiss()
+      toast.success("Role Updated successfully")
       onSuccess();
       onOpenChange(false);
     } catch (err:any) {
+      toast.dismiss()
       toast.error(err.response.data.message);
-      console.error("Update failed", err);
     } finally {
       setLoading(false);
     }

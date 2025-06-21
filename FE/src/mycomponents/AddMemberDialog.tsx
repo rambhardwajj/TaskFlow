@@ -38,6 +38,7 @@ export const AddMemberDialog = ({
   const handleAddMember = async () => {
     try {
       setLoading(true);
+      toast.loading("wait")
        await axios.post(
         `${API_BASE_URL}/api/v1/project/${projectId}/add`,
         { email, role },
@@ -50,7 +51,10 @@ export const AddMemberDialog = ({
       onOpenChange(false);
       setEmail("");
       setRole("member");
+      toast.dismiss()
+      toast.success("user Added in the Project")
     } catch (error: any) {
+      toast.dismiss()
       toast.error(error.response.data.message)
       console.error("Add member error:", error);
     } finally {
@@ -86,9 +90,7 @@ export const AddMemberDialog = ({
                 <SelectValue placeholder="Select Role" />
               </SelectTrigger>
               <SelectContent className="bg-neutral-900 border border-neutral-700">
-                <SelectItem value="owner" className="text-white">
-                  Owner
-                </SelectItem>
+               
                 <SelectItem value="member" className="text-white">
                   Member
                 </SelectItem>

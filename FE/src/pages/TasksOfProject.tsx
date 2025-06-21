@@ -43,25 +43,29 @@ export default function TasksOfProject() {
   };
 
   return (
-    <div className="flex min-h-[90vh] min-w-[80vw] relative ">
-      <div className=" bg-neutral-900 text-white p-4 overflow-hidden">
-        {currProject && <TasksNavigation currProject={currProject} />}
-        {/* {loading && (
+    projectId && (
+      <div className="flex min-h-[90vh] min-w-[80vw] relative ">
+        <div className=" bg-neutral-900 text-white p-4 overflow-hidden">
+          {currProject && <TasksNavigation currProject={currProject} />}
+          {/* {loading && (
           <div>Loading</div>
         )} */}
 
-        <div className={`custom-scrollbar flex gap-3 overflow-x-auto h-[74vh] overflow-y-hidden pb-4
+          <div
+            className={`custom-scrollbar flex gap-3 overflow-x-auto h-[74vh] overflow-y-hidden pb-4
           ${loading ? "opacity-50" : ""}
-          `}>
-          {sections.map((section) => (
-            <KanbanColumn
-              key={section}
-              title={section}
-              tasks={tasksBySection[section]}
-            />
-          ))}
+          `}
+          >
+            {sections.map((section) => (
+              <KanbanColumn
+                key={section}
+                title={section}
+                tasks={tasksBySection[section]}
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    )
   );
 }

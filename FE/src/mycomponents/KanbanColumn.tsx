@@ -69,6 +69,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
     }
 
     try {
+      toast.loading("wait");
       const res = await axios.patch(
         `${API_BASE_URL}/api/v1/task/project/${projectId}/update/tasks/${taskId}`,
         {
@@ -81,12 +82,13 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
           withCredentials: true,
         }
       );
+      toast.dismiss();
 
       if (res.data) {
         toast.success("Task updated successfully");
       }
     } catch (error: any) {
-      // console.log(error);
+      toast.dismiss();
       toast.error(error.response.data.message);
     } finally {
       setSelectedTask(null);
@@ -101,7 +103,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
   };
   const addTask = async (formData: FormData) => {
     try {
-      console.log("in addTask");
+      toast.loading("wait")
       const res = await axios.post(
         `${API_BASE_URL}/api/v1/task/project/${projectId}/create/tasks`,
         formData,
@@ -112,15 +114,17 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
           },
         }
       );
+      toast.dismiss()
       setAdded(!added);
       if (res.data) {
         toast.success("Task created successfully");
         setOpenNewTask(false);
         const createdTask = res.data.data.task;
-        console.log("res.data ",res.data.data.task)
+        console.log("res.data ", res.data.data.task);
         dispatch(addTaskManually(createdTask));
       }
     } catch (error: any) {
+      toast.dismiss()
       toast.error(error.response.data.message);
     } finally {
       if (projectId) {
@@ -174,7 +178,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
       if (taskId) {
         const task = byId[taskId];
         // console.log("target status " , task)
-        console.log("task",task);
+        console.log("task", task);
         if (!task) {
           toast.error("You are not a part of this task.");
         }

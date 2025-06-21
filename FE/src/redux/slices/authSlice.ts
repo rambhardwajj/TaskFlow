@@ -21,17 +21,17 @@ export const loginUser = createAsyncThunk(
   "auth/login",
   async (credentials: { email: string; password: string }, thunkAPI) => {
     try {
-      // console.log(credentials)
+      toast.loading("wait");
       const res = await axios.post(
         `${API_BASE_URL}/api/v1/user/auth/login`,
         credentials,
         { withCredentials: true }
       );
-      // console.log(res.data.data);
+      toast.dismiss();
       toast.success("Logged in successfully ");
       return res.data.data;
     } catch (err: any) {
-      console.log(err);
+      toast.dismiss();
       toast.error(err.response.data.message);
       return thunkAPI.rejectWithValue(err.response.data.message);
     }
@@ -53,7 +53,7 @@ export const registerUser = createAsyncThunk(
   ) => {
     try {
       const isFormData = credentials instanceof FormData;
-
+      toast.loading("wait");
       const res = await axios.post(
         `${API_BASE_URL}/api/v1/user/auth/register`,
         credentials,
@@ -64,13 +64,12 @@ export const registerUser = createAsyncThunk(
           withCredentials: true,
         }
       );
-
-      console.log(res);
-      console.log("res.data", res.data);
+      toast.dismiss();
       toast.success(res.data.message);
 
       return res.data.data;
     } catch (err: any) {
+      toast.dismiss();
       return thunkAPI.rejectWithValue(
         err.response.data.message || "Signup Failed"
       );
@@ -83,7 +82,7 @@ export const getUser = createAsyncThunk("auth/getUser", async (_, thunkAPI) => {
     const res = await axios.get(`${API_BASE_URL}/api/v1/user/auth/me`, {
       withCredentials: true,
     });
-    console.log("getUser data ", res.data);
+
     return res.data.data;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response.data.message);
@@ -96,7 +95,7 @@ export const googleAuthLoginUser = createAsyncThunk(
     try {
       const res = await axios.post(
         `${API_BASE_URL}/api/v1/user/auth/google-auth`,
-        userData ,
+        userData,
         { withCredentials: true }
       );
 
@@ -161,7 +160,7 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // google signup 
+      // google signup
       .addCase(googleAuthLoginUser.pending, (state, _) => {
         state.loading = true;
       })

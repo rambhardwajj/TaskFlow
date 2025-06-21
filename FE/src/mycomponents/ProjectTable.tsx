@@ -59,6 +59,7 @@ export default function ProjectTable() {
 
   const handleCreateProject = async () => {
     try {
+      toast.loading("wait")
       await axios.post(
         `${API_BASE_URL}/api/v1/project/create`,
         {
@@ -67,27 +68,30 @@ export default function ProjectTable() {
         },
         { withCredentials: true }
       );
+      toast.dismiss()
       toast.success("Project created successfully!");
       dispatch(getAllProjects());
       setOpen(false);
     } catch (error: any) {
+      toast.dismiss()
       toast.error(error.response.data.message);
-      console.error(error);
     }
   };
 
   const [delOpen, setDelOpen] = useState(false);
   const handleDeleteProject = async (id: string) => {
     try {
+      toast.loading("wait")
       await axios.delete(`${API_BASE_URL}/api/v1/project/delete/${id}`, {
         withCredentials: true,
       });
+      toast.dismiss()
       toast.success("Project deleted successfully!");
       dispatch(getAllProjects());
       setDelOpen(false);
     } catch (error: any) {
+      toast.dismiss()
       toast.error(error.response.data.message);
-      console.error(error);
     }
   };
 
@@ -271,7 +275,7 @@ export default function ProjectTable() {
                           value={projectDesc}
                           onChange={(e) => setProjectDesc(e.target.value)}
                           className="w-full rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="e.g. A bakwaas project."
+                          placeholder="e.g. Description of the  project."
                         />
                       </div>
 

@@ -15,12 +15,15 @@ export const ResendVerifyEmail = () => {
     console.log(email)
     setIsLoading(true);
     try {
+      toast.loading("wait")
       const res = await axios.post(
         `${API_BASE_URL}/api/v1/user/auth/resend-verification`,
         { email }
       );
+      toast.dismiss()
       if (res) toast.success("Resend Email successful");
     } catch (error: any) {
+      toast.dismiss()
       toast.error(error?.response?.data?.message || "Resend Email failed");
     } finally {
       setIsLoading(false);

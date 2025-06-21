@@ -56,6 +56,7 @@ const MyTasks = () => {
     }
 
     try {
+      toast.loading("wait")
       const res = await axios.patch(
         `${API_BASE_URL}/api/v1/task/project/${selectedTask.project._id}/update/tasks/${taskId}`,
         {
@@ -68,11 +69,12 @@ const MyTasks = () => {
           withCredentials: true,
         }
       );
+      toast.dismiss()
       if (res.data) {
         toast.success("Task updated successfully");
       }
     } catch (error: any) {
-      console.log(error);
+      toast.dismiss()
       toast.error(error.response.data.message);
     } finally {
       setSelectedTask(null);

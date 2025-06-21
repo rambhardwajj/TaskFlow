@@ -61,30 +61,34 @@ export default function ProjectDetailPage() {
   useEffect(() => {
     const fetchProjectDetails = async () => {
       try {
+        toast.loading("wait");
         const res = await axios.get(
           `${API_BASE_URL}/api/v1/project/${projectId}`,
           {
             withCredentials: true,
           }
         );
-        console.log("projectInfo", res.data.data[0]);
+        toast.dismiss();
         setProject(res.data.data[0]);
-      } catch (error:any) {
+      } catch (error: any) {
+        toast.dismiss();
         toast.error(error.response.data.message);
       }
     };
 
     const fetchMembers = async () => {
       try {
+        toast.loading("wait")
         const res = await axios.get(
           `${API_BASE_URL}/api/v1/project/${projectId}/getMembers`,
           {
             withCredentials: true,
           }
         );
-        console.log("members", res.data.data);
+        toast.dismiss()
         setMembers(res.data.data);
-      } catch (error:any) {
+      } catch (error: any) {
+        toast.dismiss()
         toast.error(error.response.data.message);
       }
     };
@@ -101,9 +105,9 @@ export default function ProjectDetailPage() {
     name: string;
     desc: string;
   }) => {
-    // Call your PATCH API here
     try {
-      const res = await axios.patch(
+      toast.loading("wait")
+      await axios.patch(
         `${API_BASE_URL}/api/v1/project/update/${projectId}`,
         {
           name,
@@ -114,11 +118,11 @@ export default function ProjectDetailPage() {
         }
       );
 
-      console.log("project updated", res.data.data);
+      toast.dismiss()
       setEdited(!edited);
     } catch (error) {
-      toast.error("Error is updating the project ")
-      console.log("Error in handleProjectEdit", error);
+      toast.dismiss()
+      toast.error("Error is updating the project ");
     }
 
     console.log("Submit edit:", name, desc);
@@ -136,10 +140,7 @@ export default function ProjectDetailPage() {
     setEdited(!edited);
   };
 
-  
-  const { role } = useSelector(
-    (state: RootState) => state.userRole
-  );
+  const { role } = useSelector((state: RootState) => state.userRole);
 
   useEffect(() => {
     if (projectId) {
@@ -158,22 +159,24 @@ export default function ProjectDetailPage() {
                 {project.projectName}
               </h1>
 
-              {role!=="member" && <Tooltip>
-                <TooltipTrigger>
-                  <button
-                    onClick={() => setEditProjectOpen(true)}
-                    className="hover:scale-[1.1]"
-                  >
-                    <Edit
-                      size={28}
-                      className="text-green-500 hover:text-green-400 cursor-pointer"
-                    />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent className="border-1 border-neutral-600">
-                  <p> Edit Project </p>
-                </TooltipContent>
-              </Tooltip>}
+              {role !== "member" && (
+                <Tooltip>
+                  <TooltipTrigger>
+                    <button
+                      onClick={() => setEditProjectOpen(true)}
+                      className="hover:scale-[1.1]"
+                    >
+                      <Edit
+                        size={28}
+                        className="text-green-500 hover:text-green-400 cursor-pointer"
+                      />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="border-1 border-neutral-600">
+                    <p> Edit Project </p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
               <EditProjectDialog
                 open={editProjectOpen}
                 onOpenChange={setEditProjectOpen}
@@ -335,21 +338,23 @@ export default function ProjectDetailPage() {
       <div className="w-1/4 p-6 bg-neutral-900 mr-1 shadow-lg border-l border-[#333] overflow-y-auto ">
         <div className="flex justify-between ">
           <div className="text-xl font-semibold mb-6 text-white">Members</div>
-          { role!== "member" &&  <Tooltip>
-            <TooltipTrigger>
-              <button
-                onClick={() => {
-                  setAddMemberOpen(true);
-                }}
-                className="mt-[-25px] text-amber-500 cursor-pointer hover:scale-[1.1]"
-              >
-                <Plus />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Add member in the project</p>
-            </TooltipContent>
-          </Tooltip>}
+          {role !== "member" && (
+            <Tooltip>
+              <TooltipTrigger>
+                <button
+                  onClick={() => {
+                    setAddMemberOpen(true);
+                  }}
+                  className="mt-[-25px] text-amber-500 cursor-pointer hover:scale-[1.1]"
+                >
+                  <Plus />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Add member in the project</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
 
           {projectId && (
             <AddMemberDialog
@@ -367,8 +372,11 @@ export default function ProjectDetailPage() {
               <div className="flex justify-between flex-wrap" key={index}>
                 <div className="flex items-center space-x-4 p-3 rounded-lg hover:bg-[#2a2a2a] transition-colors">
                   <img
-                    src={member.userInfo.avatar.url}
-                    alt={member.userInfo.userName}
+                    src={
+                      member.userInfo.avatar.url ||
+                      "https://api.dicebear.com/8.x/pixel-art/svg?seed=Ram123"
+                    }
+                    alt=""
                     className="w-15 h-15 rounded-full border border-neutral-700 object-cover"
                   />
                   <div className="hidden lg:block">
@@ -384,7 +392,7 @@ export default function ProjectDetailPage() {
                   </div>
                 </div>
                 <div className=" mt-5">
-                  {member.role !== "owner" && (role!=='member') && (
+                  {member.role !== "owner" && role !== "member" && (
                     <Tooltip>
                       <TooltipTrigger>
                         <button
@@ -403,7 +411,7 @@ export default function ProjectDetailPage() {
                     </Tooltip>
                   )}
 
-                  {member.role !== "owner" && (role!=='member') && (
+                  {member.role !== "owner" && role !== "member" && (
                     <Tooltip>
                       <TooltipTrigger>
                         <button

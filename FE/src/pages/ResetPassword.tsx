@@ -17,13 +17,16 @@ export const ResetPassword = () => {
   if (!password) return toast.error("Password cannot be empty");
   setIsLoading(true);
   try {
+    toast.loading("wait")
     const res = await axios.post(
       `${API_BASE_URL}/api/v1/user/auth/reset-password/${resetToken}`,
       { password }
     );
+    toast.dismiss()
     if( res)
     toast.success("Reset password successful");
   } catch (error: any) {
+    toast.dismiss()
     toast.error(error?.response?.data?.message || "Reset failed");
   } finally {
     setIsLoading(false);

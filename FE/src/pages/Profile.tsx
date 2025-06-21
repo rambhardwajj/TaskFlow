@@ -32,7 +32,7 @@ export default function ProfilePage() {
       if (!currentPassword || !newPassword) {
         return toast.error("Please fill in all password fields.");
       }
-      console.log("hfds");
+      toast.loading("wait")
       await axios.post(
         `${API_BASE_URL}/api/v1/user/auth/update-password`,
         {
@@ -41,9 +41,10 @@ export default function ProfilePage() {
         },
         { withCredentials: true }
       );
-
+      toast.dismiss()
       toast.success("password changed.");
     } catch (error: any) {
+      toast.dismiss()
       toast.error(
         error?.response?.data?.message || "Failed to change password"
       );

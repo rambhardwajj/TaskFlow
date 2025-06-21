@@ -16,12 +16,17 @@ interface DeleteMemberDialogProps {
 export const DeleteMemberDialog = ({ open, onOpenChange, memberId, projectId, onSuccess }: DeleteMemberDialogProps) => {
   const handleDelete = async () => {
     try {
+      toast.loading("wait")
       await axios.delete(`${API_BASE_URL}/api/v1/project/${projectId}/remove/${memberId}`, {
         withCredentials: true,
       });
+
+      toast.dismiss()
       onSuccess();
       onOpenChange(false);
+      toast.success("Member deleted successfully ")
     } catch (error:any) {
+      toast.dismiss()
       toast.error(error.response.data.message)
       console.error("Failed to delete member", error);
     }

@@ -61,7 +61,8 @@ export const MyTaskCard: FC<myTask> = ({
     if (!subtaskTitle.trim()) return;
 
     try {
-      const res = await axios.post(
+      toast.loading("wait")
+      await axios.post(
         `${API_BASE_URL}/api/v1/task/project/${project._id}/tasks/${_id}/subTasks`,
         {
           title: subtaskTitle,
@@ -71,49 +72,51 @@ export const MyTaskCard: FC<myTask> = ({
         }
       );
 
-      console.log("Subtask created:", res.data);
+      toast.dismiss()
+      toast.success("Added subtask")
       setSubtaskTitle("");
       setOpen(false);
-      // optionally trigger refetch/subtask update
     } catch (error:any) {
+      toast.dismiss()
       toast.error(" Make sure you are logged in. " + error.response.data.message);
-      console.error("Error submitting subtask:", error);
     }
   };
   const deleteSubTask = async (subtaskId: string) => {
     try {
-      const res = await axios.delete(
+      toast.loading("wait")
+       await axios.delete(
         `${API_BASE_URL}/api/v1/task/project/${project._id}/tasks/${_id}/delete/subTasks/${subtaskId}`,
         {
           withCredentials: true,
         }
       );
-      console.log("Subtask deleted:", res.data);
+      toast.dismiss()
       getAllSubtasks();
       setOpen(false);
     } catch (error:any) {
+      toast.dismiss()
       toast.error( error.response.data.message);
-      console.error("Error is delting , ", error);
     }
   };
   const getAllSubtasks = async () => {
     try {
+      toast.loading("wait")
       const res = await axios.get(
         `${API_BASE_URL}/api/v1/task/project/${project._id}/tasks/${_id}/subTasks/getAll`,
         { withCredentials: true }
       );
 
-      console.log("Retrieved Subtasks", res.data.data);
-
+      toast.dismiss()
       setSubTasks(res.data.data);
     } catch (error:any) {
+      toast.dismiss()
       toast.error(error.response.data.message)
-      console.log(error);
     }
   };
   const updateSubTask = async (subtask: any) => {
     try {
-      const res = await axios.patch(
+      toast.loading("wait")
+      await axios.patch(
         `${API_BASE_URL}/api/v1/task/project/${project._id}/tasks/${_id}/update/subTasks/${subtask._id}`,
         {
           title: subtask.title,
@@ -121,30 +124,27 @@ export const MyTaskCard: FC<myTask> = ({
         },
         { withCredentials: true }
       );
-
-      console.log(res.data);
+      toast.dismiss()
       getAllSubtasks();
     } catch (error:any) {
+      toast.dismiss()
       toast.error(error.response.data.message);
-      console.log(error);
     }
   };
   const handleDeleteTask = async (taskId: string) => {
     try {
-      const res = await axios.delete(
+      toast.loading("wait")
+      await axios.delete(
         `${API_BASE_URL}/api/v1/task/project/${project._id}/delete/tasks/${taskId}`,
         { withCredentials: true }
       );
+      toast.dismiss()
       toast.success("Task deleted successfully");
-      console.log("Task deleted:", res.data);
-
       dispatch(fetchUserTasks());
-
       setDelOpen(false);
     } catch (error:any) {
+      toast.dismiss()
       toast.error(error.response.data.message);
-
-      console.log("Error in deleting the task", error);
     }
   };
 
