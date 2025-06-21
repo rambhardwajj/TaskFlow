@@ -4,6 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 import {
     validateLoginData,
     validateRegisterData,
+    validateUpdatePasswordData,
 } from "../validators/user.validations";
 import { ResponseStatus } from "../utils/constants";
 import { CustomError } from "../utils/CustomError";
@@ -325,7 +326,7 @@ const resetPassword = asyncHandler(async (req: Request, res: Response) => {
 
 const updatePassword = asyncHandler(async (req: Request, res: Response) => {
     console.log("in update password be");
-    const { oldPassword, newPassword } = req.body;
+    const { oldPassword, newPassword } = handleZodError( validateUpdatePasswordData(req.body))
     const { _id } = req.user;
     const user = await User.findById(_id);
     if (!user) {

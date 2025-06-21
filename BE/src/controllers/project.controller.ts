@@ -125,7 +125,6 @@ const getProjects = asyncHandler(async (req: Request, res: Response) => {
                 role: 1,
                 memberCount: { $size: "$currProjectMemberships" },
             },
-            // dry run the above properly
         },
     ]);
 

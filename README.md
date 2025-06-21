@@ -97,6 +97,6 @@ Forget Email button disable
 update password conditional render 
 rate limiter forget password 
 create project desc 
-Project Name must be 5 character
+Project Name must be 5 character 
 subtask should be deleted when a task is deleted from BE also
 Fallback route 
