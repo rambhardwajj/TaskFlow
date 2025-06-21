@@ -76,7 +76,7 @@ export const TaskCard: FC<Task> = ({
   const deleteSubTask = async (subtaskId: string) => {
     try {
       toast.loading("wait");
-      const res = await axios.delete(
+       await axios.delete(
         `${API_BASE_URL}/api/v1/task/project/${projectId}/tasks/${_id}/delete/subTasks/${subtaskId}`,
         {
           withCredentials: true,
@@ -110,7 +110,7 @@ export const TaskCard: FC<Task> = ({
   const updateSubTask = async (subtask: any) => {
     try {
       toast.loading("wait");
-      const res = await axios.patch(
+       await axios.patch(
         `${API_BASE_URL}/api/v1/task/project/${projectId}/tasks/${_id}/update/subTasks/${subtask._id}`,
         {
           title: subtask.title,
@@ -130,7 +130,7 @@ export const TaskCard: FC<Task> = ({
   const handleDeleteTask = async (taskId: string) => {
     try {
       toast.loading("wait");
-      const res = await axios.delete(
+       await axios.delete(
         `${API_BASE_URL}/api/v1/task/project/${projectId}/delete/tasks/${taskId}`,
         { withCredentials: true }
       );
