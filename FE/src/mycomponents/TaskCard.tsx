@@ -415,7 +415,7 @@ export const TaskCard: FC<Task> = ({
         </div>
 
         {/* 4th line  */}
-        <div className="flex items-center justify-between mt-3">
+        <div className="flex items-center justify-between mt-3  ">
           {/* Assigned To  */}
           <div
             className="flex items-center gap-2"

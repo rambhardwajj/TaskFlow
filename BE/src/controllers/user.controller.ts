@@ -15,9 +15,6 @@ import crypto from "crypto";
 import { envConfig } from "../configs/env";
 import jwt from "jsonwebtoken";
 import { logger } from "../utils/logger";
-import mongoose from "mongoose";
-import { validateObjectId } from "../utils/helper";
-import bcrypt from "bcryptjs";
 import { verifyGoogleToken } from "../utils/VerifyGoogleToken";
 
 const registerUser = asyncHandler(async (req: Request, res: Response) => {
@@ -219,6 +216,7 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
                         email: user.email,
                         userName: user.userName,
                         avatar: user.avatar,
+                        provider: user.provider
                     },
                 },
                 "Login successful"
@@ -425,6 +423,7 @@ const getUser = asyncHandler(async (req: Request, res: Response) => {
                         url: user.avatar?.url,
                         loaclpath: user.avatar?.localPath,
                     },
+                    provider: user.provider
                 },
             },
             "User data retrieved successfully"
@@ -497,6 +496,7 @@ const googleLogin = asyncHandler(async (req: Request, res: Response) => {
                         email: user.email,
                         userName: user.userName,
                         avatar: user.avatar,
+                        provider: user.provider
                     },
                 },
                 "Google Login successful"

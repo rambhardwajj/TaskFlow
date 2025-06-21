@@ -252,7 +252,7 @@ export default function ProfilePage() {
                   </Card>
                 </TabsContent>
 
-                <TabsContent value="security" className="mt-6">
+                 <TabsContent value="security" className="mt-6">
                   <Card className="border-neutral-700/50 bg-gradient-to-r from-neutral-800/30 to-neutral-900/30 backdrop-blur-sm">
                     <CardHeader className="pb-1">
                       <h3 className="text-lg font-semibold text-neutral-100">
@@ -262,7 +262,7 @@ export default function ProfilePage() {
                         Manage your password and security preferences
                       </p>
                     </CardHeader>
-                    <CardContent className="space-y-6">
+                  { user.provider ==="local" ?   <CardContent className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                           <Label className="text-neutral-300 text-xs">
@@ -327,8 +327,16 @@ export default function ProfilePage() {
                         </Button>
                       </div>
                     </CardContent>
+                    : <CardContent>
+                      <div> 
+                        You are all Set 
+                      </div>
+                    </CardContent>
+                  }
+                    
                   </Card>
                 </TabsContent>
+
               </Tabs>
             </div>
 

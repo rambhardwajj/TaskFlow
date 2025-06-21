@@ -6,7 +6,7 @@ import { authLimiter, emailsLimiter } from "../middlewares/ratelimitter.middlewa
 
 const router = Router()
 
-router.post('/auth/register', upload.single("avatar") ,registerUser)
+router.post('/auth/register',authLimiter, upload.single("avatar")  ,registerUser)
 
 router.post('/auth/login', authLimiter, loginUser)
 router.get('/auth/verify/:token', verifyUser)

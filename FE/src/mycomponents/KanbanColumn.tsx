@@ -239,7 +239,7 @@ const KanbanColumn: FC<KanbanColumnProps> = ({ title, tasks }) => {
         )}
       </div>
 
-      <div className="flex flex-col gap-2 overflow-y-auto max-h-[calc(80vh-100px)] pr-2 ">
+      <div className="flex flex-col gap-2 overflow-y-auto max-h-[calc(80vh-100px)] ">
         {tasks.map((task) => (
           <div
             key={task._id}

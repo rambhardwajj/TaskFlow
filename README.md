@@ -91,3 +91,12 @@ This project is open-source and available under the **ISC License**.
 4. Start the server:
    npm start
    
+
+
+Forget Email button disable
+update password conditional render 
+rate limiter forget password 
+create project desc 
+Project Name must be 5 character
+subtask should be deleted when a task is deleted from BE also
+Fallback route 

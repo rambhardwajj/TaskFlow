@@ -21,6 +21,11 @@ const createProject = asyncHandler(async (req: Request, res: Response) => {
     clientSession.startTransaction();
     let project;
     let projectMember;
+
+    if( !name || !desc ){
+        throw new CustomError(ResponseStatus.BadRequest, 'Project name and description are required', );
+    }
+
     try {
         project = await Project.create(
             [{ name, desc, createdBy: req.user._id }],

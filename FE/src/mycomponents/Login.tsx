@@ -21,6 +21,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [forgetEmail, setForgetEmail] = useState("");
   const [forgetOpen, setForgetOpen] = useState(false);
+  const [forgetLoading, setForgetLoading] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +30,7 @@ export default function Login() {
 
   const handleForgetPassword = async () => {
     try {
+      setForgetLoading(true)
       toast.loading("wait");
       const res = await axios.post(
         `${API_BASE_URL}/api/v1/user/auth/forgot-password`,
@@ -41,10 +43,12 @@ export default function Login() {
         );
       }
       setForgetOpen(false);
+      setForgetLoading(false)
     } catch (error: any) {
       toast.dismiss();
+      setForgetLoading(false)
       toast.error(error.response.data.message);
-    }
+    } 
   };
 
   useEffect(() => {
@@ -114,7 +118,7 @@ export default function Login() {
                     value={forgetEmail}
                     onChange={(e) => setForgetEmail(e.target.value)}
                   />
-                  <Button onClick={handleForgetPassword}>
+                  <Button disabled={forgetLoading}  onClick={handleForgetPassword}>
                     Send Reset Password Email
                   </Button>
                 </DialogContent>

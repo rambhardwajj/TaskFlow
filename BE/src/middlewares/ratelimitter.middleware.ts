@@ -10,10 +10,10 @@ export const authLimiter = rateLimit({
 });
 
 export const emailsLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
+  windowMs: 30 * 60 * 1000,
   max: 155,
   message: {
     statusCode: 429,
-    message: "Too many requests from this IP. Please try again after an hour.",
+    message: "Too many requests from this IP. Please try again after 30 mins.",
   },
 });

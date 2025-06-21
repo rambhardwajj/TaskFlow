@@ -13,7 +13,7 @@ import { toast } from "sonner";
 
 export default function Signup() {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error, user } = useSelector(
+  const { loading,  user } = useSelector(
     (state: RootState) => state.auth
   );
   const navigate = useNavigate();
@@ -127,11 +127,6 @@ export default function Signup() {
                 Resend verification email
               </Link>
 
-              {error && (
-                <p className="text-red-500 text-sm">
-                  {error !== "Unauthorised request" && error}
-                </p>
-              )}
               <Button
                 type="submit"
                 className="w-full cursor-pointer rounded-[4px] bg-cyan-600 hover:bg-cyan-500 text-white"
