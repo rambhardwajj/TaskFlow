@@ -268,8 +268,11 @@ const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
 
     const user = await User.findOne({ email });
 
-    if (!user || user.provider=="provider") { 
+    if (!user ) { 
         throw new CustomError(ResponseStatus.NotFound, "User does not exits");
+    }
+    if( user.provider=="google"){
+        throw new CustomError(ResponseStatus.Forbidden, "Google account cannot be reset");
     }
 
     const { hashedToken, unHashedToken, tokenExpiry } = user.generateToken();
