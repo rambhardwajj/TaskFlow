@@ -268,7 +268,7 @@ const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
 
     const user = await User.findOne({ email });
 
-    if (!user) {
+    if (!user || user.provider=="provider") { 
         throw new CustomError(ResponseStatus.NotFound, "User does not exits");
     }
 
