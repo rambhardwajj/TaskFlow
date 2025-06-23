@@ -65,11 +65,13 @@ export const registerUser = createAsyncThunk(
         }
       );
       toast.dismiss();
-      toast.success(res.data.message);
+      console.log(res.data.data)
+      toast.success(res.data.data.message);
 
       return res.data.data;
     } catch (err: any) {
       toast.dismiss();
+      toast.error(err.response.data.message);
       return thunkAPI.rejectWithValue(
         err.response.data.message || "Signup Failed"
       );
