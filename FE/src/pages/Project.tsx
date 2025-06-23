@@ -373,7 +373,7 @@ export default function ProjectDetailPage() {
                 <div className="flex items-center space-x-4 p-3 rounded-lg hover:bg-[#2a2a2a] transition-colors">
                   <img
                     src={
-                      member.userInfo.avatar.url ||
+                      member.userInfo?.avatar?.url ||
                       "https://api.dicebear.com/8.x/pixel-art/svg?seed=Ram123"
                     }
                     alt=""
