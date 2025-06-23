@@ -424,7 +424,7 @@ export const MyTaskCard: FC<myTask> = ({
                 <TooltipTrigger asChild>
                   <DialogTrigger asChild>
                     <img
-                      src={assignedTo.avatar.url}
+                      src={assignedTo.avatar?.url || "https://api.dicebear.com/8.x/pixel-art/svg?seed=Ram123" }
                       alt={`https://api.dicebear.com/7.x/initials/svg?seed=${assignedTo.userName}`}
                       className="w-6 h-6 rounded-full object-cover"
                     />
@@ -436,7 +436,7 @@ export const MyTaskCard: FC<myTask> = ({
               </Tooltip>
               <AssignedUserDialog
                 user={{
-                  avatar: assignedTo.avatar.url,
+                  avatar: assignedTo.avatar?.url || "https://api.dicebear.com/8.x/pixel-art/svg?seed=Ram123",
                   userName: assignedTo.userName,
                   email: assignedTo.email,
                 }}
@@ -459,7 +459,7 @@ export const MyTaskCard: FC<myTask> = ({
                 <TooltipTrigger asChild>
                   <DialogTrigger asChild>
                     <img
-                      src={assignedBy.avatar.url}
+                      src={assignedBy.avatar?.url || "https://api.dicebear.com/8.x/pixel-art/svg?seed=Ram123"}
                       alt={`https://api.dicebear.com/7.x/initials/svg?seed=${assignedTo.userName}`}
                       className="w-6 h-6 rounded-full object-cover"
                     />
@@ -471,7 +471,7 @@ export const MyTaskCard: FC<myTask> = ({
               </Tooltip>
               <AssignedUserDialog
                 user={{
-                  avatar: assignedBy.avatar.url,
+                  avatar: assignedBy.avatar?.url || "https://api.dicebear.com/8.x/pixel-art/svg?seed=Ram123" ,
                   userName: assignedBy.userName,
                   email: assignedBy.email,
                 }}

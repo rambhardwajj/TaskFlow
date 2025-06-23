@@ -123,7 +123,7 @@ const Sidebar = () => {
             <span className="text-sm font-medium"><User /></span>
           ) : (
            <img
-              src={user.avatar.url}
+              src={user.avatar?.url}
               alt="https://api.dicebear.com/7.x/initials/svg?seed=RamB"
               className="w-7 h-7 rounded-full object-cover border border-white"
             />

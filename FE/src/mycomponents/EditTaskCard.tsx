@@ -156,7 +156,7 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
             ) : (
               <div className="flex items-center gap-3">
                 <img
-                  src={selectedTask.assignedTo.avatar.url}
+                  src={selectedTask.assignedTo.avatar?.url || "https://api.dicebear.com/8.x/pixel-art/svg?seed=Ram123"}
                   className="w-8 h-8 rounded-full border border-zinc-700"
                 />
                 <div>
@@ -179,7 +179,7 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
               </label>
               <div className="flex items-center gap-3">
                 <img
-                  src={selectedTask.assignedBy.avatar.url}
+                  src={selectedTask.assignedBy.avatar?.url || "https://api.dicebear.com/8.x/pixel-art/svg?seed=Ram123"}
                   className="w-8 h-8 rounded-full border border-zinc-700"
                 />
                 <div>

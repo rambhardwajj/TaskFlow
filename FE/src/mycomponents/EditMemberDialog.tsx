@@ -88,12 +88,7 @@ export const EditMemberDialog = ({
                 <SelectValue placeholder="Select Role" />
               </SelectTrigger>
               <SelectContent className="bg-neutral-900 border border-neutral-700">
-                <SelectItem
-                  value="owner"
-                  className="text-sm text-white hover:bg-neutral-800"
-                >
-                  Owner
-                </SelectItem>
+               
                 <SelectItem
                   value="member"
                   className="text-sm text-white hover:bg-neutral-800"
