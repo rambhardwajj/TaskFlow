@@ -65,9 +65,7 @@ export const registerUser = createAsyncThunk(
         }
       );
       toast.dismiss();
-      console.log(res.data.data)
-      toast.success(res.data.data.message);
-
+      toast.success("Email sent to your email for verification. Please check your email.");
       return res.data.data;
     } catch (err: any) {
       toast.dismiss();
