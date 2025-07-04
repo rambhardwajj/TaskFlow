@@ -109,7 +109,7 @@ export default function Login() {
               <Dialog open={forgetOpen} onOpenChange={setForgetOpen}>
                 <DialogTrigger asChild>
                   <button className="text-sm cursor-pointer hover:text-blue-300 text-blue-400">
-                    forget password?{" "}
+                    forgot password?{" "}
                   </button>
                 </DialogTrigger>
                 <DialogContent className="bg-neutral-200 rounded-[4px] ">
