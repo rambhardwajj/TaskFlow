@@ -5,11 +5,11 @@ const RoleEnum = z.enum(["owner", "projectAdmin", "member"]);
 const CreateProjectSchema = z.object({
     name: z.string()
     .min(3, { message: "Project Name must be at least 3 characters long" })
-    .max(15, { message: "Project Name must be at most 15 characters long" }),
+    .max(20, { message: "Project Name must be at most 20 characters long" }),
 
     desc : z.string()
     .min(3, {message:"Project Description must be at least 3 characters long"})
-    .max(100, { message: "Project Desc must be atleast 100"})
+    .max(300, { message: "Project Desc must be atmost 300"})
 })
 
 const UpdateProjectSchema = z.object({

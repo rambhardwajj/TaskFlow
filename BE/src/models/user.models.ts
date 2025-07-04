@@ -71,7 +71,7 @@ const userSchema = new mongoose.Schema<IUser>(
         },
         avatar: {
             type: {
-                url: { type: String, default: "https://placehold.co/200x200" },
+                url: { type: String, default: "https://api.dicebear.com/8.x/pixel-art/svg?seed=Ram123" },
                 localPath: { type: String, default: "" },
             },
             set: function (value: any) {

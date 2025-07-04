@@ -3,7 +3,7 @@ import { TaskStatus } from "../utils/constants";
 
 const TaskSchema = z.object({
     title: z.string().trim().nonempty("Task needs to have some title"),
-    desc: z.string().trim().nonempty("Task needs to have some title"),
+    desc: z.string().trim().nonempty("Task needs to have some description"),
     email: z.string().email(),
 });
 

@@ -15,10 +15,10 @@ import { RootState } from "@/redux/store/store";
 
 const Sidebar = () => {
   const [isResizing, setIsResizing] = useState(false);
-  const [width, setWidth] = useState(250); // initial width in px
+  const [width, setWidth] = useState(155); // initial width in px
   const sidebarRef = useRef<HTMLDivElement | null>(null);
 
-  const minWidth = 10;
+  const minWidth = 60;
   const maxWidth = 300;
 
   useEffect(() => {
