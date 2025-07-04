@@ -10,7 +10,7 @@ const Features = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-6 gap-4   items-start">
       
-       <div className="bg-neutral-900/10 relative border border-neutral-800 rounded-md px-6 py-2 hover:shadow-md hover:shadow-neutral-500/40 col-span-2 row-span-2">
+       <div className="bg-neutral-900/10 relative min-h-[50vh] border border-neutral-800 rounded-md px-6 py-2 hover:shadow-md hover:shadow-neutral-500/40 col-span-2 row-span-2">
         <div className="absolute inset-0 bg-dot-pattern opacity-10 pointer-events-none" />
         <h3 className="text-lg font-semibold mb-10 flex gap-2 justify-between text-white">
           <span className="text-zinc-100 text-md ">
@@ -37,7 +37,7 @@ const Features = () => {
       </div>
       
       
-      <div className="bg-neutral-900/10 relative border border-neutral-800 rounded-md px-6 py-3 hover:shadow-md hover:shadow-neutral-500/40 col-span-2 row-span-1">
+      <div className="bg-neutral-900/10 relative min-h-[50vh]  border border-neutral-800 rounded-md px-6 py-3 hover:shadow-md hover:shadow-neutral-500/40 col-span-2 row-span-1">
         <div className="absolute inset-0 bg-dot-pattern opacity-10 pointer-events-none" />
         <h3 className="text-lg font-semibold mb-10 justify-between flex gap-2 text-white">
           <span className="text-zinc-100 text-md">
@@ -66,7 +66,7 @@ const Features = () => {
       </div>
 
      
-      <div className="bg-neutral-900/10 relative border border-neutral-800 rounded-md px-3 py-2 hover:shadow-md hover:shadow-neutral-500/40 col-span-2 row-span-2">
+      <div className="bg-neutral-900/10 relative border min-h-[50vh]  border-neutral-800 rounded-md px-6 py-3 hover:shadow-md hover:shadow-neutral-500/40 col-span-2 row-span-2">
         <div className="absolute inset-0 bg-dot-pattern opacity-10 pointer-events-none" />
         <h3 className="text-md font-semibold mb-3 flex justify-between  text-white">
           <span className="text-zinc-100 text-md">

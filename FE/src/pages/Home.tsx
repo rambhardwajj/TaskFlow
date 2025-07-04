@@ -23,13 +23,13 @@ export default function Home() {
           Deliver projects efficiently.
         </h1>
         <p className="text-zinc-400 text-sm md:text-base max-w-2xl mx-auto mb-6">
-          Manage your teams, tasks, and deadlines—all in one place. Your
+          Manage your teams, projects, tasks, and deadlines—all in one place. Your
           productivity hub for focused execution, real-time collaboration, and
           project success.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link to={"/guidelines"}>
-            <button className=" cursor-pointer bg-cyan-600 hover:bg-cyan-700 transition text-white px-6 py-2 rounded-md text-sm font-medium">
+            <button className=" cursor-pointer bg-cyan-700 hover:bg-cyan-600 transition text-white px-6 py-2 rounded-md text-sm font-medium">
               Get Started
             </button>
           </Link>
@@ -43,6 +43,11 @@ export default function Home() {
           >
             Live Demo
           </button>
+          <Link to={"/projecs"}>
+            <button className="cursor-pointer border border-zinc-600 hover:bg-zinc-800 transition text-white px-6 py-2 rounded-md text-sm font-medium">
+              Your Projects
+            </button>
+          </Link>
         </div>
       </section>
 
