@@ -9,7 +9,7 @@ var mailGenerator = new Mailgen({
   theme: "default",
   product: {
     // Appears in header & footer of e-mails
-    name: "PMS",
+    name: "TaskFlow",
     link: envConfig.DOMAIN_URL,
   },
 });
